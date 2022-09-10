@@ -81,7 +81,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    gitが正常に動くか試験
                 </div>
 
                 <div class="links">
