@@ -11,10 +11,16 @@
 |
 */
 
+// =============== トップ画面表示 ===================
 Route::get('/', function () {
-    return view('app');
+    return view('main/top');
 });
 
+/*
+|--------------------------------------------------------------------------
+| 認証系画面
+|--------------------------------------------------------------------------
+*/
 // =============== 新規登録(買い手)画面表示 ===================
 Route::get('/buyer_register', function () {
     return view('auth/buyer_register');
@@ -40,3 +46,48 @@ Route::get('/password_reminder', function () {
 Route::get('/password_reset', function () {
     return view('auth/password_reset');
 });
+
+/*
+|--------------------------------------------------------------------------
+| ユーザー情報系画面
+|--------------------------------------------------------------------------
+*/
+// =============== プロフィール編集(買い手)画面表示 ===================
+Route::get('/buyer_edit_profile', function () {
+    return view('main/buyer_edit_profile');
+});
+// =============== プロフィール編集(売り手)画面表示 ===================
+Route::get('/seller_edit_profile', function () {
+    return view('main/seller_edit_profile');
+});
+// =============== マイページ(買い手)画面表示 ===================
+Route::get('/buyer_myapge', function () {
+    return view('main/buyer_mypage');
+});
+// =============== マイページ(売り手)画面表示 ===================
+Route::get('/seller_myapge', function () {
+    return view('main/seller_mypage');
+});
+
+/*
+|--------------------------------------------------------------------------
+| 商品系画面
+|--------------------------------------------------------------------------
+*/
+// =============== 商品一覧画面表示 ===================
+Route::get('/product_list', function () {
+    return view('main/product_list');
+});
+// =============== 商品詳細画面表示 ===================
+Route::get('/product_detail', function () {
+    return view('main/product_detail');
+});
+// =============== 商品出品画面表示 ===================
+Route::get('/sell_product', function () {
+    return view('main/sell_product');
+});
+// =============== 商品編集画面表示 ===================
+Route::get('/edit_product', function () {
+    return view('main/edit_product');
+});
+

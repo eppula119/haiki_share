@@ -10,7 +10,7 @@
   <!----- ヘッダー ----->
   @include('layouts.header')
   <!----- メインコンテンツ ----->
-  <main class="l-main">
+  <main id="app" class="l-main">
     @yield('content')
   </main>
   <!----- フッター ----->
