@@ -38,6 +38,6 @@ mix.js('resources/js/app.js', 'public/js')
         proxy: {
             target: 'http://local.haiki-share.jp',
         },
-        open: true, //起動時にブラウザを開かない
+        open: false, //起動時にブラウザを開かない
         reloadOnRestart: true //起動時にブラウザにリロード命令おくる
     });
