@@ -13,7 +13,7 @@
 </head>
 <body>
   <!----- ヘッダー ----->
-  @include('layouts.header')
+  <!-- @include('layouts.header') -->
   <!----- メインコンテンツ ----->
   <main id="app" class="l-main">
     @yield('content')

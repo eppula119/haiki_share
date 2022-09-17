@@ -1,20 +1,9 @@
 <template>
   <div class="p-authContainer">
     <h1 class="p-authContainer__title">
-      新規登録(買い手)
+      パスワード再発行
     </h1>
     <form action="#" class="p-authContainer__form" method="post">
-      <!------------------------ メールアドレス欄 ---------------------------->
-      <label class="p-authLabel">メールアドレス</label>
-      <span class="p-authAttention">※必須</span>
-      <!-- 入力フォーム -->
-      <input class="p-authInput" type="email" name="email">
-      <!-- バリデーションエラーメッセージ表示箇所 -->
-      <div class="p-authValidate">
-        <ul>
-          <li>※入力必須</li>
-        </ul>
-      </div>
       <!------------------------ パスワード欄 ---------------------------->
       <label class="p-authLabel">パスワード(6文字以上)</label>
       <span class="p-authAttention">※必須</span>
@@ -37,11 +26,8 @@
           <li>※入力必須</li>
         </ul>
       </div>
-      <!------------------------ 新規登録ボタン ---------------------------->
-      <input type="submit" class="p-authMainButton c-button c-button--bgBlue" value="新規登録">
-      <div class="p-otherPage">
-        <a href="#" class="p-otherPage__link">→売り手の新規登録はこちら</a>
-      </div>
+      <!------------------------ 再設定ボタン ---------------------------->
+      <input type="submit" class="p-authMainButton c-button c-button--bgBlue" value="パスワード再発行">
     </form>
   </div>
 </template>
