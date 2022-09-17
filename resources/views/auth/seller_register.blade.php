@@ -34,7 +34,7 @@
       <label class="p-authLabel">都道府県</label>
       <span class="p-authAttention">※必須</span>
       <!-- 入力フォーム -->
-      <select class="p-authInput" name="prefecture">
+      <select class="p-authSelect" name="prefecture">
         <option value="北海道">北海道</option>
         <option value="青森県">青森県</option>
         <option value="岩手県">岩手県</option>
@@ -100,7 +100,7 @@
         </ul>
       </div>
       <!------------------------ 新規登録ボタン ---------------------------->
-      <input type="submit" class="p-registerButton c-button" value="新規登録">
+      <input type="submit" class="p-authMainButton c-button c-button--bgBlue" value="新規登録">
       <div class="p-otherPage">
         <a href="#" class="p-otherPage__link">→買い手の新規登録はこちら</a>
       </div>

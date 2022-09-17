@@ -31,7 +31,7 @@
         </ul>
       </div>
       <!------------------------ 再設定ボタン ---------------------------->
-      <input type="submit" class="p-passwordResetButton c-button" value="パスワード再発行">
+      <input type="submit" class="p-authMainButton c-button c-button--bgBlue" value="パスワード再発行">
     </form>
   </div>
 @endsection

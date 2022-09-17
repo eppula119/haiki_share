@@ -1,0 +1,256 @@
+.p-heroImg {
+  position: relative;
+  height: 500px;
+  background: url("../images/top_couple.jpeg") center center / cover;
+  background-attachment: fixed;
+  @include mq() {
+    height: 600px;
+  }
+  &::before {
+    content: '';
+    background-color: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  &__text {
+    position: absolute;
+    top: 18%;
+    left: 10%;
+    color: $white-color;
+    width: 60%;
+    font-size: 3.6rem;
+    font-weight: bold;
+    line-height: 1.5;
+    letter-spacing: .7rem;
+    @include mq() {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      padding: 0 30px;
+      box-sizing: border-box;
+    }
+    .p-heroImgTextSmall {
+      display: block;
+      font-weight: normal;
+      font-size: 1.6rem;
+      margin-top: 30px;
+      line-height: 2;
+      letter-spacing: .3rem;
+    }
+  }
+}
+.p-introduction {
+  text-align: center;
+  padding: 160px 0 80px 0;
+  box-sizing: border-box;
+  @include mq() {
+    padding: 160px 30px 80px 30px;
+  }
+  &__name {
+    position: relative;
+    font-size: 3.6rem;
+    letter-spacing: 0.5rem;
+    &::before {
+      content: "";
+      display: block;
+      width: 60px;
+      height: 3px;
+      background-color: $sub-bg;
+      position: absolute;
+      top: -78.5px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 8px;
+    }
+  }
+  &__summary {
+    position: relative;
+    margin-top: 40px;
+    font-size: 1.2rem;
+    opacity: 0.6;
+    &::after {
+      content: "";
+      display: block;
+      width: 60px;
+      height: 3px;
+      background-color: $sub-bg;
+      position: absolute;
+      bottom: -78.5px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 8px;
+    }
+  }
+  &__desc {
+    margin-top: 160px;
+    @include mq() {
+      text-align: left;
+    }
+  }
+}
+.p-productContainerTop {
+  background-color: $white-bg;
+  padding: 80px;
+  @include mq() {
+    padding: 80px 30px;
+  }
+  &__title {
+    color: $title-color;
+    font-size: 3.6rem;
+    margin-bottom: 80px;
+    @include mq('tab') {
+      text-align: center;
+    }
+  }
+  &__wrap {
+    @include mq('tab') {
+      flex-direction: column;
+      align-items: center;
+      margin: calc(-60px / 2) 0;
+    }
+    .p-itemWrap {
+      // width: 60%;
+      // margin: 60px 0px;
+    }
+  }
+  &__buttonBlock {
+    margin-top: 80px;
+    text-align: center;
+    @include mq('tab') {
+      margin-top: 120px;
+    }
+    .p-productTopButton {
+      width: 40%;
+      padding: 20px 0;
+      @include mq() {
+        width: 100%;
+        padding: 30px 0;
+      }
+    }
+  }
+}
+.p-about {
+  display: flex;
+  justify-content: space-between;
+  padding: 80px 60px;
+  @include mq() {
+    flex-direction: column;
+    padding: 80px 30px;
+  }
+  &__card {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    @include mq() {
+      width: 100%;
+      margin-top: 60px;
+      &:first-of-type {
+        margin-top: 0;
+      }
+    }
+    .p-aboutImg {
+      width: 80%;
+      height: 100px;
+      @include mq() {
+        width: 100%;
+        height: 160px;
+      }
+    }
+    .p-aboutHead {
+      line-height: 1.5;
+      margin-top: 15px;
+      @include mq() {
+        font-size: 2.4rem;
+        margin-top: 30px;
+      }
+    }
+    .p-aboutText {
+      width: 80%;
+      line-height: 1.5;
+      font-size: 1.4rem;
+      margin-top: 15px;
+      @include mq() {
+        width: 100%;
+      }
+    }
+  }
+}
+.p-subImg {
+  position: relative;
+  height: 500px;
+  background: url(../images/top_food.jpeg) center center/cover;
+  background-attachment: fixed;
+  @include mq() {
+    height: 600px;
+  }
+  &::before {
+    content: "";
+    display: block;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  &__text {
+    position: absolute;
+    top: 16%;
+    right: 0%;
+    color: $white-color;
+    width: 47%;
+    font-size: 3.6rem;
+    font-weight: bold;
+    line-height: 1.5;
+    letter-spacing: 0.7rem;
+    @include mq() {
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      transform: translate(-50%, -50%);
+      padding: 0 30px;
+      box-sizing: border-box;
+    }
+    .p-subImgTextSmall {
+      display: block;
+      font-weight: normal;
+      font-size: 1.6rem;
+      margin-top: 30px;
+      line-height: 2;
+      letter-spacing: 0.3rem;
+    }
+  }
+}
+.p-startBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120px 240px;
+  @include mq() {
+    padding: 120px 30px;
+  }
+  &__title {
+    color: $title-color;
+    font-size: 3.6rem;
+    letter-spacing: 0.5rem;
+  }
+  &__summary {
+    font-size: 1.2rem;
+    margin-top: 30px;
+    opacity: 0.6;
+  }
+  &__button {
+    width: 100%;
+    margin-top: 60px;
+    padding: 30px 0;
+    &:first-of-type {
+      margin-top: 100px;
+    }
+  }
+}

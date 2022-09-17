@@ -1,9 +1,13 @@
 <footer class="l-footer">
-  <ul class="p-footerMenu">
-    <li class="p-footerMenu__item">
-      <a href="#">プライバシーポリシー</a>
-      <a href="#">利用規約</a>
-      <a href="#">お問い合わせ</a>
+  <ul class="l-footer__menu">
+    <li class="l-footerItem">
+      <a href="#" class="l-footerItem__link">プライバシーポリシー</a>
+    </li>
+    <li class="l-footerItem">
+      <a href="#" class="l-footerItem__link">利用規約</a>
+    </li>
+    <li class="l-footerItem">
+      <a href="#" class="l-footerItem__link">お問い合わせ</a>
     </li>
   </ul>
 </footer>

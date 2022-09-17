@@ -11,15 +11,20 @@
       <form action="#" class="p-form" method="post">
         <!------------------------ 出品画像欄 ---------------------------->
         <p class="p-sellDesc">出品画像(最大5枚)</p>
-        @for ($i = 0; $i < 5; $i++)
-          <div class="p-uploadedImgBlock">
-            <button class="p-uploadedImgBlock__closeButton c-button">+</button>
-            <img src="#" class="p-uploadedImgBlock__img">
-          </div>
-        @endfor
+        <div class="p-uploadedImgContainer">
+          @for ($i = 0; $i < 5; $i++)
+            <div class="p-uploadedImgContainer__block">
+              <button class="p-imgDeleteButton c-button c-button--bgGray">+</button>
+              <img src="{{ asset('images/item.png') }}" class="p-uploadedImg">
+            </div>
+          @endfor
+        </div>
         <div class="p-uploadPointBlock">
-          <input type="file" class="p-uploadPointBlock__button c-button" name="product-img">
-          <p class="p-uploadPointBlock__text">ファイルをドラッグ＆ドロップもしくは</p>
+          <label for="filename" class="p-uploadPointBlock__label">
+            <button class="p-uploadImgButton c-button c-button--bgBlue">画像を選択</button>
+            <input type="file" id="filename" class="p-uploadImgInput" name="product-img">
+          </label>
+          <p class="p-uploadPointBlock__text">ファイルをドラッグ＆ドロップ</p>
         </div>
         <h2 class="p-formDesc">商品詳細</h2>
         <!------------------------ 商品名欄 ---------------------------->
@@ -46,7 +51,7 @@
         </div>
         <!------------------------ 賞味期限欄 ---------------------------->
         <label class="p-formLabel">賞味期限</label>
-        <span class="p-authAttention">※必須</span>
+        <span class="p-formAttention">※必須</span>
         <!-- 入力フォーム -->
         <input type="text" id="datepicker"  class="p-formInput"name="best-before">
         <!-- バリデーションエラーメッセージ表示箇所 -->
@@ -56,8 +61,8 @@
           </ul>
         </div>
         <!------------------------ ボタン欄 ---------------------------->
-        <input type="submit" class="p-editButton c-button" value="編集する">
-        <input type="submit" class="p-deleteButton c-button" value="削除する">
+        <input type="submit" class="p-formMainButton c-button c-button--bgBlue" value="編集する">
+        <input type="submit" class="p-formDeleteButton c-button" value="削除する">
       </form>
     </div>
   </div>

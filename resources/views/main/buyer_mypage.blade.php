@@ -16,14 +16,14 @@
       <p class="p-subTitle">購入した商品一覧</p>
       @for ($i = 0; $i < 5; $i++)
         <div class="p-productWrap">
-          <img src="#" class="p-productWrap__img">
+          <img src="{{ asset('images/item.png') }}" class="p-productWrap__img">
           <div class="p-productWrap__detail">
             <p class="p-productTitle">ガリガリ君リッチ！</p>
             <p class="productPrice"><span class="c-textRed">¥</span>2,000</p>
           </div>
           <div class="p-buttonWrap">
-            <a class="p-buttonWrap__button c-button" href="#">詳細を見る</a>
-            <a class="p-buttonWrap__button c-button" href="#">購入をキャンセル</a>
+            <a class="p-buttonWrap__button c-button c-button--bgBlue" href="#">詳細を見る</a>
+            <a class="p-buttonWrap__button c-button c-button--bgWhite" href="#">購入をキャンセル</a>
           </div>
         </div>
       @endfor
@@ -31,25 +31,32 @@
     <!------------------------ ページネーション欄 ---------------------------->
     <div class="p-userMainContainer__paginationWrap">
         <ul class="c-paginationWrap">
-          <li class="c-paginationWrap__number c-paginationWrap__number--inactive">«
+        <li class="c-paginationWrap__number c-paginationWrap__number--inactive">
+          <a href="#" class="c-paginationLink">«</a>
+        </li>
+        @for ($i = 0; $i < 1; $i++)
+          <li class="c-paginationWrap__number">
+            <a href="#" class="c-paginationLink">{{ $i }}</a>
           </li>
-          @for ($i = 0; $i < 5; $i++)
-            <li class="c-paginationWrap__number">{{ $i }}
-            </li>
-          @endfor
-          <li class="c-paginationWrap__number  c-paginationWrap__number--inactive c-paginationWrap__number--disabled">...
+        @endfor
+        <!-- <li class="c-paginationWrap__number  c-paginationWrap__number--inactive c-paginationWrap__number--disabled">
+          <a href="#" class="c-paginationLink">...</a>
+        </li> -->
+        <li class="c-paginationWrap__number">
+          <a href="#" class="c-paginationLink c-paginationLink--active">7</a>
+        </li>
+        <!-- <li class="c-paginationWrap__number c-paginationWrap__number--inactive c-paginationWrap__number--disabled">
+          <a href="#" class="c-paginationLink">...</a>
+        </li> -->
+        @for ($i = 3; $i < 4; $i++)
+          <li class="c-paginationWrap__number">
+            <a href="#" class="c-paginationLink">{{ $i }}</a>
           </li>
-          <li class="c-paginationWrap__number">{{ $i }}
-          </li>
-          <li class="c-paginationWrap__number c-paginationWrap__number--inactive c-paginationWrap__number--disabled">...
-          </li>
-          @for ($i = 8; $i < 12; $i++)
-            <li class="c-paginationWrap__number">{{ $i }}
-            </li>
-          @endfor
-          <li class="c-paginationWrap__number c-paginationWrap__number--inactive">»
-          </li>
-        </ul>
+        @endfor
+        <li class="c-paginationWrap__number c-paginationWrap__number--inactive">
+          <a href="#" class="c-paginationLink">»</a>
+        </li>
+      </ul>
     </div>
   </div>
 @endsection

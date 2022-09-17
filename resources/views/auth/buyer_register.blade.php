@@ -42,7 +42,7 @@
         </ul>
       </div>
       <!------------------------ 新規登録ボタン ---------------------------->
-      <input type="submit" class="p-registerButton c-button" value="新規登録">
+      <input type="submit" class="p-authMainButton c-button c-button--bgBlue" value="新規登録">
       <div class="p-otherPage">
         <a href="#" class="p-otherPage__link">→売り手の新規登録はこちら</a>
       </div>

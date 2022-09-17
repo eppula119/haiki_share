@@ -20,7 +20,7 @@
         </ul>
       </div>
       <!------------------------ パスワード再発行メール送信ボタン ---------------------------->
-      <input type="submit" class="p-passwordReminderButton c-button" value="送信">
+      <input type="submit" class="p-authMainButton c-button c-button--bgBlue" value="送信">
       <div class="p-otherPage">
         <a href="#" class="p-otherPage__link">→戻る</a>
       </div>

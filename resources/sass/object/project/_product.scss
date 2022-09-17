@@ -1,0 +1,265 @@
+// ====================== 商品一覧画面 ======================
+.p-productContainer {
+  padding: 60px 120px 120px 120px;
+  @include mq() {
+    padding: 60px 40px 120px 40px;
+  }
+  &__lead {
+    font-weight: bold;
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+  }
+  &__wrap {
+    display: flex;
+    flex-wrap: wrap;
+    margin: calc(-60px / 2) calc(-50px / 2);
+    @include mq() {
+      margin: calc(-60px / 2) 0;
+    }
+    .p-itemWrap {
+      position: relative;
+      width: calc(100% / 3 - 50px);
+      margin: calc(60px / 2) calc(50px / 2);
+      border: solid 1px $gray-color;
+      box-sizing: border-box;
+      border-radius: 10px;
+      box-shadow: 0 2.5rem 2rem -2rem hsl(200deg 50% 20% / 40%);
+      @include mq('tab') {
+        width: calc(100% / 2 - 50px);
+      }
+      @include mq() {
+        width: 100%;
+        margin: calc(60px / 2) 0;
+      }
+      &::before {
+        content: "";
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 0px;
+        right: 0;
+        border-radius: 0 10px 0 0;
+        border: solid 32px $sub-bg;
+        border-left-color: transparent;
+        border-bottom-color: transparent;
+        z-index: 10;
+      }
+      &::after {
+        content: "購入済";
+        color: $white-color;
+        font-size: 1.4rem;
+        font-weight: bold;
+        position: absolute;
+        top: 16px;
+        right: 0px;
+        transform: rotate(45deg);
+        z-index: 10;
+      }
+      &__link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        border-radius: 10px;
+        background: rgba(0, 0, 55, 0.4);
+        z-index: 100;
+        &:hover {
+          opacity: .7;
+        }
+        .p-itemLinkText {
+          font-weight: bold;
+          color: $white-color;
+        }
+      }
+      &__img {
+        width: 100%;
+        height: 180px;
+        border-radius: 10px 10px 0 0;
+      }
+      &__detailWrap {
+        margin-top: -2px;
+        padding: 20px;
+        .p-itemTitle {
+          font-weight: bold;
+        }
+        .p-itemPrefectureText {
+          display: inline-block;
+          background-color: $gray-color;
+          font-size: 1.2rem;
+          padding: 5px;
+          margin-top: 10px;
+          border-radius: 20px;
+        }
+        .p-itemBestBeforeText {
+          font-size: 1.2rem;
+          margin-top: 10px;
+        }
+        .p-itemPrice {
+          text-align: right;
+          color: $title-color;
+          font-weight: bold;
+          font-size: 2.4rem;
+          margin-top: 15px;
+          &__label {
+            font-size: 1.2rem;
+            font-weight: normal;
+          }
+        }
+      }
+    }
+  }
+  &__paginationWrap {
+    margin-top: 60px;
+  }
+}
+// ====================== 商品詳細画面 ======================
+.p-productMainContainer {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 120px;
+  @include mq('tab') {
+    flex-direction: column-reverse;
+  }
+  @include mq() {
+    padding: 80px 20px 120px 20px;
+  }
+  .p-productDetailContainer {
+    width: 60%;
+    padding-right: 60px;
+    box-sizing: border-box;
+    @include mq('tab') {
+      width: 100%;
+      padding-right: 0;
+      margin-top: 80px;
+    }
+    &__title {
+      color: $title-color;
+      font-weight: bold;
+      font-size: 3.6rem;
+      letter-spacing: .2rem;
+      line-height: 1.5;
+    }
+    &__bestBeforeText {
+      position: relative;
+      margin-top: 40px;
+      font-size: 1.4rem;
+      &::after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(to right, $sub-bg 12px, transparent 12px) 0 0/20px 2px repeat-x;
+        position: absolute;
+        bottom: -33px;
+        left: 0;
+        @include mq('tab') {
+          bottom: -63px;
+        }
+        @include mq() {
+          bottom: -43px;
+        }
+      }
+      .p-bestBeforeDate {
+        margin-left: 15px;
+        font-size: 1.6rem;
+        font-weight: bold;
+        @include mq('tab') {
+          font-size: 2.4rem;
+        }
+      }
+    }
+    &__price {
+      position: relative;
+      color: $title-color;
+      margin-top: 60px;
+      font-size: 1.4rem;
+      @include mq('tab') {
+        margin-top: 120px;
+      }
+      @include mq() {
+        margin-top: 80px;
+      }
+      .p-priceBigText {
+        margin-left: 15px;
+        font-size: 3.2rem;
+        font-weight: bold;
+      }
+    }
+    &__button {
+      width: 100%;
+      padding: 30px 0;
+      margin-top: 30px;
+      @include mq('tab') {
+        margin-top: 60px;
+      }
+    }
+    &__info {
+      margin-top: 100px;
+      .p-infoRow {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        padding: 15px 0;
+        border-bottom: dashed 1px $gray-color;
+        &:last-of-type {
+          flex-wrap: wrap;
+        }
+        &__title {
+          width: 120px;
+          font-weight: bold;
+        }
+        &__detail {
+          font-size: 1.4rem;
+          word-break: break-all;
+        }
+        &:first-of-type {
+          border-top: dashed 1px $gray-color;
+        }
+        &:last-of-type {
+          .p-infoRow__title {
+            width: 100%;
+          }
+          .p-infoRow__detail {
+            margin-top: 15px;
+            line-height: 1.5;
+          }
+        }
+      }
+    }
+  }
+  .p-productImgContainer {
+    width: 40%;
+    @include mq('tab') {
+      width: 100%;
+    }
+    &__mainImg {
+      display: block;
+      width: 100%;
+      height: 180px;
+      border-radius: 6px;
+      @include mq('tab') {
+        height: 250px;
+      }
+    }
+    &__subBlock {
+      display: flex;
+      flex-wrap: wrap;
+      margin: calc(-20px / 2) calc(-20px / 2);
+      margin-top: 0;
+      .p-productSubImg {
+        width: calc(100% / 3 - 20px);
+        height: 60px;
+        margin: calc(20px / 2) calc(20px / 2);
+        border-radius: 6px;
+        @include mq('tab') {
+          height: 80px;
+        }
+      }
+    }
+  }
+}

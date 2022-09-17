@@ -1,0 +1,25 @@
+.c-paginationWrap {
+  display: flex;
+  justify-content: center;
+  &__number {
+    margin-left: 10px;
+    &:first-child {
+      margin-left: 0;
+    }
+    .c-paginationLink {
+      display: flex;
+      justify-content: center;
+      background-color: $gray-color;
+      width: 36px;
+      height: 36px;
+      align-items: center;
+      font-size: 1.2rem;
+      border-radius: 50%;
+      cursor: pointer;
+      &--active {
+        background-color: $button-color;
+        color: $white-color;
+      }
+    }
+  }
+}

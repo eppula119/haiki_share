@@ -1,5 +1,29 @@
+html {
+  /* デフォルトのフォントサイズを10pxに設定。主要ブラウザのフォントサイズは
+  デフォルト値が16pxであり、「16×0.625＝10px」になる */
+  font-size: 62.5%;
+}
+
+body, input, textarea, button {
+  font-size: 1.6rem; /*font-size : 16px と同等*/
+  letter-spacing: .1rem;
+}
+
 body,
 html {
   font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, Segoe UI, Hiragino Kaku Gothic ProN, Hiragino Sans, ヒラギノ角ゴ ProN W3, Arial, メイリオ, Meiryo, sans-serif;
   color: #4A4A4A;
+}
+
+a {
+  text-decoration: none;
+  color: #4A4A4A;
+}
+
+li {
+  list-style: none
+}
+
+input:focus, textarea:focus, select {
+  outline: none;
 }

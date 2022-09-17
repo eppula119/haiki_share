@@ -11,6 +11,11 @@
 |
 */
 
+// APIのURL以外のリクエストに対しては「app.blade.php」テンプレートを返す
+Route::get('/{any?}', function () {
+    return view('app');
+})->where('any', '.+');
+
 // =============== トップ画面表示 ===================
 Route::get('/', function () {
     return view('main/top');
@@ -61,11 +66,11 @@ Route::get('/seller_edit_profile', function () {
     return view('main/seller_edit_profile');
 });
 // =============== マイページ(買い手)画面表示 ===================
-Route::get('/buyer_myapge', function () {
+Route::get('/buyer_mypage', function () {
     return view('main/buyer_mypage');
 });
 // =============== マイページ(売り手)画面表示 ===================
-Route::get('/seller_myapge', function () {
+Route::get('/seller_mypage', function () {
     return view('main/seller_mypage');
 });
 
