@@ -16,18 +16,20 @@
       <p class="p-subTitle">出品した商品一覧</p>
       @for ($i = 0; $i < 5; $i++)
         <div class="p-productWrap">
-          <img src="#" class="p-productWrap__img">
+          <img src="{{ asset('images/item.png') }}" class="p-productWrap__img">
           <div class="p-productWrap__detail">
             <p class="p-productTitle">ガリガリ君リッチ！</p>
             <p class="productPrice"><span class="c-textRed">¥</span>2,000</p>
           </div>
           <div class="p-buttonWrap">
-            <a class="p-buttonWrap__button c-button" href="#">詳細を見る</a>
-            <a class="p-buttonWrap__button c-button" href="#">商品情報を編集</a>
+            <a class="p-buttonWrap__button c-button c-button--bgBlue" href="#">詳細を見る</a>
+            <a class="p-buttonWrap__button c-button c-button--bgWhite" href="#">商品情報を編集</a>
           </div>
         </div>
       @endfor
-      <a href="#" class="p-allShowLink c-button">全件表示</a>
+      <div class="p-allShowLink">
+        <a href="#" class="p-allShowLink__button c-button c-button--bgWhite">全件表示</a>
+      </div>
     </section>
     <!------------------------ 購入された商品一覧画面遷移欄 ---------------------------->
     <section class="p-userMainContainer__productWrap">
@@ -35,7 +37,7 @@
       @for ($i = 0; $i < 5; $i++)
         <a class="p-productLink" href="#">
           <div class="p-productWrap">
-            <img src="#" class="p-productWrap__img">
+            <img src="{{ asset('images/item.png') }}" class="p-productWrap__img">
             <div class="p-productWrap__detail">
               <p class="p-productTitle">ガリガリ君リッチ！</p>
               <p class="productPrice"><span class="c-textRed">¥</span>2,000</p>
@@ -44,11 +46,13 @@
           </div>
         </a>
       @endfor
-      <a href="#" class="p-allShowLink c-button">全件表示</a>
+      <div class="p-allShowLink">
+        <a href="#" class="p-allShowLink__button c-button c-button--bgWhite">全件表示</a>
+      </div>
     </section>
     <!------------------------ 出品画面遷移欄 ---------------------------->
     <div class="p-userMainContainer__floatingButtonWrap">
-      <a href="#" class="p-sellLink">出品</a>
+      <a href="#" class="p-sellLink c-button c-button--bgWhite">出品</a>
     </div>
   </div>
 @endsection

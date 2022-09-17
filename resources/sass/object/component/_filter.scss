@@ -1,0 +1,58 @@
+.c-filterWrap {
+  background-color: $white-bg;
+  padding: 20px;
+  &__showFilterButton {
+    display: block;
+    width: 40%;
+    padding: 10px;
+    margin: 0 auto;
+    @include mq() {
+      width: 100%;
+    }
+  }
+  &__keywordForm {
+    margin-top: 20px;
+    .c-searchInput {
+      width: calc(100% - 66px);
+      font-size: 1.4rem;
+      padding: 10px 15px;
+      border: solid 1px $input-border-color;
+      border-radius: 20px;
+      box-sizing: border-box;
+    }
+    .c-doSearchButton {
+      width: 60px;
+      font-size: 1.4rem;
+      font-weight: normal;
+      line-height: 1;
+      padding: 11px 0;
+      border-radius: 20px;
+    }
+  }
+  &__categoryWrap {
+    margin-top: 15px;
+    @include mq() {
+      overflow-x: auto;
+    }
+    .c-filterRow {
+      width: max-content;
+      .c-filterLead {
+        color: $gray-color;
+        font-size: 1.4rem;
+      }
+      .c-showFilterButton {
+        width: 160px;
+        background-color: $gray-color;
+        font-size: 1.2rem;
+        margin-left: 15px;
+        padding: 8px 0;
+        border-radius: 20px;
+        border: none;
+        @include mq() {
+          margin-left: 10px;
+          width: 120px;
+        }
+      }
+    }
+  }
+}

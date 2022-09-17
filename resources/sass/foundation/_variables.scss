@@ -1,11 +1,28 @@
 // 背景色
 $main-bg: #FFFCF9;
 $sub-bg: #003C76;
-
+$white-bg: #FFF;
 
 
 // フォントカラー
-$white-color: #FFF;
 $title-color: #003C76;
 $error-color: #D0021B;
+$white-color: #FFF;
+$gray-color: #d3d3d3;
+
+
+// ボタンカラー
 $button-color: #008CD6;
+
+// ボーダーカラー
+$input-border-color: #d3d3d3;
+
+// レイアウト幅
+$layout-width-inner: 1024px;
+
+// ブレークポイント
+$breakpoints: (
+  'sp': 'screen and (max-width: 767px)',
+  'tab': 'screen and (max-width: #{$layout-width-inner - 1px})',
+  'pc': 'screen and (min-width: #{$layout-width-inner})',
+) !default;

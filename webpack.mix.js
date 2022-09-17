@@ -24,6 +24,7 @@ mix.webpackConfig({
 
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
+    .options({ processCssUrls: false }) // cssのbackground-imageのurlパスを分かり易くするため
     .sourceMaps() //ソースマップの出力(コンパイル前のファイルを出力してデバッグし易くするため)
     .browserSync({ //ブラウザの自動リロード
         host: 'local.haiki-share.jp',

@@ -1,0 +1,337 @@
+.p-userMainContainer {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 100px 0;
+  @include mq() {
+    padding: 100px 20px;
+  }
+  // ========================== プロフィール画面 ==========================
+  &__title {
+    text-align: center;
+    color: $title-color;
+    font-size: 3.2rem;
+    letter-spacing: .2rem;
+    @include mq() {
+      font-size: 2.4rem;
+    }
+  }
+  &__formWrap {
+    background-color: $white-bg;
+    border: solid 1px $gray-color;
+    margin-top: 60px;
+    padding: 40px 60px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgb(0 0 0 / 25%);
+    @include mq() {
+      padding: 40px 25px;
+    }
+    .p-form {
+      position: relative;
+      .p-imgFormWrap {
+        display: flex;
+        align-items: center;
+        @include mq() {
+          flex-direction: column;
+          justify-content: space-between;
+        }
+        &__img {
+          width: 80px;
+          border-radius: 20px;
+          @include mq() {
+            width: 100px;
+          }
+        }
+        &__button {
+          margin-left: 30px;
+          padding: 10px 30px;
+          @include mq() {
+            width: 100%;
+            margin: 30px 0 0 0 ;
+            padding: 10px 0;
+          }
+        }
+      }
+      .p-sellDesc {
+        color: $title-color;
+        font-weight: bold;
+      }
+      .p-uploadedImgContainer {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 calc(-20px / 2);
+        margin-top: 15px;
+        @include mq() {
+          margin: calc(-30px / 2) calc(-20px / 2);
+          margin-top: 15px;
+        }
+        &__block {
+          width: calc(100% / 5 - 20px);
+          margin: 0 calc(20px / 2);
+          position: relative;
+          @include mq() {
+            width: calc(100% / 3 - 20px);
+            margin: calc(30px / 2) calc(20px / 2);
+          }
+          .p-imgDeleteButton {
+            width: 25px;
+            height: 25px;
+            position: absolute;
+            right: 0;
+            top: -8px;
+            border-radius: 50%;
+            opacity: .8;
+          }
+          .p-uploadedImg {
+            width: 100%;
+            height: 50px;
+            border-radius: 3px;
+            @include mq() {
+              height: 80px;
+            }
+          }
+        }
+      }
+      .p-uploadPointBlock {
+        text-align: center;
+        margin-top: 15px;
+        padding: 40px;
+        border: dashed 2px $gray-color;
+        border-radius: 8px;
+        &__label {
+          @include mq('tab') {
+            display: inline-block;
+            width: 100%;
+          }
+          .p-uploadImgButton {
+            width: 50%;
+            font-size: 1.4rem;
+            padding: 10px 0;
+            @include mq('tab') {
+              width: 100%;
+              padding: 30px 0;
+            }
+          }
+          .p-uploadImgInput {
+            display: none;
+          }
+        }
+        &__text {
+          color: $gray-color;
+          margin-top: 15px;
+          @include mq('tab') {
+            display: none;
+          }
+        }
+      }
+      .p-formDesc {
+        font-size: 2.4rem;
+        margin-top: 60px;
+      }
+      .p-formLabel {
+        display: inline-block;
+        color: $title-color;
+        font-weight: bold;
+        @include mq() {
+          font-size: 1.4rem;
+        }
+      }
+      .p-formAttention {
+        position: absolute;
+        right: 0;
+        color: $error-color;
+        @include mq() {
+          font-size: 1.4rem;
+        }
+      }
+      .p-formLabel, .p-formAttention {
+        margin-top: 20px;
+      }
+      .p-formLabel:first-of-type, .p-formAttention:first-of-type {
+        margin-top: 40px;
+      }
+      .p-formCount {
+        position: absolute;
+        right: 0;
+        color: $gray-color;
+        margin-top: 20px;
+      }
+
+      .p-formInput, .p-formTextArea, .p-formSelect {
+        width: 100%;
+        display: block;
+        padding: 15px 20px;
+        margin-top: 10px;
+        box-sizing: border-box;
+        border: solid 1px $input-border-color;
+        border-radius: 8px;
+      }
+      .p-formSelect {
+        width: 30%;
+        appearance: none;
+        @include mq() {
+          width: 40%;
+        }
+      }
+      .p-formTextArea {
+        line-height: 1.5;
+        height: 240px;
+      }
+      .p-formValidate {
+        ul li {
+          color: $error-color;
+          font-size: 1.4rem;
+          margin-top: 6px;
+        }
+      }
+      .p-passwordChangeButton {
+        display: block;
+        margin-top: 20px;
+        padding: 10px 30px;
+      }
+      .p-formMainButton {
+        width: 100%;
+        padding: 30px;
+        margin-top: 60px;
+      }
+      .p-formDeleteButton {
+        width: 100%;
+        padding: 15px;
+        margin-top: 30px;
+        background-color: $white-color;
+        color: $error-color;
+        border: solid 1px $error-color;
+      }
+    }
+  }
+  // ========================== マイページ画面 ==========================
+  &__profileEditWrap {
+    margin-top: 60px;
+    .p-profileLink {
+      display: block;
+      background-color: $white-bg;
+      color: $title-color;
+      font-weight: bold;
+      padding: 15px 20px;
+      border-top: 1px solid $gray-color;
+      border-bottom: 1px solid $gray-color;
+    }
+  }
+  &__productWrap {
+    margin-top: 60px;
+    .p-subTitle {
+      font-weight: bold;
+    }
+    .p-productWrap {
+      display: flex;
+      align-items: center;
+      background-color: $white-bg;
+      border-top: 1px solid $gray-color;
+      padding: 15px 20px;
+      @include mq() {
+        flex-wrap: wrap;
+      }
+      &:first-of-type {
+        margin-top: 30px;
+      }
+      &:nth-of-type(5) {
+        border-bottom: 1px solid $gray-color;
+      }
+      &__img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+      }
+      &__detail {
+        margin-left: 15px;
+        .p-productTitle {
+          line-height: 1.5;
+        }
+      }
+      .p-buttonWrap {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 60px;
+        margin-left: auto;
+        @include mq() {
+          width: 100%;
+          height: 90px;
+          margin-top: 20px;
+        }
+        &__button {
+          text-align: center;
+          font-size: 1.4rem;
+          padding: 5px 10px;
+          @include mq() {
+            padding: 10px;
+          }
+        }
+      }
+      .p-linkText {
+        margin-left: auto;
+        background-color: $gray-color;
+        color: $white-color;
+        font-size: 1.2rem;
+        padding: 10px;
+        border-radius: 50%;
+        @include mq() {
+          position: absolute;
+          bottom: 10px;
+          right: 10px;
+          padding: 6px;
+        }
+      }
+    }
+    .p-allShowLink {
+        margin-top: 30px;
+        text-align: right;
+        @include mq() {
+          margin-top: 40px;
+        }
+      &__button {
+        font-size: 1.4rem;
+        padding: 5px 20px;
+        @include mq() {
+          padding: 15px 25px;
+        }
+      }
+    }
+    .p-productLink {
+      display: block;
+      &:first-of-type {
+        margin-top: 30px;
+      }
+      .p-productWrap {
+        margin-top: 0;
+        border-bottom: none;
+        @include mq() {
+          position: relative;
+        }
+      }
+      &:nth-of-type(5) .p-productWrap {
+        border-bottom: solid 1px $gray-color;
+      }
+    }
+  }
+  &__floatingButtonWrap {
+    position: fixed;
+    bottom: 40px;
+    right: 100px;
+    @include mq('tab') {
+      right: 60px;
+    }
+    @include mq() {
+      right: 10px;
+      bottom: 30px;
+    }
+    .p-sellLink {
+      font-size: 1.4rem;
+      padding: 15px;
+      border-radius: 50%;
+      box-shadow: 0 3px 10px rgb(0 0 0 / 30%);
+    }
+  }
+  &__paginationWrap {
+    margin-top: 80px;
+  }
+}
