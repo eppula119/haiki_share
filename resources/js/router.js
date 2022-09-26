@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from './store' // ナビゲーションガードを使用するためstoreをインポート
 
 // ページコンポーネントをインポート
 import Top from './components/Top.vue' //TOP画面
@@ -32,6 +33,12 @@ import ProductDetail from './components/products/ProductDetail.vue' // 商品詳
 import ProductList from './components/products/ProductList.vue' // 商品一覧画面
 import SellProduct from './components/products/SellProduct.vue' // 商品出品画面
 import EditProduct from './components/products/EditProduct.vue' // 商品編集画面
+/*
+|--------------------------------------------------------------------------
+| エラー系
+|--------------------------------------------------------------------------
+*/
+import Error from './components/Error.vue'
 
 
 // VueRouterプラグインを使用し、<RouterView />コンポーネントを使用可能にする
@@ -42,6 +49,7 @@ const routes = [
   // トップ画面
   {
     path: '/',
+    name: 'top',
     component: Top
   },
   /*
@@ -52,32 +60,99 @@ const routes = [
   // ユーザー登録画面(買い手)
   {
     path: '/buyer_register',
-    component: BuyerRegister
+    name: 'buyerRegister',
+    component: BuyerRegister,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // 商品一覧ページへ遷移
+        next('/product_list')
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next()
+      }
+    }
   },
   // ログイン画面(買い手)
   {
     path: '/buyer_login',
-    component: BuyerLogin
+    name: 'buyerLogin',
+    component: BuyerLogin,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // 商品一覧ページへ遷移
+        next('/product_list')
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next()
+      }
+    }
   },
   // ユーザー登録画面(売り手)
   {
     path: '/seller_register',
-    component: SellerRegister
+    name: 'sellerRegister',
+    component: SellerRegister,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // 商品一覧ページへ遷移
+        next('/product_list')
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next()
+      }
+    }
   },
   // ログイン画面(売り手)
   {
     path: '/seller_login',
-    component: SellerLogin
+    name: 'sellerLogin',
+    component: SellerLogin,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // 商品一覧ページへ遷移
+        next('/product_list')
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next()
+      }
+    }
   },
   // パスワードリマインダー画面
   {
     path: '/password_reminder',
-    component: PasswordReminder
+    name: 'passwordReminder',
+    component: PasswordReminder,
+    props: true, // パラメーター取得に必要な設定
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // 商品一覧ページへ遷移
+        next('/product_list')
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next()
+      }
+    }
   },
   // パスワードリセット画面
   {
     path: '/password_reset',
-    component: PasswordReset
+    name: 'passwordReset',
+    component: PasswordReset,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // 商品一覧ページへ遷移
+        next('/product_list')
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next()
+      }
+    }
   },
   /*
   |--------------------------------------------------------------------------
@@ -87,21 +162,25 @@ const routes = [
   // プロフィール編集画面(買い手)
   {
     path: '/buyer_edit_profile',
+    name: 'buyerEditProfile',
     component: BuyerEditProfile
   },
   // プロフィール編集画面(売り手)
   {
     path: '/seller_edit_profile',
+    name: 'sellerEditProfile',
     component: SellerEditProfile
   },
   // マイページ画面(買い手)
   {
     path: '/buyer_mypage',
+    name: 'buyerMypage',
     component: BuyerMypage
   },
   // マイページ画面(売り手)
   {
     path: '/seller_mypage',
+    name: 'sellerMypage',
     component: SellerMypage
   },
   /*
@@ -112,23 +191,38 @@ const routes = [
   // 商品詳細画面
   {
     path: '/product_detail',
+    name: 'productDetail',
     component: ProductDetail
   },
   // 商品一覧画面
   {
     path: '/product_list',
+    name: 'productList',
     component: ProductList
   },
   // 商品出品画面
   {
     path: '/sell_product',
+    name: 'sellProduct',
     component: SellProduct
   },
   // 商品編集画面
   {
     path: '/edit_product',
+    name: 'editProduct',
     component: EditProduct
   },
+  /*
+  |--------------------------------------------------------------------------
+  | エラー系
+  |--------------------------------------------------------------------------
+  */
+  // 500エラー画面
+  {
+    path: '/500',
+    name: 'error',
+    component: Error
+  }
 ]
 
 // VueRouterインスタンス作成
