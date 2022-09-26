@@ -31,7 +31,7 @@
               ガリガリ君リッチ！
             </p>
             <p class="p-itemPrefectureText">↑ 北海道</p>
-            <p class="p-itemBestBeforeText">賞味期限  2022年9月14日まで</p>
+            <p class="p-itemBestBeforeText">賞味期限<span class="p-itemBestBeforeText__date">2022年9月14日19時30分まで</span></p>
             <p class="p-itemPrice">5,900<span class="p-itemPrice__label">円(税込)</span>
             </p>
           </div>

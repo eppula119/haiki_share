@@ -15,7 +15,7 @@
         </dl>
         <dl class="c-contentInfoRow">
           <dt class="c-contentInfoRow__title">賞味期限</dt>
-          <dd class="c-contentInfoRow__detail">2023年10月31日まで</dd>
+          <dd class="c-contentInfoRow__detail">2023年10月31日19時30分まで</dd>
         </dl>
         <dl class="c-contentInfoRow">
           <dt class="c-contentInfoRow__title">コンビニ名</dt>
@@ -40,7 +40,7 @@
     <!------------------------ 商品詳細説明欄 ---------------------------->
     <section class="p-productDetailContainer">
       <p class="p-productDetailContainer__title">ガリガリ君リッチ！</p>
-      <p class="p-productDetailContainer__bestBeforeText">賞味期限<span class="p-bestBeforeDate">2023年10月まで</span></p>
+      <p class="p-productDetailContainer__bestBeforeText">賞味期限<span class="p-bestBeforeDate">2023年10月10日19時30分まで</span></p>
       <p class="p-productDetailContainer__price">
         価格
         <span class="p-priceBigText">¥1,200</span>
@@ -72,6 +72,9 @@
       <div class="p-productImgContainer__subBlock">
           <img src="images/item.png" class="p-productSubImg" v-for="n of 5" :key="n">
       </div>
+      <button class="p-productImgContainer__shareButton c-button c-button--bgWhite">
+        <i class="fa-brands fa-twitter c-twitterButton"></i>Twitterでシェアする
+      </button>
     </section>
   </div>
   </div>

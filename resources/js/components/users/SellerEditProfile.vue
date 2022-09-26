@@ -5,11 +5,6 @@
     </h1>
     <div class="p-userMainContainer__formWrap">
       <form action="#" class="p-form" method="post">
-      <!------------------------ プロフィール画像欄 ---------------------------->
-      <div class="p-imgFormWrap">
-        <img class="p-imgFormWrap__img" src="/images/profile_icon.png">
-        <button class="p-imgFormWrap__button c-button c-button--bgWhite">変更</button>
-      </div>
       <!------------------------ コンビニ名欄 ---------------------------->
       <label class="p-formLabel">コンビニ名</label>
       <span class="p-formAttention">※必須</span>
@@ -61,7 +56,7 @@
       <!------------------------ 建物名・部屋番号欄 ---------------------------->
       <label class="p-formLabel">建物名・部屋番号</label>
       <!-- 入力フォーム -->
-      <input class="p-formInput" type="text" name="building-name">
+      <input class="p-formInput" type="text" name="other-address">
       <!-- バリデーションエラーメッセージ表示箇所 -->
       <div class="p-formValidate">
         <ul>

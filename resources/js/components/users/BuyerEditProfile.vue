@@ -5,10 +5,15 @@
     </h1>
     <div class="p-userMainContainer__formWrap">
       <form action="#" class="p-form" method="post">
-      <!------------------------ プロフィール画像欄 ---------------------------->
-      <div class="p-imgFormWrap">
-        <img class="p-imgFormWrap__img" src="/images/profile_icon.png">
-        <button class="p-imgFormWrap__button c-button c-button--bgWhite">変更</button>
+      <!------------------------ ユーザー名欄 ---------------------------->
+      <label class="p-formLabel">ユーザー名</label>
+      <!-- 入力フォーム -->
+      <input class="p-formInput" type="text" name="name">
+      <!-- バリデーションエラーメッセージ表示箇所 -->
+      <div class="p-formValidate">
+        <ul>
+          <li>※入力したユーザー名は既に使用されています。</li>
+        </ul>
       </div>
       <!------------------------ メールアドレス欄 ---------------------------->
       <label class="p-formLabel">メールアドレス</label>
@@ -50,17 +55,6 @@
       <span class="p-formAttention">※必須</span>
       <!-- 入力フォーム -->
       <input class="p-formInput" type="password" name="password_confirmation">
-      <!-- バリデーションエラーメッセージ表示箇所 -->
-      <div class="p-formValidate">
-        <ul>
-          <li>※入力必須</li>
-        </ul>
-      </div>
-      <!------------------------ 自己紹介欄 ---------------------------->
-      <label class="p-formLabel">自己紹介</label>
-      <span class="p-formCount">1/500</span>
-      <!-- 入力フォーム -->
-      <textarea class="p-formTextArea" name="introduction"></textarea>
       <!-- バリデーションエラーメッセージ表示箇所 -->
       <div class="p-formValidate">
         <ul>

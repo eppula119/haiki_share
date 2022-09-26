@@ -97,7 +97,13 @@
         }
         .p-itemBestBeforeText {
           font-size: 1.2rem;
-          margin-top: 10px;
+          font-weight: bold;
+          line-height: 1.5;
+          margin-top: 20px;
+          &__date {
+            display: block;
+            font-weight: normal;
+          }
         }
         .p-itemPrice {
           text-align: right;
@@ -168,8 +174,10 @@
         margin-left: 15px;
         font-size: 1.6rem;
         font-weight: bold;
-        @include mq('tab') {
-          font-size: 2.4rem;
+        @include mq() {
+          display: block;
+          display: block;
+          margin: 5px 0 0 0;
         }
       }
     }
@@ -259,6 +267,20 @@
         @include mq('tab') {
           height: 80px;
         }
+      }
+    }
+    &__shareButton {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 60px;
+      padding: 10px 0;
+      @include mq("tab") {
+        margin-top: 30px;
+      }
+      @include mq() {
+        font-size: 1.4rem;
       }
     }
   }

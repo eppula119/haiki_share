@@ -16,7 +16,7 @@
   <!-- @include('layouts.header') -->
   <!----- メインコンテンツ ----->
   <main id="app" class="l-main">
-    @yield('content')
+    <!-- @yield('content') -->
   </main>
   <!----- フッター ----->
   @include('layouts.footer')
