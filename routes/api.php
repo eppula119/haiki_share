@@ -36,3 +36,12 @@ Route::post('/shop/forgot', 'Shop\Auth\ForgotPasswordController@forgot')->name('
 Route::post('/shop/reset', 'Shop\Auth\ResetPasswordController@reset')->name('shop.reset'); // 買い手パスワード再設定
 Route::get('/shop/reset-password/{token}', 'Shop\Auth\ResetPasswordController@resetPassword')->name('shop.reset-password'); // パスワード再設定画面表示
 
+/*
+|--------------------------------------------------------------------------
+| 商品系
+|--------------------------------------------------------------------------
+*/
+Route::post('/product', 'ProductController@sell')->name('product.sell'); // 商品出品
+
+
+Route::get('/product_list', 'ProductController@showProductList')->name('products.show'); // 商品一覧

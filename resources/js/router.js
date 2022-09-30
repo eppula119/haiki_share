@@ -190,7 +190,7 @@ const routes = [
   */
   // 商品詳細画面
   {
-    path: '/product_detail',
+    path: '/product_list/:id',
     name: 'productDetail',
     component: ProductDetail
   },
