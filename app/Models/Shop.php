@@ -25,7 +25,11 @@ class Shop extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'email',
+        'email_verified_at',
+        'group',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -36,5 +40,14 @@ class Shop extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * リレーションシップ - Productsテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function products()
+    {
+        return $this->hasMany('App\Models\Product');
+    }
 }
 

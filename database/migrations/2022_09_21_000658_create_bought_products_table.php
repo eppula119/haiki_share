@@ -15,7 +15,7 @@ class CreateBoughtProductsTable extends Migration
     {
         Schema::create('bought_products', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('product_id');
+            $table->string('product_id');
             $table->foreign('product_id')->references('id')->on('products');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
