@@ -188,17 +188,17 @@ const routes = [
   | 商品系
   |--------------------------------------------------------------------------
   */
-  // 商品詳細画面
-  {
-    path: '/product_list/:id',
-    name: 'productDetail',
-    component: ProductDetail
-  },
   // 商品一覧画面
   {
     path: '/product_list',
     name: 'productList',
     component: ProductList
+  },
+  // 商品詳細画面
+  {
+    path: '/product_list/:id',
+    name: 'productDetail',
+    component: ProductDetail
   },
   // 商品出品画面
   {

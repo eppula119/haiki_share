@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage; // 画像ファイルの操作
+use Illuminate\Support\Carbon; // 日付関連に使用
+use Illuminate\Support\Facades\Log; //ログ取得
 
 class Product extends Model
 {
@@ -15,16 +17,22 @@ class Product extends Model
     // IDの桁数
     const ID_LENGTH = 20;
 
-    /** JSONに含めない属性 */
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
+    /** JSONに含める属性 */
+    protected $visible = [
+        'id',
+        'name',
+        'price',
+        'shop',
+        'best_day', // アクセサ
+        'best_time', // アクセサ
+        'images' // アクセサ
     ];
 
-    /** JSONに含める属性 */
+    /** JSONに追加する属性 */
     protected $appends = [
-        'url',
+        'images',
+        'best_day',
+        'best_time'
     ];
 
     public function __construct(array $attributes = [])
@@ -68,17 +76,59 @@ class Product extends Model
         return $id;
     }
 
+    // 売り手ユーザーリレーション
     public function shop()
     {
         return $this->belongsTo('App\Models\Shop');
     }
 
     /**
-     * アクセサ - url
-     * @return string
+     * アクセサ - images
+     * @return object
      */
-    public function getUrlAttribute()
+    public function getImagesAttribute()
     {
-        return Storage::cloud()->url($this->attributes['image_1']);
+        // クラウドのストレージ情報を取得
+        $storage = Storage::cloud();
+        $images = array();
+        // 商品テーブルに登録可能な画像枚数分ループ
+        for ($num = 0; $num < 5; $num++){
+            // 画像ナンバー
+            $imgNumber = $num + 1;
+            // 取得した商品の画像情報
+            $productImg = $this->attributes["image_{$imgNumber}"];
+            // 画像情報がある場合
+            if(!empty($productImg)) {
+                // クラウドデータから取得した画像URLを配列に追加
+                $image = array( "image_{$imgNumber}" => $storage->url('product_images/' . $this->attributes["image_{$imgNumber}"]) );
+                $images = array_merge($images, $image);
+            }
+        }
+
+       return $images;
+    }
+
+    /**
+     * アクセサ - best_day
+     * @return object
+     */
+    public function getBestdayAttribute()
+    {
+        // 取得した文字列データを任意のフォーマットへ変換
+        $bestDay = new Carbon($this->attributes['best_before']);
+        $bestDay =  $bestDay->format('Y年m月d日');
+        return $bestDay;
+    }
+
+    /**
+     * アクセサ - best_time
+     * @return object
+     */
+    public function getBesttimeAttribute()
+    {
+        // 取得した文字列データを任意のフォーマットへ変換
+        $bestTime = new Carbon($this->attributes['best_before']);
+        $bestTime =  $bestTime->format('H時i分');
+        return $bestTime;
     }
 }
