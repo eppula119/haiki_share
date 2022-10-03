@@ -16,9 +16,12 @@
       font-size: 1.2rem;
       border-radius: 50%;
       cursor: pointer;
-      &--active {
+      &.is-active {
         background-color: $button-color;
         color: $white-color;
+      }
+      &.is-disabled {
+        cursor: not-allowed;
       }
     }
   }

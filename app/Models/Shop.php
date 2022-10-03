@@ -19,17 +19,14 @@ class Shop extends Authenticatable
         'name', 'branch_name', 'prefecture_id', 'city', 'other_address', 'email', 'password',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'email',
-        'email_verified_at',
-        'group',
-        'password',
-        'remember_token',
+    /** JSONに含める属性 */
+    protected $visible = [
+        'name',
+        'branch_name',
+        'city',
+        'other_address',
+        'profile',
+        'prefecture'
     ];
 
     /**
@@ -48,6 +45,14 @@ class Shop extends Authenticatable
     public function products()
     {
         return $this->hasMany('App\Models\Product');
+    }
+    /**
+     * リレーションシップ - Prefecturesテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function prefecture()
+    {
+        return $this->belongsTo('App\Models\Prefecture');
     }
 }
 

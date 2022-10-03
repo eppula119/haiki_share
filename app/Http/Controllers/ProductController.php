@@ -15,7 +15,7 @@ class ProductController extends Controller
     public function __construct()
     {
         // 売り手ユーザーの認証が必要
-        $this->middleware('auth:shop')->except(['showProductList']);
+        $this->middleware('auth:shop')->except(['showProductList', 'showProduct']);
     }
 
     /**
@@ -23,10 +23,24 @@ class ProductController extends Controller
      */
     public function showProductList()
     {
-        $products = Product::with(['shop'])
-            ->orderBy(Product::CREATED_AT, 'desc')->paginate();
+        $products = Product::with(['shop' => function ($query) {
+            $query->with(['prefecture']);
+        }])->orderBy('created_at', 'desc')->paginate(3);
+
 
         return $products;
+    }
+
+    /**
+     * 商品詳細
+     */
+    public function showProduct($id)
+    {
+        $product = Product::with(['shop' => function ($query) {
+            $query->with(['prefecture']);
+        }])->find($id);
+
+        return $product;
     }
 
     /**
@@ -36,6 +50,7 @@ class ProductController extends Controller
      */
     public function sell(StoreProduct $request)
     {
+        
         $product = new Product();
         $product->name = $request->product_name;
         $product->price = $request->price;

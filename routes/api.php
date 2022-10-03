@@ -44,4 +44,5 @@ Route::get('/shop/reset-password/{token}', 'Shop\Auth\ResetPasswordController@re
 Route::post('/product', 'ProductController@sell')->name('product.sell'); // 商品出品
 
 
-Route::get('/product_list', 'ProductController@showProductList')->name('products.show'); // 商品一覧
+Route::get('/product_list', 'ProductController@showProductList')->name('product-list.show'); // 商品一覧
+Route::get('/product_list/{id}', 'ProductController@showProduct')->name('product.show'); // 商品詳細

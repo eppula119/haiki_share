@@ -577,9 +577,12 @@ mixin
   border-radius: 50%;
   cursor: pointer;
 }
-.c-paginationWrap__number .c-paginationLink--active {
+.c-paginationWrap__number .c-paginationLink.is-active {
   background-color: #008CD6;
   color: #FFF;
+}
+.c-paginationWrap__number .c-paginationLink.is-disabled {
+  cursor: not-allowed;
 }
 
 .p-authContainer {
