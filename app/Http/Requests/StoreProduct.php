@@ -32,8 +32,8 @@ class StoreProduct extends FormRequest
             'image_5' => ['file','mimes:jpg,jpeg,png', new MegaBytes(1)],
             'product_name' => ['required','string','max:30'],
             'price' => ['required','numeric'],
-            'day' => ['required','date_format:Y-m-d'],
-            'time' => ['required','date_format:H:i'],
+            'best_day' => ['required','date_format:Y-m-d'],
+            'best_time' => ['required','date_format:H:i'],
         ];
     }
 }

@@ -17,6 +17,22 @@ class Product extends Model
     // IDの桁数
     const ID_LENGTH = 20;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'price',
+        'best_before',
+        'image_1',
+        'image_2',
+        'image_3',
+        'image_4',
+        'image_5',
+    ];
+
     /** JSONに含める属性 */
     protected $visible = [
         'id',
@@ -34,6 +50,8 @@ class Product extends Model
         'best_day',
         'best_time'
     ];
+
+
 
     public function __construct(array $attributes = [])
     {
@@ -95,13 +113,16 @@ class Product extends Model
         for ($num = 0; $num < 5; $num++){
             // 画像ナンバー
             $imgNumber = $num + 1;
-            // 取得した商品の画像情報
-            $productImg = $this->attributes["image_{$imgNumber}"];
-            // 画像情報がある場合
-            if(!empty($productImg)) {
-                // クラウドデータから取得した画像URLを配列に追加
-                $image = array( "image_{$imgNumber}" => $storage->url('product_images/' . $this->attributes["image_{$imgNumber}"]) );
-                $images = array_merge($images, $image);
+            // 既に商品画像が登録されているレコードの場合(GET通信などで情報取得の場合)
+            if(!empty($this->attributes["image_{$imgNumber}"])) {
+                // 取得した商品の画像情報
+                $productImg = $this->attributes["image_{$imgNumber}"];
+                // 画像情報がある場合
+                if(!empty($productImg)) {
+                    // クラウドデータから取得した画像URLを配列に追加
+                    $image = array( "image_{$imgNumber}" => $storage->url('product_images/' . $this->attributes["image_{$imgNumber}"]) );
+                    $images = array_merge($images, $image);
+                }
             }
         }
 
@@ -114,10 +135,13 @@ class Product extends Model
      */
     public function getBestdayAttribute()
     {
-        // 取得した文字列データを任意のフォーマットへ変換
-        $bestDay = new Carbon($this->attributes['best_before']);
-        $bestDay =  $bestDay->format('Y年m月d日');
-        return $bestDay;
+        // 既に賞味期限が登録されているレコードの場合(GET通信などで情報取得の場合)
+        if(!empty($this->attributes['best_before'])) {
+            // 取得した文字列データを任意のフォーマットへ変換
+            $bestDay = new Carbon($this->attributes['best_before']);
+            $bestDay =  $bestDay->format('Y年m月d日');
+            return $bestDay;
+        }
     }
 
     /**
@@ -126,9 +150,13 @@ class Product extends Model
      */
     public function getBesttimeAttribute()
     {
-        // 取得した文字列データを任意のフォーマットへ変換
-        $bestTime = new Carbon($this->attributes['best_before']);
-        $bestTime =  $bestTime->format('H時i分');
-        return $bestTime;
+        // 既に賞味期限が登録されているレコードの場合(GET通信などで情報取得の場合)
+        if(!empty($this->attributes['best_before'])) {
+            // 取得した文字列データを任意のフォーマットへ変換
+            $bestTime = new Carbon($this->attributes['best_before']);
+            $bestTime =  $bestTime->format('H時i分');
+            return $bestTime;
+        }
+        
     }
 }
