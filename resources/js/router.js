@@ -208,10 +208,15 @@ const routes = [
   },
   // 商品編集画面
   {
-    path: '/edit_product',
+    path: '/sell_product/:id',
     name: 'editProduct',
     component: EditProduct
   },
+  // {
+  //   path: '/edit_product',
+  //   name: 'editProduct',
+  //   component: EditProduct
+  // },
   /*
   |--------------------------------------------------------------------------
   | エラー系

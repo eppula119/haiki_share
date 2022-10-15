@@ -4,7 +4,7 @@
       商品出品
     </h1>
     <div class="p-userMainContainer__formWrap">
-      <form class="p-form" @submit.prevent="submit" enctype="multipart/form-data">
+      <form class="p-form" @submit.prevent="submit">
         <!------------------------ 出品画像欄 ---------------------------->
         <p class="p-sellDesc">出品画像(最大5枚)</p>
         <div class="p-uploadedImgContainer">
@@ -64,12 +64,12 @@
           :language="ja"
           input-class="p-formCalendar__input"
           wrapper-class="p-formCalendar"
-          :value="sellForm.day"
+          v-model="sellForm.best_day"
         ></vue-date-picker>
         <!-- バリデーションエラーメッセージ表示箇所 -->
         <div class="p-formValidate" v-if="errors">
-          <ul v-if="errors.day">
-            <li v-for="msg in errors.day" :key="msg">※{{ msg }}</li>
+          <ul v-if="errors.best_day">
+            <li v-for="msg in errors.best_day" :key="msg">※{{ msg }}</li>
           </ul>
         </div>
         <!------------------------ 賞味期限(時間)欄 ---------------------------->
@@ -78,7 +78,7 @@
         <!-- 時間入力フォームコンポーネント -->
         <vue-time-picker
           class="p-formInput"
-          v-model="sellForm.time"
+          v-model="sellForm.best_time"
           hour-label="時"
           minute-label="分"
           placeholder="時間を入力"
@@ -88,8 +88,8 @@
         ></vue-time-picker>
         <!-- バリデーションエラーメッセージ表示箇所 -->
         <div class="p-formValidate" v-if="errors">
-          <ul v-if="errors.time">
-            <li v-for="msg in errors.time" :key="msg">※{{ msg }}</li>
+          <ul v-if="errors.best_time">
+            <li v-for="msg in errors.best_time" :key="msg">※{{ msg }}</li>
           </ul>
         </div>
         <!------------------------ 出品ボタン ---------------------------->
@@ -100,8 +100,6 @@
 </template>
 
 <script>
-// ストアのステートをインポート
-import { mapState } from "vuex"; 
 // 定義したステータスコードをインポート
 import { CREATED, UNPROCESSABLE_ENTITY } from '../../util'
 // カレンダー入力プラグインをインポート
@@ -119,13 +117,11 @@ export default {
     VueTimePicker,
   },
   created () {
-  // 今日の日付を任意の表記にフォーマット化
-  this.dayToFormat(new Date(), 'YYYY-MM-DD')
+    // 今日の日付を任意の表記にフォーマット化
+    const initBestDat = this.dayToFormat(new Date(), 'YYYY-MM-DD')
+    // フォーマット化した今日の日付をデータへ渡す
+    this.sellForm.best_day = initBestDat
   },
-  computed: mapState({
-    apiStatus: (state) => state.auth.apiStatus, // authストアのAPIステータスを参照
-    registerErrors: (state) => state.auth.registerErrorMessages, // authストアのユーザー登録エラーメッセージを参照
-  }),
   data: function() {
     return {
       // 出品フォーム入力値
@@ -133,8 +129,8 @@ export default {
         images: [], // 商品画像
         name: '', // 商品名
         price: '', // 価格
-        day: '', // 賞味期限(日付)
-        time: '00:00', // 賞味期限(時間)
+        best_day: '', // 賞味期限(日付)
+        best_time: '00:00', // 賞味期限(時間)
       },
       errors: {}, // バリデーションエラーメッセージ
       dragFlg: false, // 画像ドラッグエリア内へドラッグ中か判別
@@ -214,19 +210,29 @@ export default {
     },
     // 出品実行
     async submit() {
-      const formData = new FormData()
+      let formData = new FormData()
+      // 日付を任意の表記にフォーマット化
+      const bestDay = this.dayToFormat(new Date(this.sellForm.best_day), 'YYYY-MM-DD')
+  
       formData.append('product_name', this.sellForm.name) // 商品名を追加
       formData.append('price', this.sellForm.price) // 値段を追加
-      formData.append('day', this.sellForm.day) // 賞味期限(日付)を追加
-      formData.append('time', this.sellForm.time) // 賞味期限(時間)を追加
+      formData.append('best_day', bestDay) // 賞味期限(日付)を追加
+      formData.append('best_time', this.sellForm.best_time) // 賞味期限(時間)を追加
       // アップロードした商品画像の枚数分ループ
       for (let i = 0; i < this.sellForm.images.length; i++) {
         const imgNumber = i + 1;
         formData.append('image_' + imgNumber, this.sellForm.images[i].uploadFile);
       }
+      console.log(...formData.entries());
+
+      let config = {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      };
 
       // 出品API実行
-      const response = await axios.post('/api/product', formData)
+      const response = await axios.post('/api/product', formData, config)
       // ステータスコードが422(バリデーションエラー)の場合
       if (response.status === UNPROCESSABLE_ENTITY) {
         const errors = response.data.errors
@@ -274,19 +280,18 @@ export default {
         images: [],
         name: '',
         price: '',
-        day: '',
-        time: '00:00',
+        best_day: '',
+        best_time: '00:00',
       }
       this.sellForm.images
     },
     // 今日の日付を任意の表記にフォーマット化
-    dayToFormat(nowDate, format) {
+    dayToFormat(date, format) {
       // フォーマット文字列内のキーワードを日付に置換する
-      format = format.replace(/YYYY/g, nowDate.getFullYear());
-      format = format.replace(/MM/g, ('0' + (nowDate.getMonth() + 1)).slice(-2));
-      format = format.replace(/DD/g, ('0' + nowDate.getDate()).slice(-2));
-      // フォーマット化した今日の日付をデータへ渡す
-      this.sellForm.day = format
+      format = format.replace(/YYYY/g, date.getFullYear());
+      format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+      format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2));
+      return format
     }
   }
 };

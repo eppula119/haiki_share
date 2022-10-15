@@ -93,8 +93,8 @@
 <script>
 // 定義したステータスコードをインポート
 import { OK } from '../../util'
-// storeフォルダ内のファイルで定義した「state」を参照
-import { mapState, mapGetters } from "vuex";
+// storeフォルダ内のファイルで定義した「getters」を参照
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -122,18 +122,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      // 現在、ログイン中かどうか参照
+      // authストアのAPIステータスを参照
       productList: "product/productList",
-    }),
-    // stepストアのstepsを参照
-    ...mapState({
-      // childs: (state) => state.step.childSteps,
-      // user: (state) => state.auth.user,
-    }),
+    })
   },
   methods: {
     // 詳細表示させる商品情報取得
-    async fetchProduct() {
+    async getProduct() {
       // ストアに保存した商品リストから、商品IDがidパラメーターと一致する商品を取得
       const product = this.productList.find((product) => product.id === this.$route.params.id);
       // 一致する商品がストアに保存されている場合
@@ -177,7 +172,7 @@ export default {
     $route: {
       async handler () {
         // 商品リスト取得メソッド実行
-        await this.fetchProduct()
+        await this.getProduct()
       },
       
       immediate: true // 起動時にも実行

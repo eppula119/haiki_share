@@ -123,8 +123,8 @@ return [
         'product_name' => '商品名',
         'price' => '価格',
         'category' => 'カテゴリー',
-        'day' => '賞味期限(日付)',
-        'time' => '賞味期限(時間)',
+        'best_day' => '賞味期限(日付)',
+        'best_time' => '賞味期限(時間)',
     ],
 
 ];
