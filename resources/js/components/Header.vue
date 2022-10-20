@@ -22,7 +22,7 @@
           </label>
         </form>
       </div>
-      <a href="" class="p-headerNav__link">商品一覧</a>
+      <RouterLink class="p-headerNav__link" to="/product_list">商品一覧</RouterLink>
       <RouterLink class="p-headerNav__link" to="/buyer_login" v-if="!isLogin">ログイン</RouterLink>
       <form class="p-headerNav__link p-logout" method="post" @submit.prevent="logout" v-else>
         <input type="submit" class="p-logout__button" value="ログアウト" >

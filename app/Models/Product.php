@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth; //認証に関わる物を使う
 use Illuminate\Support\Facades\Storage; // 画像ファイルの操作
 use Illuminate\Support\Carbon; // 日付関連に使用
 use Illuminate\Support\Facades\Log; //ログ取得
@@ -39,16 +40,19 @@ class Product extends Model
         'name',
         'price',
         'shop',
+        'users',
         'best_day', // アクセサ
         'best_time', // アクセサ
-        'images' // アクセサ
+        'images', // アクセサ
+        'buy_flg' // アクセサ
     ];
 
     /** JSONに追加する属性 */
     protected $appends = [
         'images',
         'best_day',
-        'best_time'
+        'best_time',
+        
     ];
 
 
@@ -159,4 +163,57 @@ class Product extends Model
         }
         
     }
+
+    // /**
+    //  * アクセサ - buy_flg
+    //  * @return object
+    //  */
+    // public function getBuyFlgAttribute()
+    // {
+    //     $buyFlg = array('buy_flg' => false, 'my_buy_flg' => false);
+    //     // 購入テーブルの「updated_at」カラムの値を格納する配列
+    //     $updatedAtArray = array();
+    //     // 購入した(購入キャンセル含む)商品IDに紐づくユーザー情報取得
+    //     $users = $this->users;
+        
+    //     Log::debug($users);
+    //     // 購入した(購入キャンセル含む)商品IDに紐づくユーザー情報をループ処理
+    //     foreach ($users as $user) {
+    //         // 購入テーブルの「updated_at」カラムの値を追加
+    //         array_push($updatedAtArray, array($user->pivot->updated_at));
+    //     }
+    //     // 購入履歴がある場合
+    //     if(!empty($updatedAtArray)) {
+    //         // 最新の購入日時のみ取得
+    //         $latestUpdatedAt = max($updatedAtArray);
+    //         Log::debug($latestUpdatedAt);
+    //     }
+
+    //     foreach ($users as $user) {
+    //         // 最新購入日時のレコードにて、購入キャンセルされてない(購入済み)場合
+    //         if($latestUpdatedAt === $user->pivot->updated_at && $user->pivot->deleted_at === null) {
+    //             // 購入済みフラグをtrue
+    //             $buyFlg['buy_flg'] = true;
+    //             // ログインユーザーが購入している場合
+    //             if($user->id === $authUserId) {
+    //                 // 自分の購入フラグをtrue
+    //                 $buyFlg['my_buy_flg'] = true;
+    //             }
+    //             return $buyFlg;
+    //         }
+            
+    //     }
+    //     /* 購入履歴が無い、もしくは最新購入日時のレコードにて、
+    //     購入キャンセルされてる場合は購入済みフラグをfalse */
+    //     return $buyFlg;
+        
+    // }
+
+    // 買い手ユーザーリレーション
+    public function users()
+    {
+        return $this->belongsToMany('App\Models\User', 'bought_products')->withPivot('deleted_at', 'updated_at');
+    }
+
+    
 }

@@ -31,7 +31,7 @@
         width: 100%;
         margin: calc(60px / 2) 0;
       }
-      &::before {
+      &.is-disabled::before {
         content: "";
         width: 0;
         height: 0;
@@ -44,7 +44,7 @@
         border-bottom-color: transparent;
         z-index: 10;
       }
-      &::after {
+      &.is-disabled::after {
         content: "購入済";
         color: $white-color;
         font-size: 1.4rem;
@@ -204,6 +204,9 @@
       margin-top: 30px;
       @include mq('tab') {
         margin-top: 60px;
+      }
+      &.is-disabled {
+        display: none;
       }
     }
     &__info {
