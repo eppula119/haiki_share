@@ -1,40 +1,7 @@
 <template>
   <div v-if="product !== {}">
     <!------------------------ モーダル欄 ---------------------------->
-    <div class="c-modalOverlay"></div>
-    <div class="c-modal c-modalBuy">
-      <div class="c-modal__content">
-        <!------------------------ 商品購入モーダル欄 ---------------------------->
-          <div class="c-contentImgBlock">
-            <img src="/images/item.png" class="c-contentImgBlock__img">
-            <span class="c-contentImgBlock__title">ガリガリ君リッチ！</span>
-          </div>
-          <dl class="c-contentInfoRow">
-            <dt class="c-contentInfoRow__title">価格</dt>
-            <dd class="c-contentInfoRow__detail">¥1200円(税込)</dd>
-          </dl>
-          <dl class="c-contentInfoRow">
-            <dt class="c-contentInfoRow__title">賞味期限</dt>
-            <dd class="c-contentInfoRow__detail">2023年10月31日19時30分まで</dd>
-          </dl>
-          <dl class="c-contentInfoRow">
-            <dt class="c-contentInfoRow__title">コンビニ名</dt>
-            <dd class="c-contentInfoRow__detail">ローソン | 行田店</dd>
-          </dl>
-          <dl class="c-contentInfoRow">
-            <dt class="c-contentInfoRow__title">住所</dt>
-            <dd class="c-contentInfoRow__detail">東京都新宿区新宿x丁目x番地 hogehogeビル3F</dd>
-          </dl>
-          <p class="c-contentNote">
-            ※上記の商品で間違いないか確認した上で「購入する」ボタンを押してください。
-            ボタン押下後、決済が完了し登録メールアドレスへ購入確認メールが送信されます。
-          </p>
-      </div>
-      <div class="c-modal__buttonWrap">
-        <button class="c-modalDoButton c-button c-button--bgGray">キャンセル</button>
-        <button class="c-modalDoButton c-button c-button--bgBlue">保存</button>
-      </div>
-    </div>
+    <Modal ref="modal"></Modal>
     <!------------------------ 商品説明・商品画像欄 ---------------------------->
     <div class="p-productMainContainer">
       <!------------------------ 商品詳細説明欄 ---------------------------->
@@ -48,9 +15,12 @@
           <span class="p-priceBigText">¥{{ product.price.toLocaleString() }}</span>
           税込
         </p>
-        <button class="p-productDetailContainer__button c-button c-button--bgBlue">購入する</button>
-        <button class="p-productDetailContainer__button c-button c-button--bgGray">購入済み</button>
-        <button class="p-productDetailContainer__button c-button c-button--bgBlue">購入をキャンセル</button>
+        <button class="p-productDetailContainer__button c-button c-button--bgBlue"
+          :class="{ 'is-disabled': product.buy_flg.buy }" @click="openModal('buy')">購入する</button>
+        <button class="p-productDetailContainer__button c-button c-button--bgGray"
+          :class="{ 'is-disabled': !product.buy_flg.buy }">購入済み</button>
+        <button class="p-productDetailContainer__button c-button c-button--bgBlue"
+          :class="{ 'is-disabled': !product.buy_flg.myBuy }">購入をキャンセル</button>
         <div class="p-productDetailContainer__info">
           <dl class="p-infoRow">
             <dt class="p-infoRow__title">コンビニ名</dt>
@@ -95,8 +65,13 @@
 import { OK } from '../../util'
 // storeフォルダ内のファイルで定義した「getters」を参照
 import { mapGetters } from "vuex";
+// モーダルコンポーネント読み込み
+import Modal from '../Modal/Modal.vue'
 
 export default {
+  components: {
+    Modal
+  },
   data() {
     return {
       product: { // 表示中の商品情報
@@ -106,6 +81,7 @@ export default {
         images: {},
         best_day: '',
         best_time: '',
+        buy_flg : {},
         shop: {
           branch_name: '',
           city: '',
@@ -117,12 +93,12 @@ export default {
           }
         }
       },
-      mainImg: '' // メイン画像パス
+      mainImg: '',// メイン画像パス
     };
   },
   computed: {
     ...mapGetters({
-      // authストアのAPIステータスを参照
+      // 商品ストアの商品リスト情報を参照
       productList: "product/productList",
     })
   },
@@ -165,6 +141,10 @@ export default {
         `http://localhost:3000/product_list/${this.$route.params.id}`;
       // 新規ウインドウでツイート画面を開く
       window.open(shareURL, '_blank')
+    },
+    // 購入確認モーダルを開く
+    openModal(type) {
+      this.$refs.modal.openModal({ type: type, childType: '', data: this.product })
     },
   },
   watch: {

@@ -43,6 +43,7 @@ Route::get('/shop/reset-password/{token}', 'Shop\Auth\ResetPasswordController@re
 */
 Route::post('/product', 'ProductController@sellProduct')->name('product.sell'); // 商品出品
 Route::put('/product/{id}', 'ProductController@editProduct')->name('product.edit'); // 商品編集
+Route::post('/buy/{id}', 'ProductController@buyProduct')->name('product.buy'); // 商品購入
 
 
 Route::get('/product_list', 'ProductController@showProductList')->name('product-list.show'); // 商品一覧

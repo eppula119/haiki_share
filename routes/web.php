@@ -80,9 +80,9 @@ Route::get('/seller_mypage', function () {
 |--------------------------------------------------------------------------
 */
 // =============== 商品一覧画面表示 ===================
-Route::get('/product_list', function () {
-    return view('main/product_list');
-});
+// Route::get('/product_list', function () {
+//     return view('main/product_list');
+// });
 // =============== 商品詳細画面表示 ===================
 Route::get('/product_detail', function () {
     return view('main/product_detail');

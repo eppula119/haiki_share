@@ -7,6 +7,9 @@
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 300;
   display: none;
+  &.is-active {
+    display: block;
+  }
 }
 .c-modal {
   display: block;
@@ -20,6 +23,9 @@
   border-radius: 10px;
   z-index: 300;
   display: none;
+  &.is-active {
+    display: block;
+  }
   @include mq() {
     min-width: 220px;
   }

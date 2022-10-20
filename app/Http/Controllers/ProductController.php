@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProduct; // バリデーションルール
 use App\Models\Product; // 商品モデル
+use App\Models\User; // 買い手ユーザーモデル
 use App\Rules\MegaBytes; // 画像ファイルサイズルール
+use App\Mail\BuySuccessMail; // 購入成功メールクラス
+use Carbon\Carbon; // 日時を扱うクラス
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail; // メール送信の操作
 use Illuminate\Support\Facades\Validator; // バリデーション作成
 use Illuminate\Support\Facades\DB; // データベースの操作
 use Illuminate\Support\Facades\Auth; // 認証済みユーザー
 use Illuminate\Support\Facades\Storage; // 画像ファイルの操作
+
 
 use Illuminate\Support\Facades\Log; //ログ取得
 
@@ -18,7 +23,9 @@ class ProductController extends Controller
     public function __construct()
     {
         // 売り手ユーザーの認証が必要
-        $this->middleware('auth:shop')->except(['showProductList', 'showProduct']);
+        $this->middleware('auth:shop')->except(['showProductList', 'showProduct', 'buyProduct']);
+        // 買い手ユーザーの認証が必要
+        $this->middleware('auth:user')->except(['showProductList', 'showProduct', 'showSellProduct', 'sellProduct', 'editProduct']);
     }
 
     /**
@@ -26,10 +33,21 @@ class ProductController extends Controller
      */
     public function showProductList()
     {
-        $products = Product::with(['shop' => function ($query) {
-            $query->with(['prefecture']);
-        }])->orderBy('created_at', 'desc')->paginate(3);
+        $products = Product::with(['users', 'shop' => function ($query) {
+                $query->with(['prefecture']);
+            }])->orderBy('created_at', 'desc')->paginate(3);
+        
+        // ログインユーザー
+        $loginUser = Auth::user();
+        // ログインユーザーID保持、ログインしていない場合はnull値を渡す
+        $loginUserId = $loginUser ? $loginUser->id : null;
 
+        // 取得した商品の数けループ
+        foreach ($products as $product) {
+            // 購入フラグ付与
+            $this->addBuyflg($product, $loginUserId);
+            
+        }
 
         return $products;
     }
@@ -42,6 +60,14 @@ class ProductController extends Controller
         $product = Product::with(['shop' => function ($query) {
             $query->with(['prefecture']);
         }])->find($id);
+
+        // ログインユーザー
+        $loginUser = Auth::user();
+        // ログインユーザーID保持、ログインしていない場合はnull値を渡す
+        $loginUserId = $loginUser ? $loginUser->id : null;
+        // 購入フラグ付与
+        $this->addBuyFlg($product, $loginUserId);
+        
 
         return $product;
     }
@@ -293,6 +319,103 @@ class ProductController extends Controller
     }
 
     /**
+     * 商品購入
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function buyProduct(Request $request, $id)
+    {
+        Log::debug("buyProductメソッド実行！！ requestの中身");
+        Log::debug($request);
+
+        // 購入する商品情報を取得
+        $product = Product::where('id', $id)->with(['shop' => function ($query) {
+            $query->with(['prefecture']);
+        }])->first();
+
+        Log::debug('$productの中身');
+        Log::debug($product);
+        // 購入テーブルにレコードが存在する場合
+        if(!empty($product->users)) {
+
+
+            // 購入テーブルの「updated_at」カラムの値を格納する配列
+            $updatedAtArray = array();
+
+
+
+            // 取得した商品を購入した買い手ユーザーの数だけループ
+            foreach ($product->users as $user) {
+                Log::debug('$userの中身');
+                Log::debug($user);
+                Log::debug('$user->pivot->deleted_atの中身');
+                Log::debug($user->pivot->deleted_at);
+
+                // 購入テーブルの「updated_at」カラムの値を追加
+                array_push($updatedAtArray, $user->pivot->updated_at);
+
+            }
+
+
+            // 購入履歴がある場合
+            if(!empty($updatedAtArray)) {
+                Log::debug('購入履歴有り');
+                // 最新の購入日時のみ取得
+                $latestUpdatedAt = max($updatedAtArray);
+                Log::debug($latestUpdatedAt);
+            }
+            
+            // 取得した商品を購入した買い手ユーザーの数だけループ
+            foreach ($product->users as $user) {
+                // 最新購入日時のレコードにて、購入キャンセルされてない(購入済み)場合
+                if($latestUpdatedAt === $user->pivot->updated_at && $user->pivot->deleted_at === null) {
+                        Log::debug('既に購入されています');
+                        return response('既に購入されています', 202);
+                }
+            }
+
+        }
+        // 出品(売り手)ユーザーのメールアドレスを変数に入れる
+        $shopEmail = $product->shop->email;
+        Log::debug('出品ユーザーのメールアドレス');
+        Log::debug($shopEmail);
+        // 購入(買い手)ユーザーのメールアドレスを取得
+        $userEmail = User::where('id', $request->userId)->first(['email'])->email;
+        Log::debug('購入ユーザーのメールアドレス');
+        Log::debug($userEmail);
+
+        // トランザクション利用
+        DB::beginTransaction();
+        try {
+            // 現在日時を取得
+            $date = Carbon::now();
+            // 購入テーブルに商品IDと買い手ユーザーIDを紐付けて、レコード登録
+            $product->users()->attach($request->userId, ['created_at' => $date, 'updated_at' => $date]);
+            // データーベースへ保存実行
+            DB::commit();
+            // メール内容に記載するデータをそれぞれ追加
+            $product->buyDate = $date->format('Y年m月d日 H時i分s秒');
+            $product->userName = $request->userName;
+            $product->userEmail = $userEmail;
+
+            // 作成したBuySuccessMailインスタンスを利用して出品者へメール送信
+            Mail::to($shopEmail)->send(new BuySuccessMail($product, 'shop'));
+            // 作成したBuySuccessMailインスタンスを利用して購入者へメール送信
+            Mail::to($userEmail)->send(new BuySuccessMail($product, 'user'));
+        } catch (\Exception $exception) {
+            // データベースを保存前に戻す
+            DB::rollBack();
+            throw $exception;
+        }
+        
+        Log::debug('実行完了');
+
+
+        // 購入成功のため、レスポンスコード200(OK)を返却
+        return response('購入手続きが完了しました。ご注文内容を記載したメールを登録メールアドレス宛にお送りしましたのでご確認下さい。', 200);
+    }
+
+    /**
      * バリデーション
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
@@ -312,5 +435,60 @@ class ProductController extends Controller
             'best_day' => ['required','date_format:Y-m-d'],
             'best_time' => ['required','date_format:H:i'],
         ]);
+    }
+
+    /**
+     * 購入フラグ判定
+     * @param $product 商品, $loginUserId ログインユーザーID
+     * @return \Illuminate\Http\Response
+     */
+    public function addBuyFlg($product, $loginUserId) {
+        // 購入テーブルの「updated_at」カラムの値を格納する配列
+        $updatedAtArray = array();
+        $product->buy_flg = array('buy' => false, 'myBuy' => false);
+        Log::debug('$productの中身');
+        Log::debug($product);
+        // 購入した(購入キャンセル含む)商品IDに紐づくユーザー情報をループ処理
+        foreach ($product->users as $user) {
+            Log::debug('$userの中身');
+            Log::debug($user);
+            // 購入テーブルの「updated_at」カラムの値を追加
+            array_push($updatedAtArray, $user->pivot->updated_at);
+        }
+        Log::debug('$updatedAtArray中身');
+        Log::debug($updatedAtArray);
+        // 購入履歴がある場合
+        if(!empty($updatedAtArray)) {
+            Log::debug('購入履歴有り');
+            // 最新の購入日時のみ取得
+            $latestUpdatedAt = max($updatedAtArray);
+            Log::debug($latestUpdatedAt);
+        }
+
+        foreach ($product->users as $user) {
+            Log::debug('2回目foreachの$userの中身');
+            Log::debug($user);
+            Log::debug('$latestUpdatedAtの中身');
+            Log::debug($latestUpdatedAt);
+            Log::debug('$user->pivot->updated_atの中身');
+            Log::debug($user->pivot->updated_at);
+            Log::debug('$user->pivot->deleted_atの中身');
+            Log::debug($user->pivot->deleted_at);
+            // 最新購入日時のレコードにて、購入キャンセルされてない(購入済み)場合
+            if($latestUpdatedAt === $user->pivot->updated_at && $user->pivot->deleted_at === null) {
+                Log::debug('最新購入日時のレコードにて、購入キャンセルされてない!');
+                // 購入済みフラグをtrue
+                $product->buy_flg = array('buy' => true, 'myBuy' => false);
+                Log::debug($product);
+                // ログインユーザーが購入している場合
+                if($user->id === $loginUserId) {
+                    Log::debug('ログインユーザーが購入している!');
+                    Log::debug('$user->id中身');
+                    Log::debug($user->id);
+                    // 自分の購入フラグをtrue
+                    $product->buy_flg = array('buy' => true, 'myBuy' => true);
+                }
+            }
+        }
     }
 }

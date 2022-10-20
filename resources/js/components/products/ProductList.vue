@@ -3,7 +3,7 @@
     <!------------------------ 絞り込み欄 ---------------------------->
     <section class="c-filterWrap">
       <!------------------------ モーダル欄 ---------------------------->
-      <Modal></Modal>
+      <Modal type="filter" ref="modal"></Modal>
       <!------------------------ 検索欄 ---------------------------->
       <button class="c-filterWrap__showFilterButton c-button c-button--bgWhite">商品検索</button>
       <form class="c-filterWrap__keywordForm" method="POST">
@@ -13,9 +13,9 @@
       <div class="c-filterWrap__categoryWrap">
         <div class="c-filterRow">
           <span class="c-filterLead">絞り込み</span>
-          <button class="c-showFilterButton">都道府県</button>
-          <button class="c-showFilterButton">価格</button>
-          <button class="c-showFilterButton">賞味期限</button>
+          <button class="c-showFilterButton" @click="openModal('prefecture')">都道府県</button>
+          <button class="c-showFilterButton" @click="openModal('price')">価格</button>
+          <button class="c-showFilterButton" @click="openModal('bestBefore')">賞味期限</button>
         </div>
       </div>
     </section>
@@ -24,7 +24,7 @@
       <p class="p-productContainer__lead">東京都、1200円~1500円、賞味期限切れの検索結果：50件
       </p>
       <div class="p-productContainer__wrap">
-        <div class="p-itemWrap" v-for="(product, index) of productList" :key="index">
+        <div class="p-itemWrap" :class="{ 'is-disabled': product.buy_flg.buy }" v-for="(product, index) of productList" :key="index">
           <img :src="product.images.image_1" class="p-itemWrap__img">
           <div class="p-itemWrap__detailWrap">
             <p class="p-itemTitle">
@@ -63,9 +63,9 @@ import { OK } from '../../util'
 // storeフォルダ内のファイルで定義した「state」を参照
 import { mapState, mapGetters } from "vuex";
 // モーダルコンポーネント読み込み
-import Modal from "../Modal.vue";
+import Modal from '../Modal/Modal.vue'
 // ページネーションコンポーネント読み込み
-import Pagination from "../Pagination.vue";
+import Pagination from "../Pagination";
 
 export default {
   components: {
@@ -114,6 +114,10 @@ export default {
         // 商品リスト取得メソッド実行
         this.getProductList();
       }
+    },
+    // 購入確認モーダルを開く
+    openModal(type) {
+      this.$refs.modal.openModal({ type: 'filter', childType: type, data: '' })
     },
   },
   watch: {
