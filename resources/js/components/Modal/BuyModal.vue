@@ -57,6 +57,11 @@ export default {
     // 商品購入実行
     async buyProduct() {
       console.log('購入実行！');
+      // 未ログインの場合
+      if(!this.user) {
+        // 買い手ユーザーログイン画面へ遷移
+        return this.$router.push({ name: 'buyerLogin'})
+      }
       // 買い手ユーザーの場合
       if(this.user.type === 'user') {
         // 商品購入API実行

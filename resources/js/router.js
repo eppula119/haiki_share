@@ -173,9 +173,19 @@ const routes = [
   },
   // マイページ画面(買い手)
   {
-    path: '/buyer_mypage',
+    path: '/buyer_mypage/:id',
     name: 'buyerMypage',
-    component: BuyerMypage
+    component: BuyerMypage,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // マイページへ遷移
+        next()
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next('/buyer_login')
+      }
+    }
   },
   // マイページ画面(売り手)
   {

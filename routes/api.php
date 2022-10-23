@@ -48,6 +48,11 @@ Route::post('/buy/{id}', 'ProductController@buyProduct')->name('product.buy'); /
 
 Route::get('/product_list', 'ProductController@showProductList')->name('product-list.show'); // 商品一覧
 Route::get('/product_list/{id}', 'ProductController@showProduct')->name('product.show'); // 商品詳細
-
 Route::get('/sell_product/{id}', 'ProductController@showSellProduct')->name('sell-product.show'); // 出品した商品詳細
 
+/*
+|--------------------------------------------------------------------------
+| ユーザー系
+|--------------------------------------------------------------------------
+*/
+Route::get('/mypage', 'UserController@showMypage')->name('mypage.show'); // マイページ表示

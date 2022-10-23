@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+         'password', 'remember_token',
     ];
 
     /**
@@ -40,7 +40,6 @@ class User extends Authenticatable
     // 商品リレーション
     public function products()
     {
-        // return $this->belongsToMany('App\Models\Product', 'bought_products');
         return $this->belongsToMany('App\Models\Product', 'bought_products');
     }
 }
