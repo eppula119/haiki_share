@@ -28,7 +28,7 @@
         <input type="submit" class="p-logout__button" value="ログアウト" >
       </form>
       <RouterLink class="p-headerNav__link" to="/buyer_register" v-if="!isLogin">新規登録</RouterLink>
-      <a href="" class="p-headerNav__link">マイページ</a>
+      <RouterLink class="p-headerNav__link" :to="`/buyer_mypage/${user.id}`" v-if="isLogin">マイページ</RouterLink>
       
   </nav>
 </header>

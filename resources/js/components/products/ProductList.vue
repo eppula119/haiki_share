@@ -99,6 +99,7 @@ export default {
         this.$store.commit('error/setCode', response.status)
         return false
       }
+      console.log('response:', response);
       // api通信成功の場合、商品ストアへ取得した商品リストデータを渡す
       this.$store.dispatch("product/setProductList", response.data.data);
       // 現在のページ番号をデータへ渡す

@@ -75,6 +75,8 @@ export default {
       await this.$store.dispatch('auth/login', this.loginForm)
       // apiステータスがtrueの場合(api通信成功の場合)
       if (this.apiStatus) {
+        // ログインユーザー情報を取得
+        await this.$store.dispatch('auth/currentUser')
         // トップページに移動する
         this.$router.push('/')
       }

@@ -10,50 +10,99 @@
     <!------------------------ 購入した商品一覧画面遷移欄 ---------------------------->
     <section class="p-userMainContainer__productWrap">
       <p class="p-subTitle">購入した商品一覧</p>
-        <div class="p-productWrap" v-for="n of 5" :key="n">
-          <img src="/images/item.png" class="p-productWrap__img">
+        <div class="p-productWrap" v-for="(product, index) of products" :key="index">
+          <img :src="product.product.images.image_1" class="p-productWrap__img">
           <div class="p-productWrap__detail">
-            <p class="p-productTitle">ガリガリ君リッチ！</p>
-            <p class="productPrice"><span class="c-textRed">¥</span>2,000</p>
+            <p class="p-productTitle">{{ product.product.name }}</p>
+            <p class="productPrice"><span class="c-textRed">¥</span>{{ product.product.price }}</p>
           </div>
           <div class="p-buttonWrap">
-            <a class="p-buttonWrap__button c-button c-button--bgBlue" href="#">詳細を見る</a>
+            <RouterLink
+              class="p-buttonWrap__button c-button c-button--bgBlue"
+              :to="`/product_list/${product.product.id}`"><span class="p-itemLinkText">詳細を見る＞</span>
+            </RouterLink>
             <a class="p-buttonWrap__button c-button c-button--bgWhite" href="#">購入をキャンセル</a>
           </div>
         </div>
     </section>
     <!------------------------ ページネーション欄 ---------------------------->
     <div class="p-userMainContainer__paginationWrap">
-        <ul class="c-paginationWrap">
-        <li class="c-paginationWrap__number c-paginationWrap__number--inactive">
-          <a href="#" class="c-paginationLink">«</a>
-        </li>
-          <li class="c-paginationWrap__number" v-for="n of 2" :key="n">
-            <a href="#" class="c-paginationLink">{{ n }}</a>
-          </li>
-        <li class="c-paginationWrap__number">
-          <a href="#" class="c-paginationLink c-paginationLink--active">7</a>
-        </li>
-          <li class="c-paginationWrap__number" v-for="n of 2" :key="n">
-            <a href="#" class="c-paginationLink">{{ n + 2 }}</a>
-          </li>
-        <li class="c-paginationWrap__number c-paginationWrap__number--inactive">
-          <a href="#" class="c-paginationLink">»</a>
-        </li>
-      </ul>
+      <Pagination
+        :current-page="current_page"
+        :last-page="last_page"
+        @changePage="changePage">
+      </Pagination>
     </div>
   </div>
 </template>
 
 <script>
-
+// 定義したステータスコードをインポート
+import { OK } from '../../util'
+// storeフォルダ内のファイルで定義した「getters」を参照
+import { mapGetters } from "vuex";
+// ページネーションコンポーネント読み込み
+import Pagination from "../Pagination";
 
 export default {
-  data: function() {
+  components: {
+    Pagination
+  },
+  data() {
     return {
+      products: [], // 購入した商品リスト
+      current_page: 1, // 現在のページ
+      last_page: "", // 最後のページ番号
     };
   },
+  computed: {
+    ...mapGetters({
+      // 認証ユーザーストアのユーザー情報を参照
+      user: "auth/user",
+    })
+  },
   methods: {
+    // マイページ表示(購入商品取得)
+    async getBuyProducts() {
+        // マイページ表示(購入商品取得)API実行
+        console.log("get通信開始");
+        const userData = {userId: this.user.id, type: this.user.type}
+
+        const response = await axios.get(`/api/mypage?page=${this.current_page}`, { params: userData });
+        // api通信失敗の場合
+        if (response.status !== OK) {
+          // エラーストアにステータスコードを渡す
+          this.$store.commit("error/setCode", response.status);
+          return false;
+        }
+        console.log('response:', response);
+        // api通信成功の場合、購入商品リストデータを渡す
+        this.products = response.data.data;
+        // 現在のページ番号をデータへ渡す
+        this.current_page = response.data.current_page
+        // 最後のページ番号をデータへ渡す
+        this.last_page = response.data.last_page;
+      
+    },
+    // ページ切り替え
+    changePage(page) {
+      // 遷移ページが最後のページ以下かつ、1以上の場合
+      if (page > 0 && page <= this.last_page) {
+        this.current_page = page;
+        // マイページ表示メソッド実行
+        this.getBuyProducts();
+      }
+    },
+  },
+  watch: {
+    // ルーティング監視
+    $route: {
+      async handler () {
+        // マイページ表示メソッド実行
+        await this.getBuyProducts()
+      },
+      immediate: true // 起動時にも実行
+    }
   }
 };
 </script>
