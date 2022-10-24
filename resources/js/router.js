@@ -163,17 +163,37 @@ const routes = [
   {
     path: '/buyer_edit_profile',
     name: 'buyerEditProfile',
-    component: BuyerEditProfile
+    component: BuyerEditProfile,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // マイページへ遷移
+        next()
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next('/buyer_login')
+      }
+    }
   },
   // プロフィール編集画面(売り手)
   {
     path: '/seller_edit_profile',
     name: 'sellerEditProfile',
-    component: SellerEditProfile
+    component: SellerEditProfile,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // マイページへ遷移
+        next()
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next('/seller_login')
+      }
+    }
   },
   // マイページ画面(買い手)
   {
-    path: '/buyer_mypage/:id',
+    path: '/buyer_mypage',
     name: 'buyerMypage',
     component: BuyerMypage,
     beforeEnter(to, from, next) {
@@ -191,7 +211,17 @@ const routes = [
   {
     path: '/seller_mypage',
     name: 'sellerMypage',
-    component: SellerMypage
+    component: SellerMypage,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // マイページへ遷移
+        next()
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next('/seller_login')
+      }
+    }
   },
   /*
   |--------------------------------------------------------------------------
@@ -214,13 +244,33 @@ const routes = [
   {
     path: '/sell_product',
     name: 'sellProduct',
-    component: SellProduct
+    component: SellProduct,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // 出品画面へ遷移
+        next()
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next('/seller_login')
+      }
+    }
   },
   // 商品編集画面
   {
     path: '/sell_product/:id',
     name: 'editProduct',
-    component: EditProduct
+    component: EditProduct,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // 商品編集画面へ遷移
+        next()
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next('/seller_login')
+      }
+    }
   },
   // {
   //   path: '/edit_product',

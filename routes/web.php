@@ -57,22 +57,22 @@ Route::get('/password_reset', function () {
 | ユーザー情報系画面
 |--------------------------------------------------------------------------
 */
-// =============== プロフィール編集(買い手)画面表示 ===================
-Route::get('/buyer_edit_profile', function () {
-    return view('main/buyer_edit_profile');
-});
-// =============== プロフィール編集(売り手)画面表示 ===================
-Route::get('/seller_edit_profile', function () {
-    return view('main/seller_edit_profile');
-});
-// =============== マイページ(買い手)画面表示 ===================
-Route::get('/buyer_mypage', function () {
-    return view('main/buyer_mypage');
-});
+// // =============== プロフィール編集(買い手)画面表示 ===================
+// Route::get('/buyer_edit_profile', function () {
+//     return view('main/buyer_edit_profile');
+// });
+// // =============== プロフィール編集(売り手)画面表示 ===================
+// Route::get('/seller_edit_profile', function () {
+//     return view('main/seller_edit_profile');
+// });
+// // =============== マイページ(買い手)画面表示 ===================
+// Route::get('/buyer_mypage', function () {
+//     return view('main/buyer_mypage');
+// });
 // =============== マイページ(売り手)画面表示 ===================
-Route::get('/seller_mypage', function () {
-    return view('main/seller_mypage');
-});
+// Route::get('/seller_mypage', function () {
+//     return view('main/seller_mypage');
+// });
 
 /*
 |--------------------------------------------------------------------------

@@ -5,7 +5,10 @@
     </h1>
     <!------------------------ プロフィール編集画面遷移欄 ---------------------------->
     <section class="p-userMainContainer__profileEditWrap">
-      <a class="p-profileLink c-routerLink" href="#">プロフィール編集</a>
+      <RouterLink
+        class="p-profileLink c-routerLink"
+        to="/buyer_edit_profile">プロフィール編集
+      </RouterLink>
     </section>
     <!------------------------ 購入した商品一覧画面遷移欄 ---------------------------->
     <section class="p-userMainContainer__productWrap">
@@ -63,7 +66,7 @@ export default {
   },
   methods: {
     // マイページ表示(購入商品取得)
-    async getBuyProducts() {
+    async getShowMypage() {
         // マイページ表示(購入商品取得)API実行
         console.log("get通信開始");
         const userData = {userId: this.user.id, type: this.user.type}
@@ -90,7 +93,7 @@ export default {
       if (page > 0 && page <= this.last_page) {
         this.current_page = page;
         // マイページ表示メソッド実行
-        this.getBuyProducts();
+        this.getShowMypage();
       }
     },
   },
@@ -99,7 +102,7 @@ export default {
     $route: {
       async handler () {
         // マイページ表示メソッド実行
-        await this.getBuyProducts()
+        await this.getShowMypage()
       },
       immediate: true // 起動時にも実行
     }

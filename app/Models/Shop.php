@@ -21,12 +21,14 @@ class Shop extends Authenticatable
 
     /** JSONに含める属性 */
     protected $visible = [
+        'id',
         'name',
         'branch_name',
         'city',
         'other_address',
         'profile',
-        'prefecture'
+        'prefecture',
+        'type'
     ];
 
     /**
