@@ -44,7 +44,7 @@ class Product extends Model
         'buy_flg',
         'best_day', // アクセサ
         'best_time', // アクセサ
-        'images' // アクセサ
+        'images', // アクセサ
     ];
 
     /** JSONに追加する属性 */
@@ -168,8 +168,7 @@ class Product extends Model
     // 買い手ユーザーリレーション
     public function users()
     {
-        return $this->belongsToMany('App\Models\User', 'bought_products')->withPivot('deleted_at', 'updated_at');
+        return $this->belongsToMany('App\Models\User', 'bought_products', 'product_id', 'user_id')->withPivot('deleted_at', 'updated_at');
     }
-
     
 }
