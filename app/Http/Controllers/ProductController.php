@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProduct; // バリデーションルール
 use App\Models\Product; // 商品モデル
 use App\Models\User; // 買い手ユーザーモデル
+use App\Models\BoughtProduct; // 購入商品モデル
 use App\Rules\MegaBytes; // 画像ファイルサイズルール
 use App\Mail\BuySuccessMail; // 購入成功メールクラス
 use Carbon\Carbon; // 日時を扱うクラス
@@ -23,7 +24,7 @@ class ProductController extends Controller
     public function __construct()
     {
         // 売り手ユーザーの認証が必要
-        $this->middleware('auth:shop')->except(['showProductList', 'showProduct', 'buyProduct']);
+        $this->middleware('auth:shop')->except(['showProductList', 'showProduct', 'buyProduct', 'buyCancelProduct']);
         // 買い手ユーザーの認証が必要
         $this->middleware('auth:user')->except(['showProductList', 'showProduct', 'showSellProduct', 'sellProduct', 'editProduct']);
     }
@@ -338,11 +339,8 @@ class ProductController extends Controller
         // 購入テーブルにレコードが存在する場合
         if(!empty($product->users)) {
 
-
             // 購入テーブルの「updated_at」カラムの値を格納する配列
             $updatedAtArray = array();
-
-
 
             // 取得した商品を購入した買い手ユーザーの数だけループ
             foreach ($product->users as $user) {
@@ -409,11 +407,64 @@ class ProductController extends Controller
         }
         
         Log::debug('実行完了');
+        // レスポンスで返す商品データ
+        $responseProduct = Product::where('id', $id)->with(['users', 'shop' => function ($query) {
+            $query->with(['prefecture']);
+        } ])->first();
+        
+        // 購入フラグ付与
+        $this->addBuyflg($responseProduct, $request->userId);
+
+        $response = array(
+            'message' => '購入手続きが完了しました。ご注文内容を記載したメールを登録メールアドレス宛にお送りしましたのでご確認下さい。',
+            'product' => $responseProduct
+        );
 
 
         // 購入成功のため、レスポンスコード200(OK)を返却
-        return response('購入手続きが完了しました。ご注文内容を記載したメールを登録メールアドレス宛にお送りしましたのでご確認下さい。', 200);
+        return $response;
     }
+
+    /**
+     * 商品購入キャンセル
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function buyCancelProduct(Request $request, $id) {
+        // 購入キャンセルする商品情報を取得
+        $product = Product::where('id', $id)->first();
+        // トランザクション利用
+        DB::beginTransaction();
+        try {
+            // 現在日時を取得
+            $date = Carbon::now();
+            // 購入テーブルに商品IDと買い手ユーザーIDを紐付けて、レコード登録
+            $product->users()->attach($request->userId, ['deleted_at' => $date, 'created_at' => $date, 'updated_at' => $date]);
+            // データーベースへ保存実行
+            DB::commit();
+
+        } catch (\Exception $exception) {
+            // データベースを保存前に戻す
+            DB::rollBack();
+            throw $exception;
+        }
+        // レスポンスで返す商品データ
+        $responseProduct = Product::where('id', $id)->with(['users', 'shop' => function ($query) {
+            $query->with(['prefecture']);
+        } ])->first();
+        
+        // 購入フラグ付与
+        $this->addBuyflg($responseProduct, $request->userId);
+
+        $response = array(
+            'message' => '購入キャンセル手続きが完了しました。再購入する場合は、最初から購入手続きを行ってください。',
+            'product' => $responseProduct
+        );
+        
+        // 購入キャンセル成功のため、レスポンスコード200(OK)を返却
+        return $response;
+    }
+
 
     /**
      * バリデーション

@@ -1,7 +1,7 @@
 <template>
   <div v-if="product !== {}">
     <!------------------------ モーダル欄 ---------------------------->
-    <Modal ref="modal"></Modal>
+    <Modal ref="modal" @update-page="getProduct"></Modal>
     <!------------------------ 商品説明・商品画像欄 ---------------------------->
     <div class="p-productMainContainer">
       <!------------------------ 商品詳細説明欄 ---------------------------->
@@ -20,7 +20,7 @@
         <button class="p-productDetailContainer__button c-button c-button--bgGray"
           :class="{ 'is-disabled': !product.buy_flg.buy }">購入済み</button>
         <button class="p-productDetailContainer__button c-button c-button--bgBlue"
-          :class="{ 'is-disabled': !product.buy_flg.myBuy }">購入をキャンセル</button>
+          :class="{ 'is-disabled': !product.buy_flg.myBuy }" @click="openModal('cancel')">購入をキャンセル</button>
         <div class="p-productDetailContainer__info">
           <dl class="p-infoRow">
             <dt class="p-infoRow__title">コンビニ名</dt>
@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     // 詳細表示させる商品情報取得
-    async getProduct() {
+    async getProduct(message) {
       // ストアに保存した商品リストから、商品IDがidパラメーターと一致する商品を取得
       const product = this.productList.find((product) => product.id === this.$route.params.id);
       // 一致する商品がストアに保存されている場合
@@ -124,6 +124,10 @@ export default {
         // api通信成功の場合、商品データを渡す
         this.product = response.data
       }
+      // フラッシュメッセージの表示が必要な場合は表示させる
+      message ? this.showMessage(message) : false
+      // モーダルを閉じた状態にする
+      this.closeModal()
     },
     // サブ画像を大きいサイズで見る
     selectImg(url) {
@@ -142,17 +146,29 @@ export default {
       // 新規ウインドウでツイート画面を開く
       window.open(shareURL, '_blank')
     },
-    // 購入確認モーダルを開く
+    // 購入関連モーダルを開く
     openModal(type) {
       this.$refs.modal.openModal({ type: type, childType: '', data: this.product })
     },
+    // 購入関連モーダルを閉じる
+    closeModal() {
+      this.$refs.modal.closeModal()
+    },
+    // フラッシュメッセージを表示
+    showMessage(message) {
+      // MESSAGEストアに購入キャンセル成功メッセージを渡す
+      this.$store.commit("message/setContent", {
+        content: message,
+        timeout: 5000
+      })
+    }
   },
   watch: {
     //created内では、商品一覧ページの2ページ目表示時は呼ばれないため、ルーティング監視
     $route: {
       async handler () {
         // 商品リスト取得メソッド実行
-        await this.getProduct()
+        await this.getProduct(null)
       },
       
       immediate: true // 起動時にも実行

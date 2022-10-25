@@ -4,12 +4,19 @@
     <div class="c-modal" :class="{ 'is-active': modalFlg }">
       <div class="c-modal__content">
         <!------------------------ モーダルの子コンポーネント ---------------------------->
-        <BuyModal ref="buyModal" :productData="data" v-if="type === 'buy'"></BuyModal>
+        <BuyModal
+          ref="buyModal"
+          :productData="data"
+          :type="type"
+          v-if="type === 'buy' || type === 'cancel'"
+          @close-modal="closeModal()"
+          @update-page="updatePage"></BuyModal>
         <FilterModal :filterType="childType" v-if="type === 'filter'"></FilterModal>
       </div>
       <div class="c-modal__buttonWrap">
         <button class="c-modalDoButton c-button c-button--bgGray" @click="closeModal">キャンセル</button>
         <button class="c-modalDoButton c-button c-button--bgBlue" @click="buyProduct" v-if="type === 'buy'">購入する</button>
+        <button class="c-modalDoButton c-button c-button--bgBlue" @click="cancelProduct" v-else-if="type === 'cancel'">購入キャンセルする</button>
         <button class="c-modalDoButton c-button c-button--bgBlue" v-else-if="type === 'filter'">保存</button>
       </div>
     </div>
@@ -51,10 +58,18 @@ export default {
     closeModal() {
       this.modalFlg = false
     },
-    // 購入確認モーダルコンポーネントの商品購入メソッド実行
+    // 購入関連モーダルコンポーネントの商品購入メソッド実行
     buyProduct() {
       this.$refs.buyModal.buyProduct()
-    }
+    },
+    // 購入関連モーダルコンポーネントの購入キャンセルメソッド実行
+    cancelProduct() {
+      this.$refs.buyModal.cancelProduct()
+    },
+    // ページ情報を更新
+    updatePage(message) {
+      this.$emit("update-page", message)
+    },
   }
 };
 </script>

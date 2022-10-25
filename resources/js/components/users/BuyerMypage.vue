@@ -1,5 +1,7 @@
 <template>
   <div class="p-userMainContainer">
+    <!------------------------ モーダル欄 ---------------------------->
+    <Modal ref="modal" @update-page="getShowMypage"></Modal>
     <h1 class="p-userMainContainer__title">
       マイページ
     </h1>
@@ -24,7 +26,7 @@
               class="p-buttonWrap__button c-button c-button--bgBlue"
               :to="`/product_list/${product.product.id}`"><span class="p-itemLinkText">詳細を見る＞</span>
             </RouterLink>
-            <a class="p-buttonWrap__button c-button c-button--bgWhite" href="#">購入をキャンセル</a>
+            <a class="p-buttonWrap__button c-button c-button--bgWhite" @click.prevent="openModal('cancel', product.product)">購入をキャンセル</a>
           </div>
         </div>
     </section>
@@ -46,10 +48,13 @@ import { OK } from '../../util'
 import { mapGetters } from "vuex";
 // ページネーションコンポーネント読み込み
 import Pagination from "../Pagination";
+// モーダルコンポーネント読み込み
+import Modal from '../Modal/Modal.vue'
 
 export default {
   components: {
-    Pagination
+    Pagination,
+    Modal
   },
   data() {
     return {
@@ -66,7 +71,7 @@ export default {
   },
   methods: {
     // マイページ表示(購入商品取得)
-    async getShowMypage() {
+    async getShowMypage(message) {
         // マイページ表示(購入商品取得)API実行
         console.log("get通信開始");
         const userData = {userId: this.user.id, type: this.user.type}
@@ -78,6 +83,11 @@ export default {
           this.$store.commit("error/setCode", response.status);
           return false;
         }
+        // フラッシュメッセージの表示が必要な場合は表示させる
+        message ? this.showMessage(message) : false
+        // モーダルを閉じた状態にする
+        this.closeModal()
+
         console.log('response:', response);
         // api通信成功の場合、購入商品リストデータを渡す
         this.products = response.data.data;
@@ -93,16 +103,32 @@ export default {
       if (page > 0 && page <= this.last_page) {
         this.current_page = page;
         // マイページ表示メソッド実行
-        this.getShowMypage();
+        this.getShowMypage(null);
       }
     },
+    // 購入関連モーダルを開く
+    openModal(type, product) {
+      this.$refs.modal.openModal({ type: type, childType: '', data: product })
+    },
+    // 購入関連モーダルを閉じる
+    closeModal() {
+      this.$refs.modal.closeModal()
+    },
+    // フラッシュメッセージを表示
+    showMessage(message) {
+      // MESSAGEストアに購入キャンセル成功メッセージを渡す
+      this.$store.commit("message/setContent", {
+        content: message,
+        timeout: 5000
+      })
+    }
   },
   watch: {
     // ルーティング監視
     $route: {
       async handler () {
         // マイページ表示メソッド実行
-        await this.getShowMypage()
+        await this.getShowMypage(null)
       },
       immediate: true // 起動時にも実行
     }

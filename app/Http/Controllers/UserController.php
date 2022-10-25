@@ -57,7 +57,9 @@ class UserController extends Controller
                 ->groupBy('product_id'); // 重複した購入商品がある場合、1レコードのみ取得
         })
         ->where('deleted_at', NULL) // 削除フラグが無い(購入キャンセルしていない)購入商品のみ取得
-        ->with('product:id,name,price,image_1') // 商品詳細情報も併せて取得
+        ->with(['product', 'product.shop' => function ($query) { // 商品詳細情報も併せて取得
+            $query->with(['prefecture']);
+        }])
         ->orderBy('updated_at', 'DESC') // 購入商品を購入日の降順(日付の最新順)に並び替え
         ->paginate(5);
         $products = $buyProducts;
