@@ -3,10 +3,12 @@ import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util'
 
 const state = {
   productList: [], // 商品リスト
+  params: {} // 絞り込みパラメーター
 }
 
 const getters = {
   productList: state => state.productList ? state.productList : null, // 現在の商品リスト情報
+  params: state => state.params ? state.params : null, // 現在の絞り込みパラメーター
 }
 
 const mutations = {
@@ -30,6 +32,18 @@ const mutations = {
       state.productList.push(product)
     }
   },
+  // stateの絞り込みパラメーターを更新
+  updateParams(state, params) {
+    // if (!params) {
+      
+    // }
+    // if (!params.prefecture) {
+    //   params.prefecture = '全ての都道府県'
+    // } else {
+    //   params.prefecture = params.prefecture.toString()
+    // }
+    state.params = params;
+  },
 }
 
 const actions = {
@@ -40,6 +54,10 @@ const actions = {
   // stateのproductListに新しく取得した商品データを追加
   async updateProduct(context, product) {
     context.commit('updateProduct', product)
+  },
+  // stateのparams情報を更新
+  async updateParams(context, params) {
+    context.commit('updateParams', params)
   },
 }
 

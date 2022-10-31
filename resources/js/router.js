@@ -272,11 +272,39 @@ const routes = [
       }
     }
   },
-  // {
-  //   path: '/edit_product',
-  //   name: 'editProduct',
-  //   component: EditProduct
-  // },
+  // 購入された商品一覧画面
+  {
+    path: '/bought_product_list',
+    name: 'boughtProductList',
+    component: ProductList,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // 購入された商品一覧へ遷移
+        next()
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next('/seller_login')
+      }
+    }
+  },
+  // 出品した商品一覧画面
+  {
+    path: '/sell_product_list',
+    name: 'sellProductList',
+    component: ProductList,
+    beforeEnter(to, from, next) {
+      // ログイン中の場合
+      if (store.getters['auth/check']) {
+        // 購入された商品一覧へ遷移
+        next()
+      } else {
+        // 非ログイン状態の場合ログイン画面へ遷移
+        next('/seller_login')
+      }
+    }
+  },
+  
   /*
   |--------------------------------------------------------------------------
   | エラー系
