@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder; // クエリビルダー
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth; //認証に関わる物を使う
 use Illuminate\Support\Facades\Storage; // 画像ファイルの操作
@@ -169,6 +170,63 @@ class Product extends Model
     public function users()
     {
         return $this->belongsToMany('App\Models\User', 'bought_products', 'product_id', 'user_id')->withPivot('deleted_at', 'updated_at');
+    }
+
+    /**
+     * 絞り込み・キーワード検索
+     * @param \Illuminate\Database\Eloquent\Builder
+     * @param array
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilter(Builder $query, array $params)
+    {
+        Log::debug('絞り込み開始');
+        // 価格の絞り込み(最小値または最大値の絞り込みがある場合)
+        if(isset($params['min']) || isset($params['max'])) {
+            Log::debug('価格での絞り込み開始');
+            // 最小値入力がある場合、数値型に変換。無い場合は0を保持
+            $min = isset($params['min']) ? intval($params['min']) : 0;
+            // 最大値入力がある場合、数値型に変換。無い場合はnullを保持
+            $max = isset($params['max']) ? intval($params['max']) : null;
+            // 最大値入力ある場合
+            if(isset($max)) {
+                Log::debug('最小値、最大値あり');
+                // 最小値から最大値の間で商品を絞り込み
+                $query->whereBetween('price', [$min, $max]);
+            } else {
+                Log::debug('最大値なし');
+                // 最大値入力ない場合、最小値以上の商品を絞り込み
+                $query->where('price', '>=', $min);
+            }
+        }
+
+        // 賞味期限の絞り込み
+        if (!empty($params['bestBefore'])) {
+            // 賞味期限内の場合
+            if($params['bestBefore'] === "true") {
+                Log::debug('賞味期限内(現在の日時以上の賞味期限)');
+                // 賞味期限が現在の日時以後の商品で絞り込み
+                $query->where('best_before', '>=', date('Y-m-d H:i:s'));
+            // 賞味期限切れの場合
+            } else if($params['bestBefore'] === "false") {
+                Log::debug('賞味期限切れ(現在の日時未満の賞味期限)');
+                // 賞味期限が現在の日時以前の商品で絞り込み
+                $query->where('best_before', '<', date('Y-m-d H:i:s'));
+            }
+        }
+
+        // 都道府県の絞り込み
+        if (!empty($params['prefecture'])) {
+            // 都道府県パラメーター保持
+            $prefectures = $params['prefecture'];
+            // 取得した商品に紐づく売り手ユーザー情報を取得
+            $query->whereHas('shop.prefecture', function ($q) use ($prefectures) {
+                // 売り手ユーザーの都道府県名がパラメーターの名前に合致する商品のみ取得
+                $q->whereIn('prefectures.name', $prefectures);
+            });
+        }
+
+        return $query;
     }
     
 }

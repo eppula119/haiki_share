@@ -50,6 +50,9 @@ Route::delete('/buy/{id}', 'ProductController@buyCancelProduct')->name('product.
 Route::get('/product_list', 'ProductController@showProductList')->name('product-list.show'); // 商品一覧
 Route::get('/product_list/{id}', 'ProductController@showProduct')->name('product.show'); // 商品詳細
 Route::get('/sell_product/{id}', 'ProductController@showSellProduct')->name('sell-product.show'); // 出品した商品詳細
+Route::get('/prefecture_list', 'ProductController@getPrefectureList')->name('prefecture-list'); // 選択可能な都道府県取得
+Route::get('/bought_product_list', 'ProductController@showBoughtProductList')->name('bought-product-list.show'); // 購入された商品一覧
+Route::get('/sell_product_list', 'ProductController@showSellProductList')->name('bought-product-list.show'); // 出品した商品一覧
 
 /*
 |--------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="c-modalOverlay" :class="{ 'is-active': modalFlg }" @click="closeModal()"></div>
-    <div class="c-modal" :class="{ 'is-active': modalFlg }">
+    <div class="c-modal" :class="{ 'is-active': modalFlg, 'c-modalPrefecture': childType === 'prefecture' }">
       <div class="c-modal__content">
         <!------------------------ モーダルの子コンポーネント ---------------------------->
         <BuyModal
@@ -9,15 +9,20 @@
           :productData="data"
           :type="type"
           v-if="type === 'buy' || type === 'cancel'"
-          @close-modal="closeModal()"
           @update-page="updatePage"></BuyModal>
-        <FilterModal :filterType="childType" v-if="type === 'filter'"></FilterModal>
+        <FilterModal
+          ref="filterModal"
+          :filterType="childType"
+          :prefecture-list="prefectureList"
+          @get-filter-products="getFilterProducts"
+          @close-modal="closeModal()"
+          v-if="type === 'filter'"></FilterModal>
       </div>
       <div class="c-modal__buttonWrap">
         <button class="c-modalDoButton c-button c-button--bgGray" @click="closeModal">キャンセル</button>
         <button class="c-modalDoButton c-button c-button--bgBlue" @click="buyProduct" v-if="type === 'buy'">購入する</button>
         <button class="c-modalDoButton c-button c-button--bgBlue" @click="cancelProduct" v-else-if="type === 'cancel'">購入キャンセルする</button>
-        <button class="c-modalDoButton c-button c-button--bgBlue" v-else-if="type === 'filter'">保存</button>
+        <button class="c-modalDoButton c-button c-button--bgBlue" @click="doFilter" v-else-if="type === 'filter'">検索</button>
       </div>
     </div>
   </div>
@@ -34,6 +39,13 @@ export default {
   components: {
     BuyModal,
     FilterModal
+  },
+  props: {
+    prefectureList: { // 都道府県リスト
+      type: Object,
+      default: {},
+      required: false,
+    }
   },
   data() {
     return {
@@ -65,6 +77,14 @@ export default {
     // 購入関連モーダルコンポーネントの購入キャンセルメソッド実行
     cancelProduct() {
       this.$refs.buyModal.cancelProduct()
+    },
+    // 絞り込み関連モーダルコンポーネントの絞り込みメソッド実行
+    doFilter() {
+      this.$refs.filterModal.doFilter()
+    },
+    // 絞り込み商品リスト取得メソッド実行
+    getFilterProducts() {
+      this.$emit("get-filter-products")
     },
     // ページ情報を更新
     updatePage(message) {

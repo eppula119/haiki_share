@@ -31,7 +31,10 @@
           </div>
         </div>
       <div class="p-allShowLink">
-        <a href="#" class="p-allShowLink__button c-button c-button--bgWhite">全件表示</a>
+        <RouterLink
+          class="p-allShowLink__button c-button c-button--bgWhite"
+          to="/sell_product_list">全件表示
+        </RouterLink>
       </div>
     </section>
     <!------------------------ 購入された商品一覧画面遷移欄 ---------------------------->
@@ -48,7 +51,10 @@
           </div>
         </RouterLink>
       <div class="p-allShowLink">
-        <a href="#" class="p-allShowLink__button c-button c-button--bgWhite">全件表示</a>
+        <RouterLink
+          class="p-allShowLink__button c-button c-button--bgWhite"
+          to="/bought_product_list">全件表示
+        </RouterLink>
       </div>
     </section>
     <!------------------------ 出品画面遷移欄 ---------------------------->

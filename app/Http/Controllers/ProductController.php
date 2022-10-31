@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProduct; // バリデーションルール
 use App\Models\Product; // 商品モデル
 use App\Models\User; // 買い手ユーザーモデル
 use App\Models\BoughtProduct; // 購入商品モデル
+use App\Models\Prefecture; // 都道府県モデル
 use App\Rules\MegaBytes; // 画像ファイルサイズルール
 use App\Mail\BuySuccessMail; // 購入成功メールクラス
 use Carbon\Carbon; // 日時を扱うクラス
@@ -24,17 +25,20 @@ class ProductController extends Controller
     public function __construct()
     {
         // 売り手ユーザーの認証が必要
-        $this->middleware('auth:shop')->except(['showProductList', 'showProduct', 'buyProduct', 'buyCancelProduct']);
+        $this->middleware('auth:shop')->except(['showProductList', 'showProduct', 'buyProduct', 'buyCancelProduct', 'getPrefectureList']);
         // 買い手ユーザーの認証が必要
-        $this->middleware('auth:user')->except(['showProductList', 'showProduct', 'showSellProduct', 'sellProduct', 'editProduct']);
+        $this->middleware('auth:user')->except(['showProductList', 'showProduct', 'showSellProduct', 'sellProduct', 'editProduct', 'getPrefectureList', 'showBoughtProductList', 'showSellProductList']);
     }
 
     /**
      * 商品一覧
      */
-    public function showProductList()
+    public function showProductList(Request $request)
     {
-        $products = Product::with(['users', 'shop' => function ($query) {
+        Log::debug($request->query());
+        Log::debug('filterあり');
+            $params = $request->query();
+            $products = Product::filter($params)->with(['users', 'shop' => function ($query) {
                 $query->with(['prefecture']);
             }])->orderBy('created_at', 'desc')->paginate(3);
         
@@ -51,6 +55,77 @@ class ProductController extends Controller
         }
 
         return $products;
+    }
+
+    /**
+     * 購入された商品一覧
+     */
+    public function showBoughtProductList(Request $request)
+    {
+        Log::debug('購入された商品一覧API！');
+        Log::debug($request->query());
+        Log::debug('filterあり');
+        $params = $request->query();
+        
+        // レスポンスで返す購入された商品リスト
+        $products = [];
+        // 購入された商品リスト
+        $boughtProducts = [];
+        // ログインユーザーのID保持
+        $userId = $request->userId;
+
+        $boughtProducts = BoughtProduct::whereIn('created_at', function($q) {
+            return $q->from('bought_products')
+                ->selectRaw('MAX(created_at) as created_at') // 購入日が最新の商品のみ取得
+                ->groupBy('product_id'); // 重複した購入商品がある場合、1レコードのみ取得
+        })
+        ->where('deleted_at', NULL) // 削除フラグが無い(購入キャンセルしていない)購入商品のみ取得
+        // 購入された商品の名前から、出品者IDがログイン中の売り手ユーザーIDと同じ商品のみ取得
+        ->whereHas('product.shop', function($query) use($userId) {
+            $query->where('id', $userId);
+        })
+        ->pluck('product_id');
+
+        $products = Product::whereIn('id', $boughtProducts)->filter($params)->with(['users', 'shop' => function ($query) {
+            $query->with(['prefecture']);
+        }])->orderBy('created_at', 'desc')->paginate(1);
+
+        // 取得した商品の数けループ
+        foreach ($products as $product) {
+            // 購入フラグ付与
+            $this->addBuyflg($product, $userId);
+        }
+
+        return $products;
+    }
+
+    /**
+     * 出品した商品一覧
+     */
+    public function showSellProductList(Request $request)
+    {
+        Log::debug('出品した商品一覧API！');
+        Log::debug($request->query());
+        Log::debug('filterあり');
+        $params = $request->query();
+
+        // 出品した商品リスト
+        $sellProducts = [];
+        // ログインユーザーのID保持
+        $userId = $request->userId;
+
+        // 商品モデルから出品商品を最近出品した順に取得
+        $sellProducts = Product::where('shop_id', $userId)->where('deleted_at', NULL)->filter($params)->with(['users', 'shop' => function ($query) {
+            $query->with(['prefecture']);
+        }])->orderBy('created_at', 'desc')->paginate(3);
+
+        // 取得した商品の数けループ
+        foreach ($sellProducts as $product) {
+            // 購入フラグ付与
+            $this->addBuyflg($product, $userId);
+        }
+
+        return $sellProducts;
     }
 
     /**
@@ -78,12 +153,12 @@ class ProductController extends Controller
      */
     public function showSellProduct($id)
     {
-        Log::debug("showSellProduct実行");
-        Log::debug($id);
+        // Log::debug("showSellProduct実行");
+        // Log::debug($id);
 
         $product = Product::find($id);
-        Log::debug("productの中身");
-        Log::debug($product);
+        // Log::debug("productの中身");
+        // Log::debug($product);
 
         return $product;
     }
@@ -465,6 +540,63 @@ class ProductController extends Controller
         return $response;
     }
 
+    /**
+     * 選択可能な都道府県リスト取得
+     * @return \Illuminate\Http\Response
+     */
+    public function getPrefectureList() {
+        Log::debug('都道府県リスト取得API実行');
+        $prefectures = Prefecture::whereHas('shops.products', function ($query) {
+            $query->where('products.deleted_at', NULL)->where('shops.deleted_at', NULL);
+        })->get();
+
+        // 取得した都道府県を地方名ごとに分ける
+        $selectPrefectures = [
+            '北海道' => [],'東北' => [], '関東' => [], '北陸' => [], '甲信越' => [], '東海' => [],
+            '関西' => [],'中国' => [], '四国' => [], '九州' => [], '沖縄' => []
+        ];
+
+        // 取得した都道府県の数だけループ
+        foreach ($prefectures as $prefecture) {
+            // 都道府県IDの範囲によって、地方ごとに分ける
+            if($prefecture->id === 1) {
+                array_push($selectPrefectures["北海道"], $prefecture);
+            } else if($prefecture->id >= 2 && $prefecture->id <= 7 ) {
+                array_push($selectPrefectures["東北"], $prefecture);
+            } else if($prefecture->id >= 8 && $prefecture->id <= 14 ) {
+                array_push($selectPrefectures["関東"], $prefecture);
+            } else if($prefecture->id >= 15 && $prefecture->id <= 17 ) {
+                array_push($selectPrefectures["北陸"], $prefecture);
+            } else if($prefecture->id >= 18 && $prefecture->id <= 20 ) {
+                array_push($selectPrefectures["甲信越"], $prefecture);
+            } else if($prefecture->id >= 21 && $prefecture->id <= 24 ) {
+                array_push($selectPrefectures["東海"], $prefecture);
+            } else if($prefecture->id >= 25 && $prefecture->id <= 30 ) {
+                array_push($selectPrefectures["関西"], $prefecture);
+            } else if($prefecture->id >= 31 && $prefecture->id <= 35 ) {
+                array_push($selectPrefectures["中国"], $prefecture);
+            } else if($prefecture->id >= 36 && $prefecture->id <= 39 ) {
+                array_push($selectPrefectures["四国"], $prefecture);
+            } else if($prefecture->id >= 40 && $prefecture->id <= 46 ) {
+                array_push($selectPrefectures["九州"], $prefecture);
+            } else if($prefecture->id === 47) {
+                array_push($selectPrefectures["沖縄"], $prefecture);
+            }
+        }
+
+        // 最初に定義した地方の数だけループ
+        foreach($selectPrefectures as $region => $prefectures) {
+            // 地方の配列の中に取得した都道府県が1つも入ってない場合
+            if(empty($prefectures)) {
+                // 地方の要素ごと削除
+                unset($selectPrefectures[$region]);
+            }
+        }
+
+        return $selectPrefectures;
+
+    }
+
 
     /**
      * バリデーション
@@ -497,45 +629,43 @@ class ProductController extends Controller
         // 購入テーブルの「updated_at」カラムの値を格納する配列
         $updatedAtArray = array();
         $product->buy_flg = array('buy' => false, 'myBuy' => false);
-        Log::debug('$productの中身');
-        Log::debug($product);
+        // Log::debug('$productの中身');
+        // Log::debug($product);
         // 購入した(購入キャンセル含む)商品IDに紐づくユーザー情報をループ処理
         foreach ($product->users as $user) {
-            Log::debug('$userの中身');
-            Log::debug($user);
+            // Log::debug('$userの中身');
+            // Log::debug($user);
             // 購入テーブルの「updated_at」カラムの値を追加
             array_push($updatedAtArray, $user->pivot->updated_at);
         }
-        Log::debug('$updatedAtArray中身');
-        Log::debug($updatedAtArray);
+        // Log::debug('$updatedAtArray中身');
+        // Log::debug($updatedAtArray);
         // 購入履歴がある場合
         if(!empty($updatedAtArray)) {
             Log::debug('購入履歴有り');
             // 最新の購入日時のみ取得
             $latestUpdatedAt = max($updatedAtArray);
-            Log::debug($latestUpdatedAt);
+            // Log::debug($latestUpdatedAt);
         }
 
         foreach ($product->users as $user) {
-            Log::debug('2回目foreachの$userの中身');
-            Log::debug($user);
-            Log::debug('$latestUpdatedAtの中身');
-            Log::debug($latestUpdatedAt);
-            Log::debug('$user->pivot->updated_atの中身');
-            Log::debug($user->pivot->updated_at);
-            Log::debug('$user->pivot->deleted_atの中身');
-            Log::debug($user->pivot->deleted_at);
+            // Log::debug('2回目foreachの$userの中身');
+            // Log::debug($user);
+            // Log::debug('$latestUpdatedAtの中身');
+            // Log::debug($latestUpdatedAt);
+            // Log::debug('$user->pivot->updated_atの中身');
+            // Log::debug($user->pivot->updated_at);
+            // Log::debug('$user->pivot->deleted_atの中身');
+            // Log::debug($user->pivot->deleted_at);
             // 最新購入日時のレコードにて、購入キャンセルされてない(購入済み)場合
             if($latestUpdatedAt === $user->pivot->updated_at && $user->pivot->deleted_at === null) {
-                Log::debug('最新購入日時のレコードにて、購入キャンセルされてない!');
+                // Log::debug('最新購入日時のレコードにて、購入キャンセルされてない!');
                 // 購入済みフラグをtrue
                 $product->buy_flg = array('buy' => true, 'myBuy' => false);
-                Log::debug($product);
+                // Log::debug($product);
                 // ログインユーザーが購入している場合
                 if($user->id === $loginUserId) {
-                    Log::debug('ログインユーザーが購入している!');
-                    Log::debug('$user->id中身');
-                    Log::debug($user->id);
+                    // Log::debug('ログインユーザーが購入している!');s
                     // 自分の購入フラグをtrue
                     $product->buy_flg = array('buy' => true, 'myBuy' => true);
                 }
