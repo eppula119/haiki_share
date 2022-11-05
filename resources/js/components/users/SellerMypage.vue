@@ -25,6 +25,7 @@
               :to="`/product_list/${product.id}`">詳細を見る
             </RouterLink>
             <RouterLink
+              v-if="!product.buy_flg.buy"
               class="p-buttonWrap__button c-button c-button--bgWhite"
               :to="`/sell_product/${product.id}`">商品情報を編集
             </RouterLink>

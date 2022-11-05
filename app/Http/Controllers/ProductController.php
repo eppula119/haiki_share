@@ -27,7 +27,7 @@ class ProductController extends Controller
         // 売り手ユーザーの認証が必要
         $this->middleware('auth:shop')->except(['showProductList', 'showProduct', 'buyProduct', 'buyCancelProduct', 'getPrefectureList']);
         // 買い手ユーザーの認証が必要
-        $this->middleware('auth:user')->except(['showProductList', 'showProduct', 'showSellProduct', 'sellProduct', 'editProduct', 'getPrefectureList', 'showBoughtProductList', 'showSellProductList']);
+        $this->middleware('auth:user')->except(['showProductList', 'showProduct', 'showSellProduct', 'sellProduct', 'editProduct', 'getPrefectureList', 'showBoughtProductList', 'showSellProductList', 'deleteProduct']);
     }
 
     /**
@@ -40,7 +40,7 @@ class ProductController extends Controller
             $params = $request->query();
             $products = Product::filter($params)->with(['users', 'shop' => function ($query) {
                 $query->with(['prefecture']);
-            }])->orderBy('created_at', 'desc')->paginate(3);
+            }])->orderBy('created_at', 'desc')->paginate(9);
         
         // ログインユーザー
         $loginUser = Auth::user();
@@ -88,7 +88,7 @@ class ProductController extends Controller
 
         $products = Product::whereIn('id', $boughtProducts)->filter($params)->with(['users', 'shop' => function ($query) {
             $query->with(['prefecture']);
-        }])->orderBy('created_at', 'desc')->paginate(1);
+        }])->orderBy('created_at', 'desc')->paginate(9);
 
         // 取得した商品の数けループ
         foreach ($products as $product) {
@@ -117,7 +117,7 @@ class ProductController extends Controller
         // 商品モデルから出品商品を最近出品した順に取得
         $sellProducts = Product::where('shop_id', $userId)->where('deleted_at', NULL)->filter($params)->with(['users', 'shop' => function ($query) {
             $query->with(['prefecture']);
-        }])->orderBy('created_at', 'desc')->paginate(3);
+        }])->orderBy('created_at', 'desc')->paginate(9);
 
         // 取得した商品の数けループ
         foreach ($sellProducts as $product) {
@@ -141,8 +141,10 @@ class ProductController extends Controller
         $loginUser = Auth::user();
         // ログインユーザーID保持、ログインしていない場合はnull値を渡す
         $loginUserId = $loginUser ? $loginUser->id : null;
-        // 購入フラグ付与
-        $this->addBuyFlg($product, $loginUserId);
+        if(!empty($product)) {
+            // 購入フラグ付与
+            $this->addBuyFlg($product, $loginUserId);
+        }
         
 
         return $product;
@@ -153,12 +155,7 @@ class ProductController extends Controller
      */
     public function showSellProduct($id)
     {
-        // Log::debug("showSellProduct実行");
-        // Log::debug($id);
-
-        $product = Product::find($id);
-        // Log::debug("productの中身");
-        // Log::debug($product);
+        $product = Product::with('shop')->find($id);
 
         return $product;
     }
@@ -249,6 +246,30 @@ class ProductController extends Controller
         $product = Product::find($id);
         Log::debug("productの中身");
         Log::debug($product);
+        // レスポンスで返す配列
+        $response = array(
+            'message' => '',
+            'product' => ''
+        );
+
+        // 売り手ログインユーザー取得
+        $shop = Auth::guard('shop')->user();
+        // リクエストされたユーザーIDとログインユーザ-IDが一致しない場合
+        if($shop->id !== $product->shop_id ) {
+            $response["message"] = '不正な操作です。';
+            return response($response, 400);
+        }
+        // 購入フラグ判定
+        $this->addBuyFlg($product, $shop->id);
+        // 購入済み商品の場合、
+        if($product->buy_flg["buy"]) {
+            // 編集できない
+            $response["message"] = '購入済みのため編集できません。';
+            return response($response, 400);
+        }
+        // 購入フラグ削除
+        unset($product["buy_flg"]);
+
         $product->name = $request->product_name;
         $product->price = $request->price;
         // 賞味期限(日付)と賞味期限(時間)の入力値を結合
@@ -364,7 +385,7 @@ class ProductController extends Controller
 
         try {
             // productsテーブルの「shop_id」にログイン中の売り手ユーザーIDを紐付けて登録
-            Auth::guard('shop')->user()->products()->save($product);
+            $shop->products()->save($product);
             // データーベースへ保存実行
             DB::commit();
             // クラウドのストレージデータから削除
@@ -390,8 +411,64 @@ class ProductController extends Controller
             throw $exception;
         }
 
+        // レスポンスで返す配列
+        $response = array(
+            'message' => '商品編集が正常に了しました。',
+            'product' => $product
+        );
+
         // レスポンスコードは200(OK)を返却
-        return response($product, 200);
+        return response($response, 200);
+    }
+
+    /**
+     * 商品削除
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteProduct(Request $request, $id)
+    {
+        Log::debug("requestの中身");
+        Log::debug($request);
+        Log::debug("idの中身");
+        Log::debug($id);
+        
+        $product = Product::find($id);
+        Log::debug("productの中身");
+        Log::debug($product);
+         
+        // 売り手ログインユーザー取得
+        $shop = Auth::guard('shop')->user();
+        // リクエストされたユーザーIDとログインユーザ-IDが一致しない場合
+        if($shop->id !== $product->shop_id ) {
+            return response('不正な操作です。', 400);
+        }
+        // 購入フラグ判定
+        $this->addBuyFlg($product, $shop->id);
+        // 購入済み商品の場合、
+        if($product->buy_flg["buy"]) {
+            // 削除できない
+            return response('購入済みのため削除できません。', 400);
+        }
+
+        /* データベースエラー時にファイル削除を行うため
+           トランザクションを利用する */
+        DB::beginTransaction();
+
+        try {
+            // 商品を倫理削除
+            $product->delete();
+            // データーベースへ保存実行
+            DB::commit();
+        } catch (\Exception $exception) {
+            Log::debug('例外発生');
+            // データベースを保存前に戻す
+            DB::rollBack();
+            throw $exception;
+        }
+       
+        // レスポンスコード200(OK)とメッセージを返却
+        return response('商品の削除が完了しました。再度出品する場合は、最初から出品手続きを行ってください。', 200);
     }
 
     /**
@@ -649,14 +726,6 @@ class ProductController extends Controller
         }
 
         foreach ($product->users as $user) {
-            // Log::debug('2回目foreachの$userの中身');
-            // Log::debug($user);
-            // Log::debug('$latestUpdatedAtの中身');
-            // Log::debug($latestUpdatedAt);
-            // Log::debug('$user->pivot->updated_atの中身');
-            // Log::debug($user->pivot->updated_at);
-            // Log::debug('$user->pivot->deleted_atの中身');
-            // Log::debug($user->pivot->deleted_at);
             // 最新購入日時のレコードにて、購入キャンセルされてない(購入済み)場合
             if($latestUpdatedAt === $user->pivot->updated_at && $user->pivot->deleted_at === null) {
                 // Log::debug('最新購入日時のレコードにて、購入キャンセルされてない!');

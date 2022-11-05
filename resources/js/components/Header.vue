@@ -1,19 +1,21 @@
 <template>
 <header class="l-header">
-  <div class="p-headerTitle">
-    <img src="/images/logo.png" class="p-headerTitle__img">
-  </div>
-  <div class="p-headerMenuTrigger js-toggle__spMenu">
+  <RouterLink to="/">
+    <div class="p-headerTitle">
+      <img src="/images/logo.png" class="p-headerTitle__img">
+    </div>
+  </RouterLink>
+  <div class="p-headerMenuTrigger js-toggle__spMenu" @click="doToggle" :class="{'is-active': toggleFlg}">
     <span class="p-headerMenuTrigger__border"></span>
     <span class="p-headerMenuTrigger__border"></span>
     <span class="p-headerMenuTrigger__border"></span>
   </div>
-  <nav class="p-headerNav js-toggle__spMenuTarget">
+  <nav class="p-headerNav js-toggle__spMenuTarget" :class="{'is-active': toggleFlg}">
       <div class="p-headerNav__title">
         <span class="p-navTitle">コンビニ廃棄食品シェアリングサービス</span>
         <img src="/images/logo.png" class="p-navImg">
       </div>
-      <div class="p-headerNav__searchForm">
+      <!-- <div class="p-headerNav__searchForm">
         <form class="p-navSearchForm" method="POST">
           <input type="text" class="p-navSearchForm__input" name="keyword">
           <label for="doSearch" class="p-navSearchForm__label">
@@ -21,15 +23,15 @@
             <i class="fa-solid fa-magnifying-glass"></i>
           </label>
         </form>
-      </div>
+      </div> -->
       <RouterLink class="p-headerNav__link" to="/product_list">商品一覧</RouterLink>
+      <RouterLink class="p-headerNav__link" to="/buyer_register" v-if="!isLogin">新規登録</RouterLink>
+      <RouterLink class="p-headerNav__link" to="/buyer_mypage" v-if="isLogin && user.type === 'user'">マイページ</RouterLink>
+      <RouterLink class="p-headerNav__link" to="/seller_mypage" v-else-if="isLogin && user.type === 'shop'">マイページ</RouterLink>
       <RouterLink class="p-headerNav__link" to="/buyer_login" v-if="!isLogin">ログイン</RouterLink>
       <form class="p-headerNav__link p-logout" method="post" @submit.prevent="logout" v-else>
         <input type="submit" class="p-logout__button" value="ログアウト" >
       </form>
-      <RouterLink class="p-headerNav__link" to="/buyer_register" v-if="!isLogin">新規登録</RouterLink>
-      <RouterLink class="p-headerNav__link" :to="`/buyer_mypage`" v-if="isLogin && user.type === 'user'">マイページ</RouterLink>
-      <RouterLink class="p-headerNav__link" :to="`/seller_mypage`" v-else-if="isLogin && user.type === 'shop'">マイページ</RouterLink>
       
   </nav>
 </header>
@@ -42,6 +44,7 @@ import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
+      toggleFlg: false // SPメニュー（初期は閉じている状態）
     };
   },
   computed: {
@@ -63,6 +66,10 @@ export default {
         // ログインページへ移動する
         this.$router.push('/buyer_login')
       }
+    },
+    // spメニュー
+    doToggle() {
+      this.toggleFlg = !this.toggleFlg
     }
   }
 };

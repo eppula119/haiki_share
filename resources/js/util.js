@@ -29,6 +29,7 @@ export function getCookieValue(searchKey) {
 */
 export const OK = 200
 export const CREATED = 201
+export const BAD_REQUEST = 400 // クライアントエラー、リクエストの処理ができない
 export const UNPROCESSABLE_ENTITY = 422 // Laravelのバリデーションエラーは422を返す為
 export const HTTP_FORBIDDEN = 403 // アクセス権なし
 export const INTERNAL_SERVER_ERROR = 500

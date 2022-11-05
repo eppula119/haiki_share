@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder; // クエリビルダー
+use Illuminate\Database\Eloquent\SoftDeletes; // 倫理削除
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth; //認証に関わる物を使う
 use Illuminate\Support\Facades\Storage; // 画像ファイルの操作
 use Illuminate\Support\Carbon; // 日付関連に使用
+
 use Illuminate\Support\Facades\Log; //ログ取得
 
 class Product extends Model
@@ -18,6 +20,8 @@ class Product extends Model
     protected $keyType = 'string';
     // IDの桁数
     const ID_LENGTH = 20;
+    // 倫理削除機能を利用
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

@@ -31,9 +31,7 @@
       <span class="p-authAttention">※必須</span>
       <!-- 入力フォーム -->
       <select class="p-authSelect" v-model="registerForm.prefecture">
-        <option value="北海道">北海道</option>
-        <option value="青森県">青森県</option>
-        <option value="岩手県">岩手県</option>
+        <option :value="prefecture.id" v-for="(prefecture, i) in prefectureList" :key="i">{{ prefecture.name }}</option>
       </select>
       <!-- バリデーションエラーメッセージ表示箇所 -->
       <div class="p-authValidate" v-if="registerErrors">
@@ -105,6 +103,8 @@
 </template>
 
 <script>
+// 定義したステータスコードをインポート
+import { OK } from '../../util'
 // ストアのステートをインポート
 import { mapState } from "vuex";
 
@@ -122,11 +122,14 @@ export default {
         password: '',
         password_confirmation: '',
         type: 'shop', // Ajax通信時、typeの値によって通信時のURL変更する為
-      }
+      },
+      prefectureList: {}
     };
   },
   created () {
     this.clearError() // バリデーションエラーメッセージ、初期化
+    // 全都道府県リスト取得
+    this.getPrefectureList()
   },
   computed: mapState({
     apiStatus: (state) => state.auth.apiStatus, // authストアのAPIステータスを参照
@@ -147,7 +150,23 @@ export default {
     clearError() {
       // authストアのユーザー登録エラーメッセージステータスを初期化
       this.$store.commit('auth/setLoginErrorMessages', null)
-    }
+    },
+    // 全都道府県リスト情報取得
+    async getPrefectureList() {
+      // 全都道府県リスト取得API実行
+      const response = await axios.get('/api/all_prefecture_list')
+      // api通信失敗の場合
+      if (response.status !== OK) {
+        // エラーストアにステータスコードを渡す
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+      // 取得した都道府県リストをデータへ渡す
+      this.prefectureList = response.data
+      
+      console.log('response:', response);
+   
+    },
   }
 };
 </script>

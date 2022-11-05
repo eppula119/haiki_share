@@ -28,6 +28,7 @@ class Shop extends Authenticatable
         'other_address',
         'profile',
         'prefecture',
+        'email',
         'type'
     ];
 
@@ -55,6 +56,22 @@ class Shop extends Authenticatable
     public function prefecture()
     {
         return $this->belongsTo('App\Models\Prefecture');
+    }
+
+    /**
+     * アクセサ - best_time
+     * @return object
+     */
+    public function getBesttimeAttribute()
+    {
+        // 既に賞味期限が登録されているレコードの場合(GET通信などで情報取得の場合)
+        if(!empty($this->attributes['best_before'])) {
+            // 取得した文字列データを任意のフォーマットへ変換
+            $bestTime = new Carbon($this->attributes['best_before']);
+            $bestTime =  $bestTime->format('H時i分');
+            return $bestTime;
+        }
+        
     }
 }
 

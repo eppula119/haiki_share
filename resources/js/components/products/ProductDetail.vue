@@ -15,12 +15,20 @@
           <span class="p-priceBigText">¥{{ product.price.toLocaleString() }}</span>
           税込
         </p>
-        <button class="p-productDetailContainer__button c-button c-button--bgBlue"
-          :class="{ 'is-disabled': product.buy_flg.buy }" @click="openModal('buy')">購入する</button>
-        <button class="p-productDetailContainer__button c-button c-button--bgGray"
-          :class="{ 'is-disabled': !product.buy_flg.buy }">購入済み</button>
-        <button class="p-productDetailContainer__button c-button c-button--bgBlue"
-          :class="{ 'is-disabled': !product.buy_flg.myBuy }" @click="openModal('cancel')">購入をキャンセル</button>
+        <template v-if="user.type === 'user'">
+          <button class="p-productDetailContainer__button c-button c-button--bgBlue"
+            :class="{ 'is-disabled': product.buy_flg.buy }" @click="openModal('buy')">購入する</button>
+          <button class="p-productDetailContainer__button c-button c-button--bgGray"
+            :class="{ 'is-disabled': !product.buy_flg.buy }">購入済み</button>
+          <button class="p-productDetailContainer__button c-button c-button--bgBlue"
+            :class="{ 'is-disabled': !product.buy_flg.myBuy }" @click="openModal('cancel')">購入をキャンセル</button>
+        </template>
+        <template v-if="user.type === 'shop'">
+          <button
+            class="p-productDetailContainer__button c-button c-button--bgBlue"
+            v-if="product.shop.id === user.id && !product.buy_flg.buy"
+            @click="moveEditProduct">編集する</button>
+        </template>
         <div class="p-productDetailContainer__info">
           <dl class="p-infoRow">
             <dt class="p-infoRow__title">コンビニ名</dt>
@@ -72,6 +80,10 @@ export default {
   components: {
     Modal
   },
+  mounted() {
+    // 画面幅変更時、現在の画面幅を取得
+    window.addEventListener('resize', this.handleResize)
+  },
   data() {
     return {
       product: { // 表示中の商品情報
@@ -100,6 +112,8 @@ export default {
     ...mapGetters({
       // 商品ストアの商品リスト情報を参照
       productList: "product/productList",
+      // 認証ユーザーストアのユーザー情報を参照
+      user: "auth/user",
     })
   },
   methods: {
@@ -121,6 +135,9 @@ export default {
           this.$store.commit("error/setCode", response.status);
           return false;
         }
+        // 商品が1つも取得できない場合は商品一覧ページへ遷移
+        !response.data ? this.$router.push(`/product_list`) :
+        
         // api通信成功の場合、商品データを渡す
         this.product = response.data
       }
@@ -152,7 +169,7 @@ export default {
     },
     // 購入関連モーダルを閉じる
     closeModal() {
-      this.$refs.modal.closeModal()
+      Object.keys(this.$refs).length ? this.$refs.modal.closeModal() : false
     },
     // フラッシュメッセージを表示
     showMessage(message) {
@@ -161,6 +178,10 @@ export default {
         content: message,
         timeout: 5000
       })
+    },
+    // 商品編集画面へ移動
+    moveEditProduct() {
+      this.$router.push({ name: 'editProduct', params: { id: this.product.id} })
     }
   },
   watch: {

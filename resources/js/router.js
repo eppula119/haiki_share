@@ -197,8 +197,8 @@ const routes = [
     name: 'buyerMypage',
     component: BuyerMypage,
     beforeEnter(to, from, next) {
-      // ログイン中の場合
-      if (store.getters['auth/check']) {
+      // ログイン中かつ買い手ユーザーの場合
+      if (store.getters['auth/check'] && store.getters['auth/user'].type === "user") {
         // マイページへ遷移
         next()
       } else {
@@ -213,8 +213,8 @@ const routes = [
     name: 'sellerMypage',
     component: SellerMypage,
     beforeEnter(to, from, next) {
-      // ログイン中の場合
-      if (store.getters['auth/check']) {
+      // ログイン中かつ売り手ユーザーの場合
+      if (store.getters['auth/check'] && store.getters['auth/user'].type === "shop") {
         // マイページへ遷移
         next()
       } else {
@@ -263,7 +263,7 @@ const routes = [
     component: EditProduct,
     beforeEnter(to, from, next) {
       // ログイン中の場合
-      if (store.getters['auth/check']) {
+      if (store.getters['auth/check'] && store.getters['auth/user'].type === "shop") {
         // 商品編集画面へ遷移
         next()
       } else {
@@ -278,8 +278,8 @@ const routes = [
     name: 'boughtProductList',
     component: ProductList,
     beforeEnter(to, from, next) {
-      // ログイン中の場合
-      if (store.getters['auth/check']) {
+      // ログイン中かつ売り手ユーザーの場合
+      if (store.getters['auth/check'] && store.getters['auth/user'].type === "shop") {
         // 購入された商品一覧へ遷移
         next()
       } else {

@@ -43,7 +43,6 @@ export default {
   props: {
     prefectureList: { // 都道府県リスト
       type: Object,
-      default: {},
       required: false,
     }
   },

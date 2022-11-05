@@ -54,7 +54,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'branch_name' => ['required', 'string', 'max:255'],
-            'prefecture' => ['required'],
+            'prefecture' => ['required', 'integer'],
             'city' => ['required', 'string', 'max:255'],
             'other_address' => ['string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:shops'],
@@ -74,8 +74,7 @@ class RegisterController extends Controller
         return Shop::create([
             'name' => $data['name'],
             'branch_name' => $data['branch_name'],
-            // 'prefecture' => $data['prefecture'],  // 仮
-            'prefecture_id' => 1,
+            'prefecture_id' => $data['prefecture'],
             'city' => $data['city'],
             'other_address' => $data['other_address'],
             'email' => $data['email'],
@@ -99,6 +98,8 @@ class RegisterController extends Controller
         Log::debug('売り手ユーザー登録完了し、登録売り手ユーザー情報を返す');
         Log::debug($shop);
         $shop->type = 'shop';
+        // 都道府県情報一緒に返す
+        $shop["prefecture"] = $shop->prefecture;
         return $shop;
     }
 }

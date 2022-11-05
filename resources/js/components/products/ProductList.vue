@@ -65,6 +65,7 @@
                 :to="`/product_list/${product.id}`">詳細を見る
               </RouterLink>
               <RouterLink
+                v-if="product.shop.id === user.id && !product.buy_flg.buy"
                 class="p-itemButton c-button c-button--bgWhite"
                 :to="`/sell_product/${product.id}`">商品情報を編集
               </RouterLink>
@@ -79,6 +80,7 @@
                 :to="`/product_list/${product.id}`"><span>詳細を見る＞</span>
               </RouterLink>
               <RouterLink
+                v-if="product.shop.id === user.id && !product.buy_flg.buy"
                 class="p-itemLink"
                 :to="`/sell_product/${product.id}`"><span>商品情報を編集＞</span>
               </RouterLink>

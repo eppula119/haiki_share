@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth; //認証に関わる物を使う
+use Illuminate\Support\Facades\DB; // データベースの操作
+use Illuminate\Support\Facades\Hash; // ハッシュ化
 use Illuminate\Support\Facades\Log; //ログ取得
 use App\Models\BoughtProduct; // 購入モデル
 use App\Models\Product; // 商品モデル
+use App\Models\Prefecture; // 都道府県モデル
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator; // バリデーション作成
 use Illuminate\Pagination\LengthAwarePaginator; // ページネーションクラス
 
 
@@ -25,6 +30,8 @@ class UserController extends Controller
           // 空のユーザー情報を返す
           return $user;
         }
+        // 都道府県情報一緒に返す
+        $use["prefecture"] = $user->prefecture;
         // 売り手ユーザー情報取得できた場合、{'type': 'shop'}を追加
         $user->type = 'shop';
         return $user;
@@ -73,6 +80,16 @@ class UserController extends Controller
         $userId = $request->userId;
         // 商品モデルから出品商品を最近出品した順に5件取得
         $sellProducts = Product::where('shop_id', $userId)->where('deleted_at', NULL)->orderBy('created_at','desc')->take(5)->get();
+        if(!empty($sellProducts)) {
+          $productController = new ProductController;
+          // 取得した出品商品の数だけループ
+          foreach ($sellProducts as $product) {
+              // 購入フラグ付与
+              $productController->addBuyFlg($product, $userId);
+          }
+        }
+
+
         // 商品モデルから出品商品を最近出品した順に5件取得
         $boughtProducts = BoughtProduct::select('product_id')->whereIn('created_at', function($q)  {
             return $q->from('bought_products')
@@ -99,4 +116,163 @@ class UserController extends Controller
       // ログインユーザーに紐づく商品情報を返す
       return $products;
     }
+
+    /**
+     * 買い手ユーザープロフィール編集
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function editProfile(Request $request)
+    {
+        // 買い手ログインユーザー取得
+        $user = Auth::user();
+        // リクエストされたユーザーIDとログインユーザ-IDが一致しない場合
+        if($user->id != $request->id ) {
+          return response('不正な操作です。', 400);
+        }
+        Log::debug("requestの中身");
+        Log::debug($request);
+        // バリデーション実行
+        $request->validate([
+            'name' => 'required|string|max:255|unique:users,name,'.$request->id.',id',
+            'email' => 'required|string|email|max:255|unique:users,email,'.$request->id.',id',
+        ]);
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if($request->has('password')) {
+          Log::debug("パスワードあり");
+          $request->validate([
+              'password' => 'required|string|min:6|confirmed',
+          ]);
+          $user->password = Hash::make($request->password);
+        }
+        Log::debug("バリデーションクリア");
+
+        /* トランザクションを利用 */
+        DB::beginTransaction();
+
+        try {
+            // データを登録
+            $user->save();
+            // データーベースへ保存実行
+            DB::commit();
+        } catch (\Exception $exception) {
+            Log::debug('例外発生');
+            // データベースを保存前に戻す
+            DB::rollBack();
+        
+            throw $exception;
+        }
+        // ユーザー種別を渡す
+        $user->type = 'user';
+        // レスポンスで返す配列
+        $response = array(
+            'message' => 'プロフィールが正常に変更完了しました。',
+            'user' => $user
+        );
+
+        // 登録したユーザー情報を返す
+        return $response;
+    }
+    /**
+     * 売り手ユーザープロフィール編集
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function editShopProfile(Request $request)
+    {
+        // 売り手ログインユーザー取得
+        $shop = Auth::guard('shop')->user();
+        // リクエストされたユーザーIDとログインユーザ-IDが一致しない場合
+        if($shop->id != $request->id ) {
+          return response('不正な操作です。', 400);
+        }
+        Log::debug("requestの中身");
+        Log::debug($request);
+        // バリデーション実行
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'branch_name' => 'required|string|max:255',
+            'prefecture' => 'required|integer',
+            'city' => 'required|string|max:255',
+            'other_address' => 'nullable|string|max:255',
+            'profile' => 'nullable|string|max:200',
+            'email' => 'required|string|email|max:255|unique:shops,email,'.$request->id.',id',
+        ]);
+        $shop->name = $request->name;
+        $shop->branch_name = $request->branch_name;
+        $shop->prefecture_id = $request->prefecture;
+        $shop->city = $request->city;
+        $shop->other_address = $request->other_address;
+        $shop->profile = $request->profile;
+        $shop->email = $request->email;
+
+        if($request->has('password')) {
+          $request->validate([
+              'password' => 'required|string|min:6|confirmed',
+          ]);
+          $shop->password = Hash::make($request->password);
+        }
+        Log::debug("バリデーションクリア");
+
+        /* トランザクションを利用 */
+        DB::beginTransaction();
+
+        try {
+            // データを登録
+            $shop->save();
+            // データーベースへ保存実行
+            DB::commit();
+        } catch (\Exception $exception) {
+            Log::debug('例外発生');
+            // データベースを保存前に戻す
+            DB::rollBack();
+        
+            throw $exception;
+        }
+        // 都道府県情報一緒に返す
+        $shop["prefecture"] = $shop->prefecture;
+        // ユーザー種別を渡す
+        $shop->type = 'shop';
+        // レスポンスで返す配列
+        $response = array(
+            'message' => 'プロフィールが正常に変更完了しました。',
+            'user' => $shop
+        );
+
+        // 登録したユーザー情報を返す
+        return $response;
+    }
+
+    /**
+     * 選択可能な都道府県リスト取得
+     * @return \Illuminate\Http\Response
+     */
+    public function getAllPrefectureList() {
+        Log::debug('都道府県リスト取得API実行');
+        $prefectures = Prefecture::all();
+
+        return $prefectures;
+
+    }
+
+    /**
+     * バリデーション
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        Log::debug('バリデーションにかけるデータの中身');
+        Log::debug($data);
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+        ]);
+    }
+
+
+    
 }

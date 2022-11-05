@@ -91,6 +91,7 @@
         border-radius: 10px;
         background: rgb(0, 0, 55);
         z-index: 100;
+        transition: .3s;
         &:hover {
           opacity: .5;
         }
@@ -313,10 +314,16 @@
       margin: calc(-20px / 2) calc(-20px / 2);
       margin-top: 0;
       .p-productSubImg {
+        opacity: 1;
+        transition: 0.3s;
         width: calc(100% / 3 - 20px);
         height: 60px;
         margin: calc(20px / 2) calc(20px / 2);
         border-radius: 6px;
+        cursor: pointer;
+        &:hover {
+          opacity: 0.5;
+        }
         @include mq('tab') {
           height: 80px;
         }
