@@ -257,6 +257,10 @@ const actions = {
     }
 
   },
+  // ユーザー情報を更新
+  setUser(context, data) {
+    context.commit('setUser', data)
+  },
 }
 
 export default {

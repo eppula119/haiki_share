@@ -4,7 +4,7 @@
       商品編集
     </h1>
     <div class="p-userMainContainer__formWrap">
-      <form class="p-form" @submit.prevent="edit">
+      <form class="p-form">
         <!------------------------ 出品画像欄 ---------------------------->
         <p class="p-sellDesc">出品画像(最大5枚)</p>
         <div class="p-uploadedImgContainer">
@@ -93,8 +93,8 @@
           </ul>
         </div>
         <!------------------------ ボタン欄 ---------------------------->
-        <input type="submit" class="p-formMainButton c-button c-button--bgBlue" value="編集する">
-        <input type="submit" class="p-formDeleteButton c-button" value="削除する">
+        <input type="submit" class="p-formMainButton c-button c-button--bgBlue" value="編集する" @click.prevent="doEdit">
+        <input type="submit" class="p-formDeleteButton c-button" value="削除する" @click.prevent="doDelete">
       </form>
     </div>
   </div>
@@ -132,6 +132,8 @@ export default {
     ...mapGetters({
       // 商品ストアの商品リスト情報を参照
       productList: "product/productList",
+      // 認証ユーザーストアのユーザー情報を参照
+      user: "auth/user",
     }),
   },
   data() {
@@ -156,6 +158,11 @@ export default {
       const product = this.productList.find((product) => product.id === this.$route.params.id)
       // 一致する商品がストアに保存されている場合
       if(product) {
+        // // 商品の出品者IDがログインユーザーIDと相違がある場合
+        // if(product.shop.id !== this.user.id) {
+        //   // 前のページへ戻る
+        //   this.$router.back()
+        // }
         // 一致した商品をデータへ渡す
         this.formatData(product)
       } else {
@@ -168,6 +175,11 @@ export default {
           this.$store.commit("error/setCode", response.status);
           return false;
         }
+        // // 商品の出品者IDがログインユーザーIDと相違がある場合
+        // if(response.data.shop.id !== this.user.id) {
+        //   // 前のページへ戻る
+        //   this.$router.back()
+        // }
         // api通信成功の場合、商品データを渡す
         this.formatData(response.data)
       }
@@ -325,7 +337,7 @@ export default {
       this.$router.push(`/product_list/${response.data.id}`)
     },
     // 編集実行
-    async edit() {
+    async doEdit() {
       let formData = new FormData()
       // 日付を任意の表記にフォーマット化
       const bestDay = this.dayToFormat(new Date(this.sellForm.best_day), 'YYYY-MM-DD')
@@ -390,8 +402,10 @@ export default {
         this.$store.commit('error/setCode', response.status)
         return false
       }
+      // 編集実行後、レスポンスメッセージ表示
+      this.showMessage(response.data.message)
       // 出品した商品の詳細画面へ遷移
-      this.$router.push(`/product_list/${response.data.id}`)
+      this.$router.push(`/product_list/${response.data.product.id}`)
     },
     // 入力値初期化
     reset() {
@@ -404,6 +418,26 @@ export default {
         best_time: '00:00',
       }
       this.sellForm.images
+    },
+    // 商品削除
+    async doDelete() {
+      console.log("商品削除実行！");
+
+      // 商品編集API実行
+      const response = await axios.delete(`/api/product/${this.$route.params.id}`)
+      console.log('response:', response);
+
+      // api通信失敗の場合
+      if (response.status !== OK) {
+        console.log('API通信レスポンスOK!じゃない');
+        // errorストアのsetCodeアクションを呼び出す
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+      // 削除成功メッセージ表示
+      this.showMessage(response.data)
+      // 出品した商品の詳細画面へ遷移
+      this.$router.push(`/seller_mypage`)
     },
     // 今日の日付を任意の表記にフォーマット化
     dayToFormat(date, format) {
@@ -426,6 +460,15 @@ export default {
           bytes[i] = binaryStr.charCodeAt(i);
       }
       return bytes;
+    },
+    // フラッシュメッセージを表示
+    showMessage(message) {
+      console.log('message:', message);
+      // MESSAGEストアに購入キャンセル成功メッセージを渡す
+      this.$store.commit("message/setContent", {
+        content: message,
+        timeout: 5000
+      })
     }
   },
 };

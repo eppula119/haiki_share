@@ -47,7 +47,14 @@
         margin-left: 15px;
         padding: 8px 0;
         border-radius: 20px;
-        border: none;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.3s ease-out;
+        &:hover {
+          background-color: $white-bg;
+          border: 1px solid $gray-color;
+          color: $gray-color;
+        }
         @include mq() {
           margin-left: 10px;
           width: 120px;

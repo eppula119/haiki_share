@@ -3,6 +3,10 @@
   justify-content: center;
   &__number {
     margin-left: 10px;
+    &:hover {
+      transition: all 0.3s ease-out;
+      opacity: .5;
+    }
     &:first-child {
       margin-left: 0;
     }

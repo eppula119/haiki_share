@@ -43,6 +43,7 @@ Route::get('/shop/reset-password/{token}', 'Shop\Auth\ResetPasswordController@re
 */
 Route::post('/product', 'ProductController@sellProduct')->name('product.sell'); // 商品出品
 Route::put('/product/{id}', 'ProductController@editProduct')->name('product.edit'); // 商品編集
+Route::delete('/product/{id}', 'ProductController@deleteProduct')->name('product.delete'); // 商品削除
 Route::post('/buy/{id}', 'ProductController@buyProduct')->name('product.buy'); // 商品購入
 Route::delete('/buy/{id}', 'ProductController@buyCancelProduct')->name('product.buy-cancel'); // 商品購入キャンセル
 
@@ -60,3 +61,12 @@ Route::get('/sell_product_list', 'ProductController@showSellProductList')->name(
 |--------------------------------------------------------------------------
 */
 Route::get('/mypage', 'UserController@showMypage')->name('mypage.show'); // マイページ表示
+Route::put('/profile', 'UserController@editProfile')->name('profile.edit'); // 買い手ユーザープロフィール編集
+Route::put('/shop/profile', 'UserController@editShopProfile')->name('shop-profile.edit'); // 売り手ユーザープロフィール編集
+Route::get('/all_prefecture_list', 'UserController@getAllPrefectureList')->name('all-prefecture-list'); // 全都道府県取得
+
+/*
+|--------------------------------------------------------------------------
+| その他
+|--------------------------------------------------------------------------
+*/

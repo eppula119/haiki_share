@@ -5,17 +5,35 @@
   &--bgBlue {
     background-color: $button-color;
     color: $white-color;
-    border: none;
+    border: solid 1px transparent;
+    transition: all 0.3s ease-out;
+    &:hover {
+      background-color: $white-bg;
+      border: 1px solid $button-color;
+      color: $button-color;
+    }
   }
   &--bgWhite {
     background-color: $white-color;
     color: $button-color;
     border: solid 1px $button-color;
+    transition: all 0.3s ease-out;
+    &:hover {
+      background-color: $button-color;
+      border: 1px solid transparent;
+      color: $white-bg;
+    }
   }
   &--bgGray {
     background-color: $gray-color;
     color: $white-color;
     border: none;
+    transition: all 0.3s ease-out;
+    &:hover {
+      background-color: $white-bg;
+      border: 1px solid $gray-color;
+      color: $gray-color;
+    }
   }
 }
 

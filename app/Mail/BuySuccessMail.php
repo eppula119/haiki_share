@@ -51,7 +51,7 @@ class BuySuccessMail extends Mailable
             Log::debug('$dataの中身');
             Log::debug($data);
             $subject = '商品が購入されました'; // 件名
-            $url = "{$baseUrl}/product_list";
+            $url = "{$baseUrl}/bought_product_list";
 
             return $this->from($from)
                 ->subject($subject)
@@ -74,7 +74,7 @@ class BuySuccessMail extends Mailable
             Log::debug('$dataの中身');
             Log::debug($data);
             $subject = '購入完了メール'; // 件名
-            $url = "{$baseUrl}/product_list";
+            $url = "{$baseUrl}/buyer_mypage";
 
             return $this->from($from)
                 ->subject($subject)

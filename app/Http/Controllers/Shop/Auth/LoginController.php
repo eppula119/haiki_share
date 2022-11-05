@@ -50,6 +50,8 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $shop)
     {
         $shop->type = 'shop';
+        // 都道府県情報一緒に返す
+        $shop["prefecture"] = $shop->prefecture;
         return $shop;
     }
 
