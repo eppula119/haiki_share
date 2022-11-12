@@ -43,7 +43,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * バリデーション
      *
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
@@ -56,14 +56,14 @@ class RegisterController extends Controller
             'branch_name' => ['required', 'string', 'max:255'],
             'prefecture' => ['required', 'integer'],
             'city' => ['required', 'string', 'max:255'],
-            'other_address' => ['string', 'max:255'],
+            'other_address' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:shops'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * 新しい売り手ユーザー作成
      *
      * @param  array  $data
      * @return \App\Shop
@@ -83,7 +83,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * Get the guard to be used during registration.
+     * 売り手ユーザーの認証利用
      *
      * @return \Illuminate\Contracts\Auth\StatefulGuard
      */
@@ -100,6 +100,8 @@ class RegisterController extends Controller
         $shop->type = 'shop';
         // 都道府県情報一緒に返す
         $shop["prefecture"] = $shop->prefecture;
+        // メールアドレスもjson形式で渡す
+        $shop->makeVisible(['email']);
         return $shop;
     }
 }

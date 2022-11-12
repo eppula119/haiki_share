@@ -1,36 +1,39 @@
 <template>
-  <div class="p-authContainer">
-    <h1 class="p-authContainer__title">
-      パスワード再発行
-      <span v-if="resetForm.type === 'user'">(買い手)</span>
-      <span v-else-if="resetForm.type === 'shop'">(売り手)</span>
-    </h1>
-    <form class="p-authContainer__form" @submit.prevent="reset">
-      <!------------------------ パスワード欄 ---------------------------->
-      <label class="p-authLabel">パスワード(6文字以上)</label>
-      <span class="p-authAttention">※必須</span>
-      <!-- 入力フォーム -->
-      <input class="p-authInput" type="password" v-model="resetForm.password">
-      <!-- バリデーションエラーメッセージ表示箇所 -->
-      <div class="p-authValidate" v-if="resetErrors">
-        <ul v-if="resetErrors.password">
-          <li v-for="msg in resetErrors.password" :key="msg">※{{ msg }}</li>
-        </ul>
-      </div>
-      <!------------------------ 確認用パスワード欄 ---------------------------->
-      <label class="p-authLabel">確認用パスワード</label>
-      <span class="p-authAttention">※必須</span>
-      <!-- 入力フォーム -->
-      <input class="p-authInput" type="password" v-model="resetForm.password_confirmation">
-      <!-- バリデーションエラーメッセージ表示箇所 -->
-      <div class="p-authValidate" v-if="resetErrors">
-        <ul v-if="resetErrors.password_confirmation">
-          <li v-for="msg in resetErrors.password_confirmation" :key="msg">※{{ msg }}</li>
-        </ul>
-      </div>
-      <!------------------------ 再設定ボタン ---------------------------->
-      <input type="submit" class="p-authMainButton c-button c-button--bgBlue" value="パスワード再発行">
-    </form>
+  <div>
+    <Loading v-if="showLoadingFlg" />
+    <div class="p-authContainer">
+      <h1 class="p-authContainer__title">
+        パスワード再発行
+        <span v-if="resetForm.type === 'user'">(買い手)</span>
+        <span v-else-if="resetForm.type === 'shop'">(売り手)</span>
+      </h1>
+      <form class="p-authContainer__form" @submit.prevent="reset">
+        <!------------------------ パスワード欄 ---------------------------->
+        <label class="p-authLabel">パスワード(6文字以上)</label>
+        <span class="p-authAttention">※必須</span>
+        <!-- 入力フォーム -->
+        <input class="p-authInput" type="password" v-model="resetForm.password">
+        <!-- バリデーションエラーメッセージ表示箇所 -->
+        <div class="p-authValidate" v-if="resetErrors">
+          <ul v-if="resetErrors.password">
+            <li v-for="msg in resetErrors.password" :key="msg">※{{ msg }}</li>
+          </ul>
+        </div>
+        <!------------------------ 確認用パスワード欄 ---------------------------->
+        <label class="p-authLabel">確認用パスワード</label>
+        <span class="p-authAttention">※必須</span>
+        <!-- 入力フォーム -->
+        <input class="p-authInput" type="password" v-model="resetForm.password_confirmation">
+        <!-- バリデーションエラーメッセージ表示箇所 -->
+        <div class="p-authValidate" v-if="resetErrors">
+          <ul v-if="resetErrors.password_confirmation">
+            <li v-for="msg in resetErrors.password_confirmation" :key="msg">※{{ msg }}</li>
+          </ul>
+        </div>
+        <!------------------------ 再設定ボタン ---------------------------->
+        <input type="submit" class="p-authMainButton c-button c-button--bgBlue" value="パスワード再発行">
+      </form>
+    </div>
   </div>
 </template>
 
@@ -38,9 +41,13 @@
 import Cookies from "js-cookie"; //クッキーを操作するパッケージ
 // storeフォルダ内のファイルで定義した「state」を参照
 import { mapState } from "vuex";
-
+// ローディングコンポーネント読み込み
+import Loading from '../Loading.vue'
 
 export default {
+  components: {
+    Loading,
+  },
   data: function() {
     return {
       resetForm: {
@@ -48,7 +55,8 @@ export default {
         password_confirmation: '', // 確認用パスワード入力値
         token: '', // トークン
         type: ''
-      }
+      },
+      showLoadingFlg: false // ローディング表示フラグ
     };
   },
   created () {
@@ -64,6 +72,8 @@ export default {
   methods: {
     // パスワード再設定
     async reset() {
+      // ローディング表示
+      this.showLoadingFlg = true
       console.log('パスワード再設定実行！')
       // authストアのresetアクションを呼び出す
       await this.$store.dispatch('auth/reset', this.resetForm)
@@ -73,6 +83,8 @@ export default {
         // 商品一覧ページに移動する
         this.$router.push('/product_list')
       }
+      // ローディング非表示
+      this.showLoadingFlg = false
     },
     // クッキーからトークンを取得しデータへ渡す
     setToken () {

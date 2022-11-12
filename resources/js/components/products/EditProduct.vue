@@ -1,103 +1,109 @@
 <template>
-  <div class="p-userMainContainer">
-    <h1 class="p-userMainContainer__title">
-      商品編集
-    </h1>
-    <div class="p-userMainContainer__formWrap">
-      <form class="p-form">
-        <!------------------------ 出品画像欄 ---------------------------->
-        <p class="p-sellDesc">出品画像(最大5枚)</p>
-        <div class="p-uploadedImgContainer">
-            <div class="p-uploadedImgContainer__block" v-for="(img, index) in sellForm.images" :key="index">
-              <button class="p-imgDeleteButton c-button c-button--bgGray" @click.prevent="deleteImg(index)">+</button>
-              <img :src="sellForm.images[index].url" class="p-uploadedImg">
+  <div>
+    <Loading v-if="showLoadingFlg" />
+    <div class="p-userMainContainer">
+      <h1 class="p-userMainContainer__title">
+        商品編集
+      </h1>
+      <div class="p-userMainContainer__formWrap">
+        <form class="p-form">
+          <!------------------------ 出品画像欄 ---------------------------->
+          <p class="p-sellDesc">出品画像(最大5枚)</p>
+          <div class="p-uploadedImgContainer">
+              <div class="p-uploadedImgContainer__block" v-for="(img, index) in sellForm.images" :key="index">
+                <button class="p-imgDeleteButton c-button c-button--bgGray" @click.prevent="deleteImg(index)">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+                <img :src="sellForm.images[index].url" class="p-uploadedImg">
+              </div>
+          </div>
+          <div class="p-uploadPointBlock"
+            :class="{'is-active': dragFlg}"
+            @dragenter="dragImg"
+            @dragleave="dragLeaveImg"
+            @dragover.prevent
+            @drop.prevent="dropImg">
+            <label for="filename" class="p-uploadPointBlock__label">
+              <input type="file" id="filename" class="p-uploadImgButton c-button c-button--bgBlue" value="画像を選択" @change="onImgChange">
+              <p class="p-uploadImgText">ファイルをドラッグ＆ドロップ</p>
+              <p class="p-uploadImgText p-responsiveText">ファイルを選択</p>
+            </label>
+            
+            <!-- バリデーションエラーメッセージ表示箇所 -->
+            <div class="p-formValidate" v-if="errors">
+              <ul v-if="errors.image">
+                <li v-for="msg in errors.image" :key="msg">※{{ msg }}</li>
+              </ul>
             </div>
-        </div>
-        <div class="p-uploadPointBlock"
-          :class="{'is-active': dragFlg}"
-          @dragenter="dragImg"
-          @dragleave="dragLeaveImg"
-          @dragover.prevent
-          @drop.prevent="dropImg">
-          <label for="filename" class="p-uploadPointBlock__label">
-            <input type="file" id="filename" class="p-uploadImgButton c-button c-button--bgBlue" value="画像を選択" @change="onImgChange">
-            <p class="p-uploadImgText">ファイルをドラッグ＆ドロップ</p>
-            <p class="p-uploadImgText p-responsiveText">ファイルを選択</p>
-          </label>
-          
+          </div>
+          <h2 class="p-formDesc">商品詳細</h2>
+          <!------------------------ 商品名欄 ---------------------------->
+          <label class="p-formLabel">商品名</label>
+          <span class="p-formAttention">※必須</span>
+          <!-- 入力フォーム -->
+          <input class="p-formInput" type="text" v-model="sellForm.name">
           <!-- バリデーションエラーメッセージ表示箇所 -->
           <div class="p-formValidate" v-if="errors">
-            <ul v-if="errors.image">
-              <li v-for="msg in errors.image" :key="msg">※{{ msg }}</li>
+            <ul v-if="errors.product_name">
+              <li v-for="msg in errors.product_name" :key="msg">※{{ msg }}</li>
             </ul>
           </div>
-        </div>
-        <h2 class="p-formDesc">商品詳細</h2>
-        <!------------------------ 商品名欄 ---------------------------->
-        <label class="p-formLabel">商品名</label>
-        <span class="p-formAttention">※必須</span>
-        <!-- 入力フォーム -->
-        <input class="p-formInput" type="text" v-model="sellForm.name">
-        <!-- バリデーションエラーメッセージ表示箇所 -->
-        <div class="p-formValidate" v-if="errors">
-          <ul v-if="errors.product_name">
-            <li v-for="msg in errors.product_name" :key="msg">※{{ msg }}</li>
-          </ul>
-        </div>
-        <!------------------------ 価格欄 ---------------------------->
-        <label class="p-formLabel">価格</label>
-        <span class="p-formAttention">※必須</span>
-        <!-- 入力フォーム -->
-        <input type="number" class="p-formInput" placeholder="¥" v-model="sellForm.price">
-        <!-- バリデーションエラーメッセージ表示箇所 -->
-        <div class="p-formValidate" v-if="errors">
-          <ul v-if="errors.price">
-            <li v-for="msg in errors.price" :key="msg">※{{ msg }}</li>
-          </ul>
-        </div>
-        <!------------------------ 賞味期限(日付)欄 ---------------------------->
-        <label class="p-formLabel">賞味期限(日付)</label>
-        <span class="p-formAttention">※必須</span>
-        <!-- カレンダー入力フォームコンポーネント -->
-        <vue-date-picker
-          format="yyyy-MM-dd"
-          :language="ja"
-          input-class="p-formCalendar__input"
-          wrapper-class="p-formCalendar"
-          v-model="sellForm.best_day"
-        ></vue-date-picker>
-        <!-- バリデーションエラーメッセージ表示箇所 -->
-        <div class="p-formValidate" v-if="errors">
-          <ul v-if="errors.best_day">
-            <li v-for="msg in errors.best_day" :key="msg">※{{ msg }}</li>
-          </ul>
-        </div>
-        <!------------------------ 賞味期限(時間)欄 ---------------------------->
-        <label class="p-formLabel">賞味期限(時間)</label>
-        <span class="p-formAttention">※必須</span>
-        <!-- 時間入力フォームコンポーネント -->
-        <vue-time-picker
-          class="p-formInput"
-          v-model="sellForm.best_time"
-          hour-label="時"
-          minute-label="分"
-          placeholder="時間を入力"
-          minute-interval="15"
-          input-class="p-formInput__time"
-          hide-clear-button
-        ></vue-time-picker>
-        <!-- バリデーションエラーメッセージ表示箇所 -->
-        <div class="p-formValidate" v-if="errors">
-          <ul v-if="errors.best_time">
-            <li v-for="msg in errors.best_time" :key="msg">※{{ msg }}</li>
-          </ul>
-        </div>
-        <!------------------------ ボタン欄 ---------------------------->
-        <input type="submit" class="p-formMainButton c-button c-button--bgBlue" value="編集する" @click.prevent="doEdit">
-        <input type="submit" class="p-formDeleteButton c-button" value="削除する" @click.prevent="doDelete">
-      </form>
+          <!------------------------ 価格欄 ---------------------------->
+          <label class="p-formLabel">価格</label>
+          <span class="p-formAttention">※必須</span>
+          <!-- 入力フォーム -->
+          <input type="number" class="p-formInput" placeholder="¥" v-model="sellForm.price">
+          <!-- バリデーションエラーメッセージ表示箇所 -->
+          <div class="p-formValidate" v-if="errors">
+            <ul v-if="errors.price">
+              <li v-for="msg in errors.price" :key="msg">※{{ msg }}</li>
+            </ul>
+          </div>
+          <!------------------------ 賞味期限(日付)欄 ---------------------------->
+          <label class="p-formLabel">賞味期限(日付)</label>
+          <span class="p-formAttention">※必須</span>
+          <!-- カレンダー入力フォームコンポーネント -->
+          <vue-date-picker
+            format="yyyy-MM-dd"
+            :language="ja"
+            input-class="p-formCalendar__input"
+            wrapper-class="p-formCalendar"
+            v-model="sellForm.best_day"
+          ></vue-date-picker>
+          <!-- バリデーションエラーメッセージ表示箇所 -->
+          <div class="p-formValidate" v-if="errors">
+            <ul v-if="errors.best_day">
+              <li v-for="msg in errors.best_day" :key="msg">※{{ msg }}</li>
+            </ul>
+          </div>
+          <!------------------------ 賞味期限(時間)欄 ---------------------------->
+          <label class="p-formLabel">賞味期限(時間)</label>
+          <span class="p-formAttention">※必須</span>
+          <!-- 時間入力フォームコンポーネント -->
+          <vue-time-picker
+            class="p-formInput"
+            v-model="sellForm.best_time"
+            hour-label="時"
+            minute-label="分"
+            placeholder="時間を入力"
+            minute-interval="15"
+            input-class="p-formInput__time"
+            hide-clear-button
+          ></vue-time-picker>
+          <!-- バリデーションエラーメッセージ表示箇所 -->
+          <div class="p-formValidate" v-if="errors">
+            <ul v-if="errors.best_time">
+              <li v-for="msg in errors.best_time" :key="msg">※{{ msg }}</li>
+            </ul>
+          </div>
+          <!------------------------ ボタン欄 ---------------------------->
+          <input type="submit" class="p-formMainButton c-button c-button--bgBlue" value="編集する" @click.prevent="doEdit">
+          <input type="submit" class="p-formDeleteButton c-button" value="削除する" @click.prevent="doDelete">
+        </form>
+      </div>
     </div>
   </div>
+  
 </template>
 
 <script>
@@ -112,12 +118,15 @@ import {ja} from 'vuejs-datepicker/dist/locale'
 // 時刻入力プラグインをインポート
 import VueTimePicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
+// ローディングコンポーネント読み込み
+import Loading from '../Loading.vue'
 
 
 export default {
   components: {
     VueDatePicker,
     VueTimePicker,
+    Loading,
   },
   created () {
     // 今日の日付を任意の表記にフォーマット化
@@ -148,21 +157,24 @@ export default {
       },
       errors: {}, // バリデーションエラーメッセージ
       dragFlg: false, // 画像ドラッグエリア内へドラッグ中か判別
-      ja:ja // カレンダーの言語用のプラグインを日本語化
+      ja:ja, // カレンダーの言語用のプラグインを日本語化
+      showLoadingFlg: false // ローディング表示フラグ
     };
   },
   methods: {
     // 変更する商品データを取得
     async getEditProduct() {
+      // ローディング表示
+      this.showLoadingFlg = true
       // ストアに保存した商品リストから、商品IDがidパラメーターと一致する商品を取得
       const product = this.productList.find((product) => product.id === this.$route.params.id)
       // 一致する商品がストアに保存されている場合
       if(product) {
-        // // 商品の出品者IDがログインユーザーIDと相違がある場合
-        // if(product.shop.id !== this.user.id) {
-        //   // 前のページへ戻る
-        //   this.$router.back()
-        // }
+        // 商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
+        if(product.shop.id !== this.user.id || product.buy_flg.buy) {
+          // 前のページへ戻る
+          this.$router.back()
+        }
         // 一致した商品をデータへ渡す
         this.formatData(product)
       } else {
@@ -173,16 +185,20 @@ export default {
         if (response.status !== OK) {
           // エラーストアにステータスコードを渡す
           this.$store.commit("error/setCode", response.status);
+          // ローディング表示
+          this.showLoadingFlg = false
           return false;
         }
-        // // 商品の出品者IDがログインユーザーIDと相違がある場合
-        // if(response.data.shop.id !== this.user.id) {
-        //   // 前のページへ戻る
-        //   this.$router.back()
-        // }
+        // 商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
+        if(response.data.shop.id !== this.user.id || response.data.buy_flg.buy) {
+          // 前のページへ戻る
+          this.$router.back()
+        }
         // api通信成功の場合、商品データを渡す
         this.formatData(response.data)
       }
+      // ローディング非表示
+      this.showLoadingFlg = false
     },
     // 取得した商品情報をを整形してデータへ渡す
     formatData(data) {
@@ -273,71 +289,10 @@ export default {
       reader.readAsDataURL(event.target.files[0])
       console.log('onImgChange最後の行')
     },
-    // 出品実行
-    async submit() {
-      const formData = new FormData()
-      // 日付を任意の表記にフォーマット化
-      const bestDay = this.dayToFormat(new Date(this.sellForm.best_day), 'YYYY-MM-DD')
-      formData.append('product_name', this.sellForm.name) // 商品名を追加
-      formData.append('price', this.sellForm.price) // 値段を追加
-      formData.append('best_day', bestDay) // 賞味期限(日付)を追加
-      formData.append('best_time', this.sellForm.best_time) // 賞味期限(時間)を追加
-      // アップロードした商品画像の枚数分ループ
-      for (let i = 0; i < this.sellForm.images.length; i++) {
-        const imgNumber = i + 1;
-        formData.append('image_' + imgNumber, this.sellForm.images[i].uploadFile);
-      }
-
-      let config = {
-        headers: {
-          'content-type': 'multipart/form-data',
-        },
-      };
-
-      // 出品API実行
-      const response = await axios.post('/api/product', formData, config)
-      // ステータスコードが422(バリデーションエラー)の場合
-      if (response.status === UNPROCESSABLE_ENTITY) {
-        const errors = response.data.errors
-        // 自作エラーオブジェクト定義
-        let customErros = {}
-        // 画像バリデーションエラーフラグ
-        let imageErrorFlg = false
-        /* バリデーションエラーオブジェクトの数だけループ
-          複数の画像でバリデーションエラー時、最初のエラーのみ表示させる処理 */
-        for (let key of Object.keys(errors)) {
-          // キー名に「image_」が含まれ、最初の画像バリデーションエラーオブジェクトの場合
-          if(!key.indexOf('image_') && !imageErrorFlg){
-            // 自作エラーオブジェクトにそのままエラーオブジェクトを渡す
-            customErros['image'] = errors[key]
-            // 画像バリデーションエラーをtrue
-            imageErrorFlg = true
-          // キー名に「image_」が含まれてない場合
-          } else if(key.indexOf('image_')) {
-            // 自作エラーオブジェクトにそのままエラーオブジェクトを渡す
-            customErros[key] = errors[key]
-          }
-        }
-        // 自作バリデーションメッセージオブジェクトをデータに渡す
-        this.errors = customErros
-        return false
-      }
-
-      console.log('出品実行完了')
-      console.log('response:', response);
-      // 入力値の初期化
-      this.reset()
-      // api通信失敗の場合
-      if (response.status !== CREATED) {
-        // errorストアのsetCodeアクションを呼び出す
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-      // 出品した商品の詳細画面へ遷移
-      this.$router.push(`/product_list/${response.data.id}`)
-    },
     // 編集実行
     async doEdit() {
+      // ローディング表示
+      this.showLoadingFlg = true
       let formData = new FormData()
       // 日付を任意の表記にフォーマット化
       const bestDay = this.dayToFormat(new Date(this.sellForm.best_day), 'YYYY-MM-DD')
@@ -389,6 +344,8 @@ export default {
         }
         // 自作バリデーションメッセージオブジェクトをデータに渡す
         this.errors = customErros
+        // ローディング表示
+        this.showLoadingFlg = false
         return false
       }
 
@@ -400,6 +357,8 @@ export default {
         console.log('API通信レスポンスOK!じゃない');
         // errorストアのsetCodeアクションを呼び出す
         this.$store.commit('error/setCode', response.status)
+        // ローディング表示
+        this.showLoadingFlg = false
         return false
       }
       // 編集実行後、レスポンスメッセージ表示
@@ -421,6 +380,8 @@ export default {
     },
     // 商品削除
     async doDelete() {
+      // ローディング表示
+      this.showLoadingFlg = true
       console.log("商品削除実行！");
 
       // 商品編集API実行
@@ -432,6 +393,8 @@ export default {
         console.log('API通信レスポンスOK!じゃない');
         // errorストアのsetCodeアクションを呼び出す
         this.$store.commit('error/setCode', response.status)
+        // ローディング表示
+        this.showLoadingFlg = true
         return false
       }
       // 削除成功メッセージ表示

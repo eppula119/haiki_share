@@ -14,7 +14,7 @@
     <section class="p-userMainContainer__productWrap">
       <p class="p-subTitle">出品した商品一覧</p>
         <div class="p-productWrap" v-for="(product, index) of sellProdcuts" :key="index">
-          <img :src="product.images.image_1" class="p-productWrap__img">
+          <img :src="product.images.image_1 ? product.images.image_1 : '../images/no_img.jpeg'" class="p-productWrap__img">
           <div class="p-productWrap__detail">
             <p class="p-productTitle">{{ product.name }}</p>
             <p class="productPrice"><span class="c-textRed">¥</span>{{ product.price }}</p>
@@ -43,7 +43,7 @@
       <p class="p-subTitle">購入された商品一覧</p>
         <RouterLink class="p-productLink" :to="`/product_list/${product.product.id}`" v-for="(product, index) of boughtProducts" :key="index">
           <div class="p-productWrap">
-            <img :src="product.product.images.image_1" class="p-productWrap__img">
+            <img :src="product.product.images.image_1 ? product.product.images.image_1 : '../images/no_img.jpeg'" class="p-productWrap__img">
             <div class="p-productWrap__detail">
               <p class="p-productTitle">{{ product.product.name }}</p>
               <p class="productPrice"><span class="c-textRed">¥</span>{{ product.product.price }}</p>

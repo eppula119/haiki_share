@@ -28,7 +28,6 @@ class Shop extends Authenticatable
         'other_address',
         'profile',
         'prefecture',
-        'email',
         'type'
     ];
 

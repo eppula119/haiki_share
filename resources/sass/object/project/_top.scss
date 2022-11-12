@@ -1,3 +1,9 @@
+.p-introduction, .p-productContainerTop, .p-about, .p-subImg, .p-startBlock {
+  visibility: hidden;
+  transition: all 0.5s;
+  transform: translateY(100px);
+  opacity: 0;
+}
 .p-heroImg {
   position: relative;
   height: 500px;
@@ -48,6 +54,11 @@
   text-align: center;
   padding: 160px 0 80px 0;
   box-sizing: border-box;
+  &.is-active {
+    visibility: visible;
+    transform: translateY(0);
+    opacity: 1;
+  }
   @include mq() {
     padding: 160px 30px 80px 30px;
   }
@@ -96,6 +107,11 @@
 .p-productContainerTop {
   background-color: $white-bg;
   padding: 80px;
+  &.is-active {
+    visibility: visible;
+    transform: translateY(0);
+    opacity: 1;
+  }
   @include mq() {
     padding: 80px 30px;
   }
@@ -138,6 +154,11 @@
   display: flex;
   justify-content: space-between;
   padding: 80px 60px;
+  &.is-active {
+    visibility: visible;
+    transform: translateY(0);
+    opacity: 1;
+  }
   @include mq() {
     flex-direction: column;
     padding: 80px 30px;
@@ -186,6 +207,11 @@
   height: 500px;
   background: url(../images/top_food.jpeg) center center/cover;
   background-attachment: fixed;
+  &.is-active {
+    visibility: visible;
+    transform: translateY(0);
+    opacity: 1;
+  }
   @include mq() {
     height: 600px;
   }
@@ -200,6 +226,10 @@
     height: 100%;
   }
   &__text {
+    visibility: hidden;
+    transform: translateX(200px);
+    transition: all .7s ease-in-out;
+    opacity: 0;
     position: absolute;
     top: 16%;
     right: 0%;
@@ -209,13 +239,22 @@
     font-weight: bold;
     line-height: 1.5;
     letter-spacing: 0.7rem;
+    &.is-active {
+      visibility: visible;
+      transform: translateX(0);
+      opacity: 1;
+    }
     @include mq() {
       top: 50%;
       left: 50%;
       width: 100%;
-      transform: translate(-50%, -50%);
+      transform: translate(50%, -50%);
       padding: 0 30px;
       box-sizing: border-box;
+      &.is-active {
+        transform: translate(-50%, -50%);
+      }
+      
     }
     .p-subImgTextSmall {
       display: block;
@@ -232,6 +271,11 @@
   flex-direction: column;
   align-items: center;
   padding: 120px 240px;
+  &.is-active {
+    visibility: visible;
+    transform: translateY(0);
+    opacity: 1;
+  }
   @include mq() {
     padding: 120px 30px;
   }

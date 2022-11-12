@@ -24,9 +24,9 @@ class ProductController extends Controller
 {
     public function __construct()
     {
-        // 売り手ユーザーの認証が必要
+        // 売り手ユーザーの認証が必要(except配列内のアクションは例外)
         $this->middleware('auth:shop')->except(['showProductList', 'showProduct', 'buyProduct', 'buyCancelProduct', 'getPrefectureList']);
-        // 買い手ユーザーの認証が必要
+        // 買い手ユーザーの認証が必要(except配列内のアクションは例外)
         $this->middleware('auth:user')->except(['showProductList', 'showProduct', 'showSellProduct', 'sellProduct', 'editProduct', 'getPrefectureList', 'showBoughtProductList', 'showSellProductList', 'deleteProduct']);
     }
 
@@ -37,10 +37,18 @@ class ProductController extends Controller
     {
         Log::debug($request->query());
         Log::debug('filterあり');
-            $params = $request->query();
+        $params = $request->query();
+        // TOPページ表示の場合
+        if(!empty($params['pageName']) && $params['pageName'] === 'top') {
+            $products = Product::with(['users', 'shop' => function ($query) {
+                $query->with(['prefecture']);
+            }])->orderBy('created_at', 'desc')->take(3)->get();
+        // 商品一覧表示系の場合
+        } else {
             $products = Product::filter($params)->with(['users', 'shop' => function ($query) {
                 $query->with(['prefecture']);
             }])->orderBy('created_at', 'desc')->paginate(9);
+        }
         
         // ログインユーザー
         $loginUser = Auth::user();
@@ -84,11 +92,16 @@ class ProductController extends Controller
         ->whereHas('product.shop', function($query) use($userId) {
             $query->where('id', $userId);
         })
+        ->orderBy('created_at', 'DESC')
         ->pluck('product_id');
 
+        // 取得した商品IDから商品情報を取得
         $products = Product::whereIn('id', $boughtProducts)->filter($params)->with(['users', 'shop' => function ($query) {
             $query->with(['prefecture']);
-        }])->orderBy('created_at', 'desc')->paginate(9);
+        }])
+        // 購入日が最新順を保って取得
+        ->orderByRaw('FIELD(id, "'.$boughtProducts->implode('","').'")')
+        ->paginate(9);
 
         // 取得した商品の数けループ
         foreach ($products as $product) {
@@ -155,7 +168,12 @@ class ProductController extends Controller
      */
     public function showSellProduct($id)
     {
+        // ログインユーザー
+        $userId = Auth::user()->id;
+
         $product = Product::with('shop')->find($id);
+        // 購入フラグ付与
+        $this->addBuyflg($product, $userId);
 
         return $product;
     }
@@ -169,8 +187,15 @@ class ProductController extends Controller
     {
         Log::debug("requestの中身");
         Log::debug($request);
+        
         // 送られてきた内容のバリデーション
         $this->validator($request->all())->validate();
+
+        // レスポンスで返す配列
+        $response = array(
+            'message' => '',
+            'product' => ''
+        );
         
         $product = new Product();
         Log::debug("new Product()の中身");
@@ -223,8 +248,14 @@ class ProductController extends Controller
             throw $exception;
         }
 
+        // レスポンスで返す配列
+        $response = array(
+            'message' => '商品出品が正常に完了しました。',
+            'product' => $product
+        );
+
         // 新規作成のためレスポンスコードは201(CREATED)を返却
-        return response($product, 201);
+        return response($response, 201);
     }
 
     /**
@@ -413,7 +444,7 @@ class ProductController extends Controller
 
         // レスポンスで返す配列
         $response = array(
-            'message' => '商品編集が正常に了しました。',
+            'message' => '商品編集が正常に完了しました。',
             'product' => $product
         );
 
@@ -740,5 +771,6 @@ class ProductController extends Controller
                 }
             }
         }
+        unset($product['users']);
     }
 }

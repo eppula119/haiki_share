@@ -9,7 +9,9 @@
           :productData="data"
           :type="type"
           v-if="type === 'buy' || type === 'cancel'"
-          @update-page="updatePage"></BuyModal>
+          @update-page="updatePage"
+          @change-loading-flg="changeLoadingFlg"
+          @close-modal="closeModal()"></BuyModal>
         <FilterModal
           ref="filterModal"
           :filterType="childType"
@@ -19,7 +21,10 @@
           v-if="type === 'filter'"></FilterModal>
       </div>
       <div class="c-modal__buttonWrap">
-        <button class="c-modalDoButton c-button c-button--bgGray" @click="closeModal">キャンセル</button>
+        <template>
+          <button class="c-modalDoButton c-button c-button--bgGray" @click="doClear" v-if="type === 'filter'">クリア</button>
+          <button class="c-modalDoButton c-button c-button--bgGray" @click="closeModal" v-else>キャンセル</button>
+        </template>
         <button class="c-modalDoButton c-button c-button--bgBlue" @click="buyProduct" v-if="type === 'buy'">購入する</button>
         <button class="c-modalDoButton c-button c-button--bgBlue" @click="cancelProduct" v-else-if="type === 'cancel'">購入キャンセルする</button>
         <button class="c-modalDoButton c-button c-button--bgBlue" @click="doFilter" v-else-if="type === 'filter'">検索</button>
@@ -81,6 +86,10 @@ export default {
     doFilter() {
       this.$refs.filterModal.doFilter()
     },
+    // 絞り込み関連モーダルコンポーネントの条件クリア
+    doClear() {
+      this.$refs.filterModal.doClear()
+    },
     // 絞り込み商品リスト取得メソッド実行
     getFilterProducts() {
       this.$emit("get-filter-products")
@@ -89,6 +98,10 @@ export default {
     updatePage(message) {
       this.$emit("update-page", message)
     },
+    // ローディング表示・非表示
+    changeLoadingFlg(boolean) {
+      this.$emit("change-loading-flg", boolean)
+    }
   }
 };
 </script>

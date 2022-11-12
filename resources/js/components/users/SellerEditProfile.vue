@@ -1,5 +1,7 @@
 <template>
-  <div class="p-userMainContainer">
+  <div>
+    <Loading v-if="showLoadingFlg" />
+    <div class="p-userMainContainer">
     <h1 class="p-userMainContainer__title">
       プロフィール編集
     </h1>
@@ -74,7 +76,6 @@
       </div>
       <!------------------------ 自己紹介欄 ---------------------------->
       <label class="p-formLabel">自己紹介</label>
-      <span class="p-formCount">1/200</span>
       <!-- 入力フォーム -->
       <textarea class="p-formTextArea" name="introduction" v-model="profileForm.profile"></textarea>
       <!-- バリデーションエラーメッセージ表示箇所 -->
@@ -117,18 +118,27 @@
       <input type="submit" class="p-formMainButton c-button c-button--bgBlue" value="プロフィール更新">
     </form>
     </div>
+    <div class="p-userMainContainer__back">
+      <RouterLink class="p-backLink" to="/seller_mypage">マイページへ戻る</RouterLink>
+    </div>
+    </div>
   </div>
 </template>
 
 <script>
 // storeフォルダ内のファイルで定義した「getters」を参照
 import { mapGetters } from "vuex";
-// 定義したステータスコードをインポート
-import { CREATED, OK, UNPROCESSABLE_ENTITY } from '../../util'
+// 定義したステータスコードや共通関数をインポート
+import { CREATED, OK, UNPROCESSABLE_ENTITY, returnTop } from '../../util'
+// モーダルコンポーネント読み込み
+import Loading from '../Loading.vue'
 
 
 
 export default {
+  components: {
+    Loading,
+  },
   created () {
     // 全都道府県リスト取得
     this.getPrefectureList()
@@ -158,12 +168,15 @@ export default {
       },
       errors: {}, // バリデーションエラーメッセージ
       showPasswordFlg: false, // パスワード変更フォーム表示フラグ
+      showLoadingFlg: false, // ローディング表示フラグ
       prefectureList: {} // 全都道府県リスト
     };
   },
   methods: {
     // 編集実行
     async edit() {
+      // ローディング表示
+      this.showLoadingFlg = true
       // バリデーションメッセージ初期化
       this.errors = {}
       console.log('売り手ユーザープロフィール編集API実行！');
@@ -180,6 +193,8 @@ export default {
         console.log('errors:', this.errors);
         // バリデーションメッセージオブジェクトをデータに渡す
         this.errors = response.data.errors
+        // ローディング非表示
+        this.showLoadingFlg = false
         return false
       }
 
@@ -191,25 +206,31 @@ export default {
         console.log('API通信レスポンスOK!じゃない');
         // errorストアのsetCodeアクションを呼び出す
         this.$store.commit('error/setCode', response.status)
+        // ローディング非表示
+        this.showLoadingFlg = false
         return false
       }
       // 変更後ログインユーザー情報をstoreへ渡す
       await this.$store.dispatch('auth/setUser', response.data.user)
       // フラッシュメッセージを表示させる
       this.showMessage(response.data.message)
+      // 最上部へ移動
+      returnTop()
+      // ローディング非表示
+      this.showLoadingFlg = false
     },
     // パスワード変更フォーム表示・非表示
     changeShowPassword() {
       this.showPasswordFlg = !this.showPasswordFlg
-      // 非表示の場合
-      if(!this.showPasswordFlg) {
-        // パスワード入力値を削除
-        this.profileForm.password = ''
-        this.profileForm.password_confirmation = ''
-      }
+      // パスワード入力値を削除
+      this.profileForm.password = ''
+      this.profileForm.password_confirmation = ''
     },
     // 現在登録されているプロフィール情報をフォームに反映
     reflectData() {
+      // ローディング表示
+      this.showLoadingFlg = true
+
       this.profileForm = {
         id: this.user.id,
         name: this.user.name,
@@ -220,19 +241,28 @@ export default {
         email: this.user.email,
         profile: this.user.profile
       }
+
+      // ローディング非表示
+      this.showLoadingFlg = false
     },
     // 全都道府県リスト情報取得
     async getPrefectureList() {
+      // ローディング表示
+      this.showLoadingFlg = true
       // 全都道府県リスト取得API実行
       const response = await axios.get('/api/all_prefecture_list')
       // api通信失敗の場合
       if (response.status !== OK) {
         // エラーストアにステータスコードを渡す
         this.$store.commit('error/setCode', response.status)
+        // ローディング非表示
+        this.showLoadingFlg = false
         return false
       }
       // 取得した都道府県リストをデータへ渡す
       this.prefectureList = response.data
+      // ローディング非表示
+      this.showLoadingFlg = false
       
       console.log('response:', response);
    

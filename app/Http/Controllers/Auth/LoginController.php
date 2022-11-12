@@ -42,10 +42,13 @@ class LoginController extends Controller
     // ログインユーザー情報を返す
     protected function authenticated(Request $request, $user)
     {
+        // メールアドレスもjson形式で渡す
+        $user->makeVisible(['email']);
         $user->type = 'user';
         return $user;
     }
 
+    // ログアウト実行
     protected function loggedOut(Request $request)
     {
         // セッションを再生成する

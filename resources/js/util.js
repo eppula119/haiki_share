@@ -1,3 +1,4 @@
+
 /**
  * クッキーの値を取得する
  * @param {String} searchKey 検索するキー
@@ -20,6 +21,14 @@ export function getCookieValue(searchKey) {
   })
 
   return val
+}
+
+// 最上部へ戻る
+export function returnTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
 }
 
 /*
