@@ -1,0 +1,9 @@
+.c-message {
+  background-color: $message-bg;
+  line-height: 1.5;
+  padding: 10px;
+  box-sizing: border-box;
+  color: $title-color;
+  font-weight: bold;
+  letter-spacing: .2rem;
+}

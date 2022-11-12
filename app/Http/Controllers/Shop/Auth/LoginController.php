@@ -52,9 +52,12 @@ class LoginController extends Controller
         $shop->type = 'shop';
         // 都道府県情報一緒に返す
         $shop["prefecture"] = $shop->prefecture;
+        // メールアドレスもjson形式で渡す
+        $shop->makeVisible(['email']);
         return $shop;
     }
 
+    // セッション再生性
     protected function loggedOut(Request $request)
     {
         // セッションを再生成する
@@ -63,6 +66,7 @@ class LoginController extends Controller
         return response()->json();
     }
 
+    // ログアウト実行
     public function logout(Request $request)
     {
         $this->guard()->logout();

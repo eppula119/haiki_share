@@ -8,7 +8,7 @@
   width: 40px;
   height: 32px;
   position: relative;
-  z-index: 210;
+  z-index: 1210;
   @include mq('tab') {
     display: inline-block;
   }
@@ -69,12 +69,12 @@
     background-color: $sub-bg;
     padding: 80px 30px;
     box-sizing: border-box;
-    z-index: 200;
+    z-index: 1200;
     transition: .5s;
     &.is-active {
       transition: .5s;
       transform: translateX(-120%);
-      z-index: 100;
+      z-index: 1000;
     }
   }
   &__title, &__searchForm {
@@ -132,6 +132,7 @@
   &__link {
     color: $white-color;
     margin-left: 30px;
+    cursor: pointer;
     @include mq('tab') {
       width: 100%;
       margin-left: 0;
@@ -158,5 +159,6 @@
     font-weight: bold;
     font-size: 100%;
     padding: 0;
+    cursor: pointer;
   }
 }

@@ -1,5 +1,5 @@
 .p-userMainContainer {
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 100px 0;
   @include mq() {
@@ -180,6 +180,11 @@
         line-height: 1.5;
         height: 240px;
       }
+      .p-calendar {
+        @include mq() {
+          width: 100%;
+        }
+      }
       .p-formCalendar {
         margin-top: 10px;
         border: solid 1px $input-border-color;
@@ -216,6 +221,20 @@
         background-color: $white-color;
         color: $error-color;
         border: solid 1px $error-color;
+      }
+    }
+  }
+  &__back {
+    margin-top: 60px;
+    text-align: right;
+    cursor: pointer;
+    font-weight: bold;
+    .p-backLink {
+      color: $title-color;
+      font-size: 1.4rem;
+      transition: all .3s;
+      &:hover {
+        opacity: .5;
       }
     }
   }
@@ -267,6 +286,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        width: 145px;
         height: 60px;
         margin-left: auto;
         @include mq() {

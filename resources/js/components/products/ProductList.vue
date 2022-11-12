@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Loading v-if="showLoadingFlg" />
     <!------------------------ 絞り込み欄 ---------------------------->
     <section class="c-filterWrap">
       <!------------------------ モーダル欄 ---------------------------->
@@ -48,7 +49,7 @@
           :class="{ 'is-disabled': $route.name === 'productList' && product.buy_flg.buy }"
           v-for="(product, index) of productList"
           :key="index">
-          <img :src="product.images.image_1" class="p-itemWrap__img">
+          <img :src="product.images.image_1 ? product.images.image_1 : '../images/no_img.jpeg'" class="p-itemWrap__img">
           <div class="p-itemWrap__detailWrap">
             <p class="p-itemTitle">
               {{ product.name }}
@@ -67,7 +68,7 @@
               <RouterLink
                 v-if="product.shop.id === user.id && !product.buy_flg.buy"
                 class="p-itemButton c-button c-button--bgWhite"
-                :to="`/sell_product/${product.id}`">商品情報を編集
+                :to="`/sell_product/${product.id}`">編集する
               </RouterLink>
             </template>
           </div>
@@ -82,7 +83,7 @@
               <RouterLink
                 v-if="product.shop.id === user.id && !product.buy_flg.buy"
                 class="p-itemLink"
-                :to="`/sell_product/${product.id}`"><span>商品情報を編集＞</span>
+                :to="`/sell_product/${product.id}`"><span>編集する＞</span>
               </RouterLink>
             </div>
             <div class="p-itemWrap__overlay" @mouseover="hoverProduct=product.id" @mouseout="hoverProduct=''"></div>
@@ -111,19 +112,22 @@
 </template>
 
 <script>
-// 定義したステータスコードをインポート
-import { OK } from '../../util'
+// 定義したステータスコードや共通関数をインポート
+import { OK, returnTop } from '../../util'
 // storeフォルダ内のファイルで定義した「state」を参照
-import { mapState, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 // モーダルコンポーネント読み込み
 import Modal from '../Modal/Modal.vue'
 // ページネーションコンポーネント読み込み
 import Pagination from "../Pagination";
+// ローディングコンポーネント読み込み
+import Loading from '../Loading.vue'
 
 export default {
   components: {
     Modal,
-    Pagination
+    Pagination,
+    Loading
   },
   created () {
     // 選択可能な都道府県リスト取得(絞り込み検索時に必要)
@@ -139,15 +143,11 @@ export default {
     // 商品ストアのproductListを参照
     ...mapGetters({
       productList: "product/productList",
-    }),
-    // 商品ストアのparamsを参照
-    ...mapGetters({
+      // 商品ストアのparamsを参照
       params: "product/params",
-    }),
-    ...mapGetters({
       // 認証ユーザーストアのユーザー情報を参照
       user: "auth/user",
-    })
+    }),
   },
   data() {
     return {
@@ -160,12 +160,15 @@ export default {
       isPrefectureList: false, // 都道府県リストを取得完了フラグ
       pageName: '', // 現在ページ
       pcLayoutFlg: false, // pc画面フラグ
-      hoverProduct: '' // マウスホバーしている商品
+      hoverProduct: '', // マウスホバーしている商品
+      showLoadingFlg: false // ローディング表示フラグ
     };
   },
   methods: {
     // 商品リスト取得
     async getProductList () {
+      // ローディング表示
+      this.showLoadingFlg = true
       const pathName = this.$route.name
       let response = {}
       let params = this.params
@@ -196,6 +199,8 @@ export default {
       if (response.status !== OK) {
         // エラーストアにステータスコードを渡す
         this.$store.commit('error/setCode', response.status)
+        // ローディング非表示
+        this.showLoadingFlg = false
         return false
       }
       console.log('response:', response);
@@ -211,8 +216,8 @@ export default {
       this.from = response.data.from;
       // 表示させる最後の商品が、取得した全ての商品数の内、何件目かデータへ渡す
       this.to = response.data.to;
-      // モーダルを閉じた状態にする
-      this.closeModal()
+      // ローディング非表示
+      this.showLoadingFlg = false
     },
     // 絞り込み商品リスト取得
     getFilterProducts () {
@@ -245,6 +250,8 @@ export default {
         this.current_page = page;
         // 商品リスト取得メソッド実行
         this.getProductList();
+        // 最上部へ移動
+        returnTop()
       }
     },
     // 絞り込み関連モーダルを開く

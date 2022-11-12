@@ -1,5 +1,3 @@
-// 定義したステータスコードをインポート
-import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util'
 
 const state = {
   productList: [], // 商品リスト
@@ -34,14 +32,6 @@ const mutations = {
   },
   // stateの絞り込みパラメーターを更新
   updateParams(state, params) {
-    // if (!params) {
-      
-    // }
-    // if (!params.prefecture) {
-    //   params.prefecture = '全ての都道府県'
-    // } else {
-    //   params.prefecture = params.prefecture.toString()
-    // }
     state.params = params;
   },
 }

@@ -1,7 +1,8 @@
 <template>
   <div v-if="product !== {}">
+    <Loading v-if="showLoadingFlg" />
     <!------------------------ モーダル欄 ---------------------------->
-    <Modal ref="modal" @update-page="getProduct"></Modal>
+    <Modal ref="modal" @update-page="getProduct" @change-loading-flg="changeLoadingFlg"></Modal>
     <!------------------------ 商品説明・商品画像欄 ---------------------------->
     <div class="p-productMainContainer">
       <!------------------------ 商品詳細説明欄 ---------------------------->
@@ -15,15 +16,18 @@
           <span class="p-priceBigText">¥{{ product.price.toLocaleString() }}</span>
           税込
         </p>
-        <template v-if="user.type === 'user'">
-          <button class="p-productDetailContainer__button c-button c-button--bgBlue"
-            :class="{ 'is-disabled': product.buy_flg.buy }" @click="openModal('buy')">購入する</button>
-          <button class="p-productDetailContainer__button c-button c-button--bgGray"
-            :class="{ 'is-disabled': !product.buy_flg.buy }">購入済み</button>
-          <button class="p-productDetailContainer__button c-button c-button--bgBlue"
-            :class="{ 'is-disabled': !product.buy_flg.myBuy }" @click="openModal('cancel')">購入をキャンセル</button>
-        </template>
-        <template v-if="user.type === 'shop'">
+        <button class="p-productDetailContainer__button c-button c-button--bgBlue"
+          :class="{ 'c-button--bgGray': user && user.type === 'shop',
+                    'c-button--disabled': user && user.type === 'shop' }"
+          v-if="!product.buy_flg.buy"
+          @click="openModal('buy')">購入する</button>
+        <button class="p-productDetailContainer__button c-button c-button--bgGray"
+          :class="{ 'c-button--disabled': product.buy_flg.buy }"
+          v-else
+          >購入済み</button>
+        <button class="p-productDetailContainer__button c-button c-button--bgBlue"
+          :class="{ 'is-disabled': !product.buy_flg.myBuy }" @click="openModal('cancel')">購入をキャンセル</button>
+        <template v-if="user && user.type === 'shop'">
           <button
             class="p-productDetailContainer__button c-button c-button--bgBlue"
             v-if="product.shop.id === user.id && !product.buy_flg.buy"
@@ -54,7 +58,8 @@
       </section>
       <!------------------------ 商品画像欄 ---------------------------->
       <section class="p-productImgContainer">
-        <img :src="mainImg ? mainImg : product.images.image_1" class="p-productImgContainer__mainImg">
+        <img :src="mainImg ? mainImg : product.images.image_1" class="p-productImgContainer__mainImg" v-if="product.images.image_1">
+        <img :src="'../images/no_img.jpeg'" class="p-productImgContainer__mainImg" v-else>
         <div class="p-productImgContainer__subBlock">
             <img :src="url" class="p-productSubImg" @click="selectImg(url)" v-for="(url, imgKey, index) in product.images" :key="index">
         </div>
@@ -69,16 +74,19 @@
 </template>
 
 <script>
-// 定義したステータスコードをインポート
-import { OK } from '../../util'
+// 定義したステータスコードや共通関数をインポート
+import { OK, returnTop } from '../../util'
 // storeフォルダ内のファイルで定義した「getters」を参照
 import { mapGetters } from "vuex";
 // モーダルコンポーネント読み込み
 import Modal from '../Modal/Modal.vue'
+// ローディングコンポーネント読み込み
+import Loading from '../Loading.vue'
 
 export default {
   components: {
-    Modal
+    Modal,
+    Loading
   },
   mounted() {
     // 画面幅変更時、現在の画面幅を取得
@@ -106,6 +114,7 @@ export default {
         }
       },
       mainImg: '',// メイン画像パス
+      showLoadingFlg: false // ローディング表示フラグ
     };
   },
   computed: {
@@ -119,6 +128,8 @@ export default {
   methods: {
     // 詳細表示させる商品情報取得
     async getProduct(message) {
+      // ローディング表示
+      this.showLoadingFlg = true
       // ストアに保存した商品リストから、商品IDがidパラメーターと一致する商品を取得
       const product = this.productList.find((product) => product.id === this.$route.params.id);
       // 一致する商品がストアに保存されている場合
@@ -133,6 +144,8 @@ export default {
         if (response.status !== OK) {
           // エラーストアにステータスコードを渡す
           this.$store.commit("error/setCode", response.status);
+          // ローディング非表示
+          this.showLoadingFlg = false
           return false;
         }
         // 商品が1つも取得できない場合は商品一覧ページへ遷移
@@ -142,9 +155,13 @@ export default {
         this.product = response.data
       }
       // フラッシュメッセージの表示が必要な場合は表示させる
-      message ? this.showMessage(message) : false
-      // モーダルを閉じた状態にする
-      this.closeModal()
+      if(message) {
+        // 最上部へ移動してメッセージ表示
+        returnTop()
+        this.showMessage(message)
+      }
+      // ローディング非表示
+      this.showLoadingFlg = false
     },
     // サブ画像を大きいサイズで見る
     selectImg(url) {
@@ -165,6 +182,9 @@ export default {
     },
     // 購入関連モーダルを開く
     openModal(type) {
+      if(!this.user) {
+        return this.$router.push('/buyer_login')
+      }
       this.$refs.modal.openModal({ type: type, childType: '', data: this.product })
     },
     // 購入関連モーダルを閉じる
@@ -179,13 +199,17 @@ export default {
         timeout: 5000
       })
     },
+    // ローディング表示・非表示
+    changeLoadingFlg(boolean) {
+      this.showLoadingFlg = boolean
+    },
     // 商品編集画面へ移動
     moveEditProduct() {
       this.$router.push({ name: 'editProduct', params: { id: this.product.id} })
     }
   },
   watch: {
-    //created内では、商品一覧ページの2ページ目表示時は呼ばれないため、ルーティング監視
+    //ルーティング監視
     $route: {
       async handler () {
         // 商品リスト取得メソッド実行

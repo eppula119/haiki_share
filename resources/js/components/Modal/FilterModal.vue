@@ -37,9 +37,9 @@
     <template v-if="filterType === 'price'">
       <span class="c-contentHead">価格</span>
       <div class="c-contentWrap">
-        <input type="text" class="c-contentWrap__input" v-model="price.min">
+        <input type="number" class="c-contentWrap__input" v-model="price.min">
         <span class="c-contentWrap__text">-</span>
-        <input type="text" class="c-contentWrap__input" v-model="price.max">
+        <input type="number" class="c-contentWrap__input" v-model="price.max">
       </div>
     </template>
     <!------------------------ 賞味期限の絞り込みモーダル欄 ---------------------------->
@@ -76,14 +76,14 @@ export default {
   },
   data() {
     return {
-      price: {
+      price: { // 価格入力値
         min: '',
         max: '',
       },
-      bestBefore: [],
-      prefecture: {
+      bestBefore: [], // 賞味期限入力値
+      prefecture: { // 都道府県入力値
         region: {
-          '北海道': {
+          '都道府県名': {
             isPrefectureSelected: [],
             isRegionSelected: false,
             showPrefectureFlg: false
@@ -109,8 +109,24 @@ export default {
       }
       // 商品ストアにパラメーターを渡す
       this.$store.dispatch("product/updateParams", params);
+       // モーダルを閉じる
+      this.$emit("close-modal")
       // 絞り込みした商品リストを取得
       this.$emit("get-filter-products")
+    },
+    // 条件クリア
+    doClear() {
+      switch (this.filterType) {
+        case 'price': // 価格絞り込みの場合
+          this.price = { min: '', max: '' }
+          break;
+        case 'bestBefore': // 賞味期限絞り込みの場合
+          this.bestBefore = []
+        case 'prefecture': // 都道県絞り込みの場合
+          this.createPrefectureData()　
+          break;
+        default:
+      }
     },
     // 地方毎の都道府県全選択、または全選択解除
     selectRegion(region, isRegionSelected) {

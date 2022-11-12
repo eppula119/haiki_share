@@ -31,11 +31,15 @@ class UserController extends Controller
           return $user;
         }
         // 都道府県情報一緒に返す
-        $use["prefecture"] = $user->prefecture;
+        $user["prefecture"] = $user->prefecture;
+        // メールアドレスもjson形式で渡す
+        $user->makeVisible(['email']);
         // 売り手ユーザー情報取得できた場合、{'type': 'shop'}を追加
         $user->type = 'shop';
         return $user;
       }
+      // メールアドレスもjson形式で渡す
+      $user->makeVisible(['email']);
       // 買い手ユーザー情報取得できた場合、{'type': 'user'}を追加
       $user->type = 'user';
       // ログインユーザー情報を返す
@@ -68,7 +72,7 @@ class UserController extends Controller
             $query->with(['prefecture']);
         }])
         ->orderBy('updated_at', 'DESC') // 購入商品を購入日の降順(日付の最新順)に並び替え
-        ->paginate(5);
+        ->paginate(10);
         $products = $buyProducts;
       // ログインユーザーが売り手ユーザーの場合
       } else if($request->type === 'shop') {
@@ -79,18 +83,23 @@ class UserController extends Controller
         // ログインユーザーのID保持
         $userId = $request->userId;
         // 商品モデルから出品商品を最近出品した順に5件取得
-        $sellProducts = Product::where('shop_id', $userId)->where('deleted_at', NULL)->orderBy('created_at','desc')->take(5)->get();
+        $sellProducts = Product::where('shop_id', $userId)
+          ->where('deleted_at', NULL)
+          ->orderBy('created_at','desc')
+          ->take(5)
+          ->get();
         if(!empty($sellProducts)) {
           $productController = new ProductController;
           // 取得した出品商品の数だけループ
           foreach ($sellProducts as $product) {
+              $product->makeHidden(['best_time', 'best_day']);
               // 購入フラグ付与
               $productController->addBuyFlg($product, $userId);
           }
         }
 
 
-        // 商品モデルから出品商品を最近出品した順に5件取得
+        // 購入商品モデルから出品商品を最近出品した順に5件取得
         $boughtProducts = BoughtProduct::select('product_id')->whereIn('created_at', function($q)  {
             return $q->from('bought_products')
                 ->selectRaw('MAX(created_at) as created_at') // 購入日が最新の商品のみ取得
@@ -134,7 +143,7 @@ class UserController extends Controller
         Log::debug($request);
         // バリデーション実行
         $request->validate([
-            'name' => 'required|string|max:255|unique:users,name,'.$request->id.',id',
+            'name' => 'nullable|string|max:20',
             'email' => 'required|string|email|max:255|unique:users,email,'.$request->id.',id',
         ]);
         $user->name = $request->name;
@@ -267,7 +276,7 @@ class UserController extends Controller
         Log::debug('バリデーションにかけるデータの中身');
         Log::debug($data);
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:20'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);

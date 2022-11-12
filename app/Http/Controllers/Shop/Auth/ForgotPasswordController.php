@@ -38,7 +38,6 @@ class ForgotPasswordController extends Controller
     }
 
     /**
-     * send mail
      * 送られてきた内容をテーブルに保存してパスワード変更メールを送信
      *
      * @param  \Illuminate\Http\Request  $request

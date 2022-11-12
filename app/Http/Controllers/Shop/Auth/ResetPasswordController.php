@@ -130,6 +130,12 @@ class ResetPasswordController extends Controller
         event(new PasswordReset($shop));
         // ユーザをログインさせる
         Auth::guard('shop')->login($shop);
+        // ユーザー種別を渡す
+        $shop->type = 'shop';
+        // 都道府県情報一緒に返す
+        $shop["prefecture"] = $shop->prefecture;
+        // メールアドレスもjson形式で渡す
+        $shop->makeVisible(['email']);
         // ユーザ(売り手)を返却
         return $shop;
     }

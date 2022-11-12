@@ -166,7 +166,7 @@ const routes = [
     component: BuyerEditProfile,
     beforeEnter(to, from, next) {
       // ログイン中の場合
-      if (store.getters['auth/check']) {
+      if (store.getters['auth/check'] && store.getters['auth/user'].type === "user") {
         // マイページへ遷移
         next()
       } else {
@@ -182,7 +182,7 @@ const routes = [
     component: SellerEditProfile,
     beforeEnter(to, from, next) {
       // ログイン中の場合
-      if (store.getters['auth/check']) {
+      if (store.getters['auth/check'] && store.getters['auth/user'].type === "shop") {
         // マイページへ遷移
         next()
       } else {
@@ -247,7 +247,7 @@ const routes = [
     component: SellProduct,
     beforeEnter(to, from, next) {
       // ログイン中の場合
-      if (store.getters['auth/check']) {
+      if (store.getters['auth/check'] && store.getters['auth/user'].type === "shop") {
         // 出品画面へ遷移
         next()
       } else {
@@ -295,7 +295,7 @@ const routes = [
     component: ProductList,
     beforeEnter(to, from, next) {
       // ログイン中の場合
-      if (store.getters['auth/check']) {
+      if (store.getters['auth/check'] && store.getters['auth/user'].type === "shop") {
         // 購入された商品一覧へ遷移
         next()
       } else {
@@ -318,10 +318,20 @@ const routes = [
   }
 ]
 
+// 画面遷移時のスクロール振る舞い定義
+const scrollBehavior = (to, from, savedPosition) => {
+  if (savedPosition) {
+    return savedPosition; // 戻るや進むの操作時はページ遷移前のスクロール位置を維持
+  } else {
+    return { x: 0, y: 0 } // 画面遷移時は画面最上部へ移動
+  }
+};
+
 // VueRouterインスタンス作成
 const router = new VueRouter({
   mode: 'history', // URLの末尾にハッシュ(#)を表示させない設定
-  routes
+  routes,
+  scrollBehavior
 })
 
 // app.jsでインポートするため、VueRouterインスタンスをエクスポート

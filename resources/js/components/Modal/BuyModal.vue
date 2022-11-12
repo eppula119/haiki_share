@@ -56,13 +56,13 @@ export default {
       user: "auth/user",
     })
   },
-  data() {
-    return {
-    };
-  },
   methods: {
     // 商品購入実行
     async buyProduct() {
+      // ローディング表示
+      this.$emit("change-loading-flg", true)
+      // モーダルを閉じる
+      this.$emit("close-modal")
       console.log('購入実行！');
       // 未ログインの場合
       if(!this.user) {
@@ -83,6 +83,8 @@ export default {
         if (response.status !== OK) {
           // errorストアのsetCodeアクションを呼び出す
           this.$store.commit('error/setCode', response.status)
+          // ローディング非表示
+          this.$emit("change-loading-flg", false)
           return false
         }
 
@@ -103,6 +105,10 @@ export default {
     },
     // 購入キャンセル実行
     async cancelProduct() {
+      // ローディング表示
+      this.$emit("change-loading-flg", true)
+      // モーダルを閉じる
+      this.$emit("close-modal")
       console.log('購入キャンセル実行！');
       // 未ログインの場合
       if(!this.user) {
@@ -122,17 +128,20 @@ export default {
         if (response.status !== OK) {
           // errorストアのsetCodeアクションを呼び出す
           this.$store.commit('error/setCode', response.status)
+          // ローディング非表示
+          this.$emit("change-loading-flg", false)
           return false
         }
         // api通信成功の場合、購入キャンセルした商品の最新データをストアの商品リストデータを渡す
         this.$store.dispatch("product/updateProduct", response.data.product);
-
         // ページ情報を更新
         this.$emit("update-page", response.data.message);
         
       // 買い手ユーザー以外の場合
       } else {
         console.log('買い手ユーザーじゃない');
+        // ローディング非表示
+        this.$emit("change-loading-flg", false)
         // 商品購入キャンセルは行わない
         return false
       }

@@ -130,6 +130,10 @@ class ResetPasswordController extends Controller
         event(new PasswordReset($user));
         // ユーザをログインさせる
         Auth::login($user, true);
+        // メールアドレスもjson形式で渡す
+        $user->makeVisible(['email']);
+        // ユーザー種別を渡す
+        $user->type = 'user';
         // ユーザ(買い手)を返却
         return $user;
     }
