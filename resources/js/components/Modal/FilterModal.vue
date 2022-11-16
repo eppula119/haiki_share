@@ -109,7 +109,7 @@ export default {
       }
       // 商品ストアにパラメーターを渡す
       this.$store.dispatch("product/updateParams", params);
-       // モーダルを閉じる
+      // モーダルを閉じる
       this.$emit("close-modal")
       // 絞り込みした商品リストを取得
       this.$emit("get-filter-products")
