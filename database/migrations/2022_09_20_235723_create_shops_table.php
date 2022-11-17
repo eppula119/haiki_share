@@ -15,7 +15,6 @@ class CreateShopsTable extends Migration
     {
         Schema::create('shops', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('group')->default(1);
             $table->string('name')->nullable();
             $table->string('branch_name')->nullable();
             $table->unsignedInteger('prefecture_id');
