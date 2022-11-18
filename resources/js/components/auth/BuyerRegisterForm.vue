@@ -99,8 +99,8 @@ export default {
       await this.$store.dispatch('auth/register', this.registerForm)
       // apiステータスがtrueの場合(api通信成功の場合)
       if (this.apiStatus) {
-      // トップページに移動する
-      this.$router.push('/')
+      // 商品一覧ページに移動する
+      this.$router.push('/product_list')
       }
       // ローディング非表示
       this.showLoadingFlg = false

@@ -1504,7 +1504,7 @@ mixin
 @media screen and (max-width: 767px) {
   .p-introduction__desc {
     text-align: left;
-    line-height: 1.2;
+    line-height: 2;
   }
 }
 
@@ -1927,6 +1927,7 @@ mixin
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
+  background-color: #FFF;
 }
 @media screen and (max-width: 767px) {
   .p-userMainContainer__formWrap .p-form .p-formSelect {

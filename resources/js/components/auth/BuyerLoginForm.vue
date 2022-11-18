@@ -89,8 +89,8 @@ export default {
       if (this.apiStatus) {
         // ログインユーザー情報を取得
         await this.$store.dispatch('auth/currentUser')
-        // トップページに移動する
-        this.$router.push('/')
+        // 商品一覧ページに移動する
+        this.$router.push('/product_list')
       }
       // ローディング非表示
       this.showLoadingFlg = false

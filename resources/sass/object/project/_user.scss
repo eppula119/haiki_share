@@ -173,6 +173,7 @@
         width: 30%;
         font-size: 1.6rem;
         appearance: none;
+        background-color: $white-bg;
         @include mq() {
           width: 40%;
         }
