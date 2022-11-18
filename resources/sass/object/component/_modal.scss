@@ -59,7 +59,7 @@
       margin-top: 30px;
       &__label {
         display: block;
-        margin-top: 15px;
+        margin-top: 25px;
         cursor: pointer;
         &:first-child {
           margin-top: 0;
@@ -76,9 +76,6 @@
       overflow: scroll;
       &__block {
         margin-top: 10px;
-        &:first-of-type {
-          margin-top: 0;
-        }
         .c-regionBlock {
           padding-bottom: 8px;
           border-bottom: 1px solid $gray-color;
