@@ -545,7 +545,7 @@ mixin
 }
 @media screen and (max-width: 767px) {
   .c-modal__content .c-pullDownCheckWrap__block .c-pullDownCheckItem {
-    width: 35%;
+    width: 40%;
   }
 }
 .c-modal__content .c-pullDownCheckWrap__block .c-pullDownCheckItem .c-contentCheckbox {
@@ -562,7 +562,7 @@ mixin
 }
 @media screen and (max-width: 767px) {
   .c-modal__content .c-pullDownCheckWrap__block .c-pullDownIcon {
-    width: 55%;
+    width: 45%;
   }
 }
 .c-modal__content .c-pullDownCheckWrap__block .c-prefectureBlock {
