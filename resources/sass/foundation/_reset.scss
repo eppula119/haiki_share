@@ -171,3 +171,9 @@ input,
 select {
   vertical-align: middle;
 }
+
+input::-webkit-credentials-auto-fill-button {
+  margin: 0;
+  width: 0;
+  background-color: transparent;
+}

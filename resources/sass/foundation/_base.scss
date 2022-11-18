@@ -27,3 +27,10 @@ li {
 input:focus, textarea:focus, select {
   outline: none;
 }
+
+input[type=checkbox] {
+  transform-origin: left;
+  -webkit-transform-origin: left;
+  transform: scale(2.2);
+  -webkit-transform: scale(2, 2);
+}

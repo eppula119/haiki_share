@@ -65,10 +65,8 @@
           margin-top: 0;
         }
         .c-checkboxInput {
-          width: 25px;
-          height: 25px;
           accent-color: $button-color;
-          margin: 0 15px 0 0;
+          margin: 0 25px 0 0;
         }
       }
     }
@@ -94,9 +92,7 @@
             width: 35%;
           }
           .c-contentCheckbox {
-            width: 25px;
-            height: 25px;
-            margin: 0 15px 0 0;
+            margin: 0 25px 0 0;
             accent-color: $button-color;
           }
         }
@@ -131,9 +127,7 @@
         line-height: 25px;
         border-bottom: solid 1px $gray-color;
         .c-contentCheckbox {
-          width: 25px;
-          height: 25px;
-          margin: 0 15px 0 0;
+          margin: 0 25px 0 0;
           accent-color: $button-color;
         }
       }

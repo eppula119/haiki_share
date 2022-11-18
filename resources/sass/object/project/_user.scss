@@ -171,6 +171,7 @@
       }
       .p-formSelect {
         width: 30%;
+        font-size: 1.6rem;
         appearance: none;
         @include mq() {
           width: 40%;

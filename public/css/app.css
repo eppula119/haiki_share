@@ -175,6 +175,12 @@ select {
   vertical-align: middle;
 }
 
+input::-webkit-credentials-auto-fill-button {
+  margin: 0;
+  width: 0;
+  background-color: transparent;
+}
+
 html {
   /* デフォルトのフォントサイズを10pxに設定。主要ブラウザのフォントサイズは
   デフォルト値が16pxであり、「16×0.625＝10px」になる */
@@ -203,6 +209,13 @@ li {
 
 input:focus, textarea:focus, select {
   outline: none;
+}
+
+input[type=checkbox] {
+  transform-origin: left;
+  -webkit-transform-origin: left;
+  transform: scale(2.2);
+  -webkit-transform: scale(2, 2);
 }
 
 /* ---------------------------------
@@ -506,10 +519,8 @@ mixin
   margin-top: 0;
 }
 .c-modal__content .c-checkboxWrap__label .c-checkboxInput {
-  width: 25px;
-  height: 25px;
   accent-color: #008CD6;
-  margin: 0 15px 0 0;
+  margin: 0 25px 0 0;
 }
 .c-modal__content .c-pullDownCheckWrap {
   height: 50vh;
@@ -538,9 +549,7 @@ mixin
   }
 }
 .c-modal__content .c-pullDownCheckWrap__block .c-pullDownCheckItem .c-contentCheckbox {
-  width: 25px;
-  height: 25px;
-  margin: 0 15px 0 0;
+  margin: 0 25px 0 0;
   accent-color: #008CD6;
 }
 .c-modal__content .c-pullDownCheckWrap__block .c-pullDownIcon {
@@ -576,9 +585,7 @@ mixin
   border-bottom: solid 1px #d3d3d3;
 }
 .c-modal__content .c-pullDownCheckWrap__childItem .c-contentCheckbox {
-  width: 25px;
-  height: 25px;
-  margin: 0 15px 0 0;
+  margin: 0 25px 0 0;
   accent-color: #008CD6;
 }
 .c-modal__content .c-contentImgBlock {
@@ -1917,6 +1924,7 @@ mixin
 }
 .p-userMainContainer__formWrap .p-form .p-formSelect {
   width: 30%;
+  font-size: 1.6rem;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
