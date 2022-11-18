@@ -86,8 +86,10 @@
   <section class="p-startBlock js-sectionTarget">
     <h1 class="p-startBlock__title">Haiki Share</h1>
     <span class="p-startBlock__summary">〜廃棄食品で世界を救う〜</span>
-    <button class="p-startBlock__button c-button c-button--bgBlue">買い手として利用</button>
-    <button class="p-startBlock__button c-button c-button--bgBlue">売り手として利用</button>
+    <button class="p-startBlock__button c-button c-button--bgBlue"
+      @click="$router.push('buyer_register')">買い手として利用</button>
+    <button class="p-startBlock__button c-button c-button--bgBlue"
+      @click="$router.push('seller_login')">売り手として利用</button>
   </section>
   </div>
 </template>
