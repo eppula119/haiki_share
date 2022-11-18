@@ -1,0 +1,12 @@
+.p-error {
+  height: calc(100vh - 170px);
+  padding: 30px;
+  box-sizing: border-box;
+  &__text {
+    line-height: 1.5;
+    .p-errorLink {
+      font-weight: bold;
+      color: $title-color;
+    }
+  }
+}

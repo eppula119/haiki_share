@@ -816,6 +816,19 @@ mixin
   margin-top: 60px;
 }
 
+.p-error {
+  height: calc(100vh - 170px);
+  padding: 30px;
+  box-sizing: border-box;
+}
+.p-error__text {
+  line-height: 1.5;
+}
+.p-error__text .p-errorLink {
+  font-weight: bold;
+  color: #003C76;
+}
+
 .p-headerTitle__img {
   width: 80px;
   height: 60px;
