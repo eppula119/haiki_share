@@ -1,5 +1,5 @@
 <div><br>
-	<p>haiki_shareにて、貴店の出品した商品が購入されました。<br>
+	<p><a href="https://haiki-share.net">haiki_share</a>にて、貴店の出品した商品が購入されました。<br>
 		以下の注文内容をご確認下さい。</p><br>
 	<span>---------------------------</span><br>
     <p>＜購入者情報＞</p>

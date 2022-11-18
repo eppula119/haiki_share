@@ -20,7 +20,7 @@
                <div>
                 =========================================<br>
                 コンビニ廃棄食品シェアサービス: haiki-share<br>
-                URL: <a href="https://haiki-share.net">haiki-share.net</a>
+                URL: <a href="https://haiki-share.net">haiki-share.net</a><br>
                 =========================================
                </div>
             </div>
