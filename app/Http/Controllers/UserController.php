@@ -6,7 +6,6 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth; //認証に関わる物を使う
 use Illuminate\Support\Facades\DB; // データベースの操作
 use Illuminate\Support\Facades\Hash; // ハッシュ化
-use Illuminate\Support\Facades\Log; //ログ取得
 use App\Models\BoughtProduct; // 購入モデル
 use App\Models\Product; // 商品モデル
 use App\Models\Prefecture; // 都道府県モデル
@@ -139,8 +138,6 @@ class UserController extends Controller
         if($user->id != $request->id ) {
           return response('不正な操作です。', 400);
         }
-        Log::debug("requestの中身");
-        Log::debug($request);
         // バリデーション実行
         $request->validate([
             'name' => 'nullable|string|max:20',
@@ -150,13 +147,11 @@ class UserController extends Controller
         $user->email = $request->email;
 
         if($request->has('password')) {
-          Log::debug("パスワードあり");
           $request->validate([
               'password' => 'required|string|min:6|confirmed',
           ]);
           $user->password = Hash::make($request->password);
         }
-        Log::debug("バリデーションクリア");
 
         /* トランザクションを利用 */
         DB::beginTransaction();
@@ -167,7 +162,6 @@ class UserController extends Controller
             // データーベースへ保存実行
             DB::commit();
         } catch (\Exception $exception) {
-            Log::debug('例外発生');
             // データベースを保存前に戻す
             DB::rollBack();
         
@@ -199,8 +193,6 @@ class UserController extends Controller
         if($shop->id != $request->id ) {
           return response('不正な操作です。', 400);
         }
-        Log::debug("requestの中身");
-        Log::debug($request);
         // バリデーション実行
         $request->validate([
             'name' => 'required|string|max:255',
@@ -225,7 +217,6 @@ class UserController extends Controller
           ]);
           $shop->password = Hash::make($request->password);
         }
-        Log::debug("バリデーションクリア");
 
         /* トランザクションを利用 */
         DB::beginTransaction();
@@ -236,7 +227,6 @@ class UserController extends Controller
             // データーベースへ保存実行
             DB::commit();
         } catch (\Exception $exception) {
-            Log::debug('例外発生');
             // データベースを保存前に戻す
             DB::rollBack();
         
@@ -263,7 +253,6 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getAllPrefectureList() {
-        Log::debug('都道府県リスト取得API実行');
         $prefectures = Prefecture::all();
 
         return $prefectures;
@@ -277,8 +266,6 @@ class UserController extends Controller
      */
     protected function validator(array $data)
     {
-        Log::debug('バリデーションにかけるデータの中身');
-        Log::debug($data);
         return Validator::make($data, [
             'name' => ['nullable', 'string', 'max:20'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log; //ログ取得
 
 class RegisterController extends Controller
 {
@@ -50,7 +49,6 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        Log::debug('売り手ユーザー登録バリデーション実行');
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'branch_name' => ['required', 'string', 'max:255'],
@@ -70,7 +68,6 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        Log::debug('売り手ユーザー登録,db保存実行');
         return Shop::create([
             'name' => $data['name'],
             'branch_name' => $data['branch_name'],
@@ -95,8 +92,6 @@ class RegisterController extends Controller
     // 売り手ユーザー情報を返す
     protected function registered(Request $request, $shop)
     {
-        Log::debug('売り手ユーザー登録完了し、登録売り手ユーザー情報を返す');
-        Log::debug($shop);
         $shop->type = 'shop';
         // 都道府県情報一緒に返す
         $shop["prefecture"] = $shop->prefecture;

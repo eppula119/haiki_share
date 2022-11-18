@@ -79,14 +79,12 @@ export default {
     async forgot() {
       // ローディング表示
       this.showLoadingFlg = true
-      console.log('パスワードリマインダーメール送信！')
       // 売り手か買い手かどちらの種別か付与
       this.forgotForm.type = this.isType
       // authストアのforgotアクションを呼び出す
       await this.$store.dispatch('auth/forgot', this.forgotForm)
       // apiステータスがtrueの場合(api通信成功の場合)
       if (this.apiStatus) {
-        console.log('メールを送信しました。');
         this.successMailFlg = true
       }
       // ローディング非表示

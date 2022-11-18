@@ -138,7 +138,6 @@ export default {
         this.product = product
       } else {
         // 一致した商品がない場合、商品情報取得API実行
-        console.log("get通信開始");
         const response = await axios.get(`/api/product_list/${this.$route.params.id}`);
         // api通信失敗の場合
         if (response.status !== OK) {

@@ -85,7 +85,6 @@ export default {
         // ローディング表示
         this.showLoadingFlg = true
         // マイページ表示(購入商品取得)API実行
-        console.log("get通信開始");
         const userData = {userId: this.user.id, type: this.user.type}
 
         const response = await axios.get(`/api/mypage?page=${this.current_page}`, { params: userData });
@@ -99,8 +98,6 @@ export default {
         }
         // フラッシュメッセージの表示が必要な場合は表示させる
         message ? this.showMessage(message) : false
-
-        console.log('response:', response);
         // api通信成功の場合、購入商品リストデータを渡す
         this.products = response.data.data;
         // 現在のページ番号をデータへ渡す

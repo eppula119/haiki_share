@@ -6,7 +6,6 @@ use App\Http\Controllers\Shop\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log; //ログ取得
 
 class LoginController extends Controller
 {

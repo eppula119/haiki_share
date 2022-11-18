@@ -175,21 +175,18 @@ export default {
       switch (pathName) {
         case 'boughtProductList':
           this.pageName = '購入された商品、'
-          console.log('購入された商品チイラン取得');
           // 購入された商品リスト取得API実行
           params.userId = this.user.id
           response = await axios.get(`/api/bought_product_list?page=${this.current_page}`, { params })
           break;
         case 'sellProductList':
           this.pageName = '出品した商品、'
-          console.log('出品した商品チイラン取得');
           // 購入された商品リスト取得API実行
           params.userId = this.user.id
           response = await axios.get(`/api/sell_product_list?page=${this.current_page}`, { params })
           break;
         default:
           this.pageName = ''
-          console.log('全商品チイラン取得');
           // 商品リスト取得API実行
           response = await axios.get(`/api/product_list?page=${this.current_page}`, { params })
           break;
@@ -203,7 +200,6 @@ export default {
         this.showLoadingFlg = false
         return false
       }
-      console.log('response:', response);
       // api通信成功の場合、商品ストアへ取得した商品リストデータを渡す
       this.$store.dispatch("product/setProductList", response.data.data);
       // 現在のページ番号をデータへ渡す
@@ -241,7 +237,6 @@ export default {
       // 都道府県リストを取得完了フラグをtrue
       this.isPrefectureList = true
       
-      console.log('response:', response);
     },
     // ページ切り替え
     changePage(page) {

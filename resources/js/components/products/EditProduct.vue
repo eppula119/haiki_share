@@ -131,7 +131,6 @@ export default {
   created () {
     // 今日の日付を任意の表記にフォーマット化
     const initBestDate = this.dayToFormat(new Date(), 'YYYY-MM-DD')
-    console.log('initBestDate:', initBestDate);
     // フォーマット化した今日の日付をデータへ渡す
     this.sellForm.best_day = initBestDate
     // 変更する商品取得メソッド実行
@@ -179,7 +178,6 @@ export default {
         this.formatData(product)
       } else {
         // 一致した商品がない場合、商品情報取得API実行
-        console.log("get通信開始");
         const response = await axios.get(`/api/sell_product/${this.$route.params.id}`);
         // api通信失敗の場合
         if (response.status !== OK) {
@@ -202,7 +200,6 @@ export default {
     },
     // 取得した商品情報をを整形してデータへ渡す
     formatData(data) {
-      console.log('data:', data);
       this.sellForm.name = data.name
       this.sellForm.price = data.price
       // 「2022年01月01日」 → 「2022/01/01」に変換
@@ -221,7 +218,6 @@ export default {
     },
     // 画像をアップロードエリアにドラッグ
     dragImg() {
-        console.log('Enter Drop Area');
         this.dragFlg = true;
     },
     // ドラッグ&ドロップエリアから外れる
@@ -230,17 +226,13 @@ export default {
     },
     // 画像をドロップ
     dropImg(event) {
-      console.log(event.dataTransfer.files)
-      console.log(event.dataTransfer.files[0])
       // ファイルが画像ではなかったら処理中断
       if (!event.dataTransfer.files[0].type.match('image.*')) {
-        console.log("画像ファイルではありません");
         this.dragFlg = false
         return false
       }
       // 5枚アップロード済みの場合は処理中断
       if (this.sellForm.images.length >= 5) {
-        console.log("既に5枚の画像をアップロード済みです");
         this.dragFlg = false
         return false
       }
@@ -258,15 +250,11 @@ export default {
     },
     // 商品画像の選択時に実行される
     onImgChange (event) {
-      console.log('event.target.files:', event.target.files);
-      console.log('event.target.files[0]:', event.target.files[0]);
       // ファイルが画像ではなかったら処理中断
       if (! event.target.files[0].type.match('image.*')) {
-        console.log("画像ファイルではありません");
       }
       // 5枚アップロード済みの場合は処理中断
       if (this.sellForm.images.length >= 5) {
-        console.log("既に5枚の画像をアップロード済みです");
         return false
       }
 
@@ -277,17 +265,13 @@ export default {
 
       // ファイルを読み込み終わったタイミングで実行する処理
       reader.onload = e => {
-        console.log('e.target.result:', e.target.result);
         imgObj.url = e.target.result;
         imgObj.uploadFile = event.target.files[0];
         self.sellForm.images.push(imgObj);
-        console.log('imgObj:', imgObj);
-        console.log('self.sellForm:', self.sellForm);
       }
 
       // ファイル読み込み。読み込まれたファイルはデータURL形式で受け取れる
       reader.readAsDataURL(event.target.files[0])
-      console.log('onImgChange最後の行')
     },
     // 編集実行
     async doEdit() {
@@ -305,7 +289,6 @@ export default {
         const imgNumber = i + 1;
         formData.append('image_' + imgNumber, this.sellForm.images[i].uploadFile);
       }
-      console.log(...formData.entries());
 
       let config = {
         headers: {
@@ -318,11 +301,9 @@ export default {
 
       // 商品編集API実行
       const response = await axios.post(`/api/product/${this.$route.params.id}`, formData, config)
-      console.log('response:', response);
       // ステータスコードが422(バリデーションエラー)の場合
       if (response.status === UNPROCESSABLE_ENTITY) {
         const errors = response.data.errors
-        console.log('errors:', errors);
         // 自作エラーオブジェクト定義
         let customErros = {}
         // 画像バリデーションエラーフラグ
@@ -349,12 +330,8 @@ export default {
         return false
       }
 
-      console.log('商品編集実行完了')
-      console.log('response:', response);
-
       // api通信失敗の場合
       if (response.status !== OK) {
-        console.log('API通信レスポンスOK!じゃない');
         // errorストアのsetCodeアクションを呼び出す
         this.$store.commit('error/setCode', response.status)
         // ローディング表示
@@ -368,7 +345,6 @@ export default {
     },
     // 入力値初期化
     reset() {
-      console.log("リセット実行");
       this.sellForm = {
         images: [],
         name: '',
@@ -382,15 +358,12 @@ export default {
     async doDelete() {
       // ローディング表示
       this.showLoadingFlg = true
-      console.log("商品削除実行！");
 
       // 商品編集API実行
       const response = await axios.delete(`/api/product/${this.$route.params.id}`)
-      console.log('response:', response);
 
       // api通信失敗の場合
       if (response.status !== OK) {
-        console.log('API通信レスポンスOK!じゃない');
         // errorストアのsetCodeアクションを呼び出す
         this.$store.commit('error/setCode', response.status)
         // ローディング表示
@@ -404,7 +377,6 @@ export default {
     },
     // 今日の日付を任意の表記にフォーマット化
     dayToFormat(date, format) {
-      console.log('date:', date);
       // フォーマット文字列内のキーワードを日付に置換する
       format = format.replace(/YYYY/g, date.getFullYear());
       format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
@@ -426,7 +398,6 @@ export default {
     },
     // フラッシュメッセージを表示
     showMessage(message) {
-      console.log('message:', message);
       // MESSAGEストアに購入キャンセル成功メッセージを渡す
       this.$store.commit("message/setContent", {
         content: message,

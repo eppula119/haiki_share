@@ -16,7 +16,6 @@ const mutations = {
   },
   // stateの商品リストに新しく取得した商品を追加
   updateProduct(state, product) {
-    console.log('product:', product);
     // 商品リストから新しく取得した商品データの存在確認
     const existProductFlg = state.productList.find(el => el.id === product.id)
     // 存在する場合

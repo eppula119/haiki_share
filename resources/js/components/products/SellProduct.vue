@@ -150,7 +150,6 @@ export default {
   methods: {
     // 画像をアップロードエリアにドラッグ
     dragImg() {
-        console.log('Enter Drop Area');
         this.dragFlg = true;
     },
     // ドラッグ&ドロップエリアから外れる
@@ -159,17 +158,13 @@ export default {
     },
     // 画像をドロップ
     dropImg(event) {
-      console.log(event.dataTransfer.files)
-      console.log(event.dataTransfer.files[0])
       // ファイルが画像ではなかったら処理中断
       if (!event.dataTransfer.files[0].type.match('image.*')) {
-        console.log("画像ファイルではありません");
         this.dragFlg = false
         return false
       }
       // 5枚アップロード済みの場合は処理中断
       if (this.sellForm.images.length >= 5) {
-        console.log("既に5枚の画像をアップロード済みです");
         this.dragFlg = false
         return false
       }
@@ -187,15 +182,11 @@ export default {
     },
     // 商品画像の選択時に実行される
     onImgChange (event) {
-      console.log('event.target.files:', event.target.files);
-      console.log('event.target.files[0]:', event.target.files[0]);
       // ファイルが画像ではなかったら処理中断
       if (! event.target.files[0].type.match('image.*')) {
-        console.log("画像ファイルではありません");
       }
       // 5枚アップロード済みの場合は処理中断
       if (this.sellForm.images.length >= 5) {
-        console.log("既に5枚の画像をアップロード済みです");
         return false
       }
 
@@ -206,17 +197,13 @@ export default {
 
       // ファイルを読み込み終わったタイミングで実行する処理
       reader.onload = e => {
-        console.log('e.target.result:', e.target.result);
         imgObj.url = e.target.result;
         imgObj.uploadFile = event.target.files[0];
         self.sellForm.images.push(imgObj);
-        console.log('imgObj:', imgObj);
-        console.log('self.sellForm:', self.sellForm);
       }
 
       // ファイル読み込み。読み込まれたファイルはデータURL形式で受け取れる
       reader.readAsDataURL(event.target.files[0])
-      console.log('onImgChange最後の行')
     },
     // 出品実行
     async submit() {
@@ -235,7 +222,6 @@ export default {
         const imgNumber = i + 1;
         formData.append('image_' + imgNumber, this.sellForm.images[i].uploadFile);
       }
-      console.log(...formData.entries());
 
       let config = {
         headers: {
@@ -273,9 +259,6 @@ export default {
         this.showLoadingFlg = false
         return false
       }
-
-      console.log('出品実行完了')
-      console.log('response:', response);
       // 入力値の初期化
       this.reset()
       // api通信失敗の場合
@@ -293,7 +276,6 @@ export default {
     },
     // 入力値初期化
     reset() {
-      console.log("リセット実行");
       this.sellForm = {
         images: [],
         name: '',
@@ -313,7 +295,6 @@ export default {
     },
     // フラッシュメッセージを表示
     showMessage(message) {
-      console.log('message:', message);
       // MESSAGEストアに購入キャンセル成功メッセージを渡す
       this.$store.commit("message/setContent", {
         content: message,

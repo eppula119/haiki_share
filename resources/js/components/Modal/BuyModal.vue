@@ -63,7 +63,6 @@ export default {
       this.$emit("change-loading-flg", true)
       // モーダルを閉じる
       this.$emit("close-modal")
-      console.log('購入実行！');
       // 未ログインの場合
       if(!this.user) {
         // 買い手ユーザーログイン画面へ遷移
@@ -77,7 +76,6 @@ export default {
             userId: this.user.id,
             userName: this.user.name
           })
-        console.log('response:', response);
       
         // api通信失敗の場合
         if (response.status !== OK) {
@@ -96,7 +94,6 @@ export default {
         
       // 買い手ユーザー以外の場合
       } else {
-        console.log('買い手ユーザーじゃない');
         // 商品購入は行わない
         return false
       }
@@ -109,7 +106,6 @@ export default {
       this.$emit("change-loading-flg", true)
       // モーダルを閉じる
       this.$emit("close-modal")
-      console.log('購入キャンセル実行！');
       // 未ログインの場合
       if(!this.user) {
         // 買い手ユーザーログイン画面へ遷移
@@ -122,7 +118,6 @@ export default {
           {
             data: { userId: this.user.id }
           })
-        console.log('response:', response);
       
         // api通信失敗の場合
         if (response.status !== OK) {
@@ -139,7 +134,6 @@ export default {
         
       // 買い手ユーザー以外の場合
       } else {
-        console.log('買い手ユーザーじゃない');
         // ローディング非表示
         this.$emit("change-loading-flg", false)
         // 商品購入キャンセルは行わない

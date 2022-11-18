@@ -179,7 +179,6 @@ export default {
       this.showLoadingFlg = true
       // バリデーションメッセージ初期化
       this.errors = {}
-      console.log('売り手ユーザープロフィール編集API実行！');
       let profileData = this.profileForm
       if(!this.showPasswordFlg) {
         delete profileData.password
@@ -187,10 +186,8 @@ export default {
       }
       // 売り手ユーザープロフィール編集API実行！
       const response = await axios.put('/api/shop/profile', profileData)
-      console.log('response:', response);
       // ステータスコードが422(バリデーションエラー)の場合
       if (response.status === UNPROCESSABLE_ENTITY) {
-        console.log('errors:', this.errors);
         // バリデーションメッセージオブジェクトをデータに渡す
         this.errors = response.data.errors
         // ローディング非表示
@@ -198,12 +195,8 @@ export default {
         return false
       }
 
-      console.log('売り手ユーザープロフィール編集実行完了')
-      console.log('response:', response);
-
       // api通信失敗の場合
       if (response.status !== OK) {
-        console.log('API通信レスポンスOK!じゃない');
         // errorストアのsetCodeアクションを呼び出す
         this.$store.commit('error/setCode', response.status)
         // ローディング非表示
@@ -263,9 +256,6 @@ export default {
       this.prefectureList = response.data
       // ローディング非表示
       this.showLoadingFlg = false
-      
-      console.log('response:', response);
-   
     },
     // フラッシュメッセージを表示
     showMessage(message) {

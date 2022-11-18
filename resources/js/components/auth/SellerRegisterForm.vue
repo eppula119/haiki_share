@@ -178,7 +178,6 @@ export default {
       // 取得した都道府県リストをデータへ渡す
       this.prefectureList = response.data
       
-      console.log('response:', response);
     },
   }
 };

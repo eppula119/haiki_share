@@ -234,7 +234,6 @@ const actions = {
     context.commit('setApiStatus', false)
     // ステータスコードが422(バリデーションエラー)の場合
     if (response.status === UNPROCESSABLE_ENTITY) {
-      console.log('response:', response);
       // errorsオブジェクトに「'token'」のキーが存在する場合
       if (response.data.errors['token'] == undefined ? false : true) {
         // フラッシュメッセージでエラー文言を表示
@@ -246,7 +245,6 @@ const actions = {
           {
             root: true
           })
-        console.log('response.data.errors.token[0]:', response.data.errors.token[0]);
       } else {
         // パスワードリセットエラーメッセージステータスを更新
         context.commit('setResetErrorMessages', response.data.errors)

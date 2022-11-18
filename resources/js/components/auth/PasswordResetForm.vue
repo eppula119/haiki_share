@@ -74,12 +74,10 @@ export default {
     async reset() {
       // ローディング表示
       this.showLoadingFlg = true
-      console.log('パスワード再設定実行！')
       // authストアのresetアクションを呼び出す
       await this.$store.dispatch('auth/reset', this.resetForm)
       // apiステータスがtrueの場合(api通信成功の場合)
       if (this.apiStatus) {
-        console.log('パスワードリセット完了しました。');
         // 商品一覧ページに移動する
         this.$router.push('/product_list')
       }

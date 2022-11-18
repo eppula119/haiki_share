@@ -17,9 +17,6 @@ use Illuminate\Support\Facades\DB; // データベースの操作
 use Illuminate\Support\Facades\Auth; // 認証済みユーザー
 use Illuminate\Support\Facades\Storage; // 画像ファイルの操作
 
-
-use Illuminate\Support\Facades\Log; //ログ取得
-
 class ProductController extends Controller
 {
     public function __construct()
@@ -35,8 +32,6 @@ class ProductController extends Controller
      */
     public function showProductList(Request $request)
     {
-        Log::debug($request->query());
-        Log::debug('filterあり');
         $params = $request->query();
         // TOPページ表示の場合
         if(!empty($params['pageName']) && $params['pageName'] === 'top') {
@@ -70,9 +65,6 @@ class ProductController extends Controller
      */
     public function showBoughtProductList(Request $request)
     {
-        Log::debug('購入された商品一覧API！');
-        Log::debug($request->query());
-        Log::debug('filterあり');
         $params = $request->query();
         
         // レスポンスで返す購入された商品リスト
@@ -117,9 +109,6 @@ class ProductController extends Controller
      */
     public function showSellProductList(Request $request)
     {
-        Log::debug('出品した商品一覧API！');
-        Log::debug($request->query());
-        Log::debug('filterあり');
         $params = $request->query();
 
         // 出品した商品リスト
@@ -185,9 +174,6 @@ class ProductController extends Controller
      */
     public function sellProduct(Request $request)
     {
-        Log::debug("requestの中身");
-        Log::debug($request);
-        
         // 送られてきた内容のバリデーション
         $this->validator($request->all())->validate();
 
@@ -198,8 +184,6 @@ class ProductController extends Controller
         );
         
         $product = new Product();
-        Log::debug("new Product()の中身");
-        Log::debug($product);
         $product->name = $request->product_name;
         $product->price = $request->price;
         // 賞味期限(日付)と賞味期限(時間)の入力値を結合
@@ -265,18 +249,10 @@ class ProductController extends Controller
      */
     public function editProduct(Request $request, $id)
     {
-        Log::debug("requestの中身");
-        Log::debug($request);
-        Log::debug("idの中身");
-        Log::debug($id);
-
         // 送られてきた内容の画像以外、バリデーション実行
         $this->validator($request->only(['product_name', 'price', 'best_day', 'best_time']))->validate();
-        Log::debug("バリデーションクリア");
 
         $product = Product::find($id);
-        Log::debug("productの中身");
-        Log::debug($product);
         // レスポンスで返す配列
         $response = array(
             'message' => '',
@@ -326,13 +302,9 @@ class ProductController extends Controller
 
         }
 
-        Log::debug('$searchRequestImagesの中身');
-        Log::debug($searchRequestImages);
         // 登録可能画像数だけループ
         for ($i = 0; $i < 5; $i++) {
             $imgNumber = $i + 1;
-            Log::debug('$product["image_{$imgNumber}"]の中身');
-            Log::debug($product["image_{$imgNumber}"]);
             // データベースの「images_n」カラムの画像パスが、リクエストから取得した画像パスのいずれかに一致するか判定
             $result = array_search($product["image_{$imgNumber}"], $searchRequestImages);
             
@@ -361,7 +333,6 @@ class ProductController extends Controller
                     
                 // クラウドのストレージに画像パスが保存されていない場合
                 } else {
-                    Log::debug("image_{$imgNumber}".'の画像URLはS3に存在しない！！！');
                     // 新たに登録する画像なため、画像バリデーション実施
                     $validator = Validator::make($request->all(), [
                         "image_{$imgNumber}" => ['file','mimes:jpg,jpeg,png', new MegaBytes(1)],
@@ -369,20 +340,14 @@ class ProductController extends Controller
                     // バリデーション失敗の場合
                     if ($validator->fails()) {
                         $errors["errors"] = '';
-                        Log::debug("画像バリデーション失敗!");
                         // 削除予定画像の数だけループ
                         for($i = 0; $i < count($deleteImages); $i++) {
-                            Log::debug($deleteImages[$i]);
                             // クラウドのストレージデータから変更したファイル名を元に戻す
                             $storage->move($deleteImages[$i], preg_replace('/delete_/', '', $deleteImages[$i]));
                         }
                          $errors["errors"] =  $validator->messages();
                         return response()->json($errors, 422);
                     }
-
-
-
-                    Log::debug("画像バリデーションクリア!");
                     
                     // 出品商品のファイル名を取得
                     $fileName = $request["image_{$imgNumber}"]->getClientOriginalName();
@@ -403,13 +368,6 @@ class ProductController extends Controller
             }
         }
 
-        Log::debug('データベース登録直前の$productの中身');
-        Log::debug($product);
-
-
-
-
-
         /* データベースエラー時にファイル削除を行うため
            トランザクションを利用する */
         DB::beginTransaction();
@@ -422,20 +380,15 @@ class ProductController extends Controller
             // クラウドのストレージデータから削除
             $storage->delete($deleteImages);
         } catch (\Exception $exception) {
-            Log::debug('例外発生');
             // データベースを保存前に戻す
             DB::rollBack();
             // 登録可能画像数だけループ
             for($i = 0; $i < count($createdImages); $i++) {
-                Log::debug('$createdImages[$i]の中身');
-                Log::debug($createdImages[$i]);
                 // DBとの不整合を避けるためアップロードしたファイルをクラウドからも削除
                 $storage->delete('product_images/'. $createdImages[$i]);
             }
             // 削除した画像の数だけループ
             for($i = 0; $i < count($deleteImages); $i++) {
-                Log::debug("削除予定だが、トランザクションエラーのため削除しない");
-                Log::debug($deleteImages[$i]);
                 // クラウドのストレージデータから変更したファイル名を元に戻す
                 $storage->move($deleteImages[$i], preg_replace('/delete_/', '', $deleteImages[$i]));
             }
@@ -459,14 +412,7 @@ class ProductController extends Controller
      */
     public function deleteProduct(Request $request, $id)
     {
-        Log::debug("requestの中身");
-        Log::debug($request);
-        Log::debug("idの中身");
-        Log::debug($id);
-        
         $product = Product::find($id);
-        Log::debug("productの中身");
-        Log::debug($product);
          
         // 売り手ログインユーザー取得
         $shop = Auth::guard('shop')->user();
@@ -492,7 +438,6 @@ class ProductController extends Controller
             // データーベースへ保存実行
             DB::commit();
         } catch (\Exception $exception) {
-            Log::debug('例外発生');
             // データベースを保存前に戻す
             DB::rollBack();
             throw $exception;
@@ -509,16 +454,11 @@ class ProductController extends Controller
      */
     public function buyProduct(Request $request, $id)
     {
-        Log::debug("buyProductメソッド実行！！ requestの中身");
-        Log::debug($request);
-
         // 購入する商品情報を取得
         $product = Product::where('id', $id)->with(['shop' => function ($query) {
             $query->with(['prefecture']);
         }])->first();
 
-        Log::debug('$productの中身');
-        Log::debug($product);
         // 購入テーブルにレコードが存在する場合
         if(!empty($product->users)) {
 
@@ -527,30 +467,20 @@ class ProductController extends Controller
 
             // 取得した商品を購入した買い手ユーザーの数だけループ
             foreach ($product->users as $user) {
-                Log::debug('$userの中身');
-                Log::debug($user);
-                Log::debug('$user->pivot->deleted_atの中身');
-                Log::debug($user->pivot->deleted_at);
-
                 // 購入テーブルの「updated_at」カラムの値を追加
                 array_push($updatedAtArray, $user->pivot->updated_at);
-
             }
-
 
             // 購入履歴がある場合
             if(!empty($updatedAtArray)) {
-                Log::debug('購入履歴有り');
                 // 最新の購入日時のみ取得
                 $latestUpdatedAt = max($updatedAtArray);
-                Log::debug($latestUpdatedAt);
             }
             
             // 取得した商品を購入した買い手ユーザーの数だけループ
             foreach ($product->users as $user) {
                 // 最新購入日時のレコードにて、購入キャンセルされてない(購入済み)場合
                 if($latestUpdatedAt === $user->pivot->updated_at && $user->pivot->deleted_at === null) {
-                        Log::debug('既に購入されています');
                         return response('既に購入されています', 202);
                 }
             }
@@ -558,12 +488,8 @@ class ProductController extends Controller
         }
         // 出品(売り手)ユーザーのメールアドレスを変数に入れる
         $shopEmail = $product->shop->email;
-        Log::debug('出品ユーザーのメールアドレス');
-        Log::debug($shopEmail);
         // 購入(買い手)ユーザーのメールアドレスを取得
         $userEmail = User::where('id', $request->userId)->first(['email'])->email;
-        Log::debug('購入ユーザーのメールアドレス');
-        Log::debug($userEmail);
 
         // トランザクション利用
         DB::beginTransaction();
@@ -589,7 +515,6 @@ class ProductController extends Controller
             throw $exception;
         }
         
-        Log::debug('実行完了');
         // レスポンスで返す商品データ
         $responseProduct = Product::where('id', $id)->with(['users', 'shop' => function ($query) {
             $query->with(['prefecture']);
@@ -653,7 +578,6 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getPrefectureList() {
-        Log::debug('都道府県リスト取得API実行');
         $prefectures = Prefecture::whereHas('shops.products', function ($query) {
             $query->where('products.deleted_at', NULL)->where('shops.deleted_at', NULL);
         })->get();
@@ -713,8 +637,6 @@ class ProductController extends Controller
      */
     protected function validator(array $data)
     {
-        Log::debug('バリデーション にかけるデータの中身');
-        Log::debug($data);
         return Validator::make($data, [
             'image_1' => ['file','mimes:jpg,jpeg,png', new MegaBytes(1)],
             'image_2' => ['file','mimes:jpg,jpeg,png', new MegaBytes(1)],
@@ -737,35 +659,24 @@ class ProductController extends Controller
         // 購入テーブルの「updated_at」カラムの値を格納する配列
         $updatedAtArray = array();
         $product->buy_flg = array('buy' => false, 'myBuy' => false);
-        // Log::debug('$productの中身');
-        // Log::debug($product);
         // 購入した(購入キャンセル含む)商品IDに紐づくユーザー情報をループ処理
         foreach ($product->users as $user) {
-            // Log::debug('$userの中身');
-            // Log::debug($user);
             // 購入テーブルの「updated_at」カラムの値を追加
             array_push($updatedAtArray, $user->pivot->updated_at);
         }
-        // Log::debug('$updatedAtArray中身');
-        // Log::debug($updatedAtArray);
         // 購入履歴がある場合
         if(!empty($updatedAtArray)) {
-            Log::debug('購入履歴有り');
             // 最新の購入日時のみ取得
             $latestUpdatedAt = max($updatedAtArray);
-            // Log::debug($latestUpdatedAt);
         }
 
         foreach ($product->users as $user) {
             // 最新購入日時のレコードにて、購入キャンセルされてない(購入済み)場合
             if($latestUpdatedAt === $user->pivot->updated_at && $user->pivot->deleted_at === null) {
-                // Log::debug('最新購入日時のレコードにて、購入キャンセルされてない!');
                 // 購入済みフラグをtrue
                 $product->buy_flg = array('buy' => true, 'myBuy' => false);
-                // Log::debug($product);
                 // ログインユーザーが購入している場合
                 if($user->id === $loginUserId) {
-                    // Log::debug('ログインユーザーが購入している!');s
                     // 自分の購入フラグをtrue
                     $product->buy_flg = array('buy' => true, 'myBuy' => true);
                 }

@@ -127,7 +127,6 @@ export default {
   methods: {
     // 商品リスト取得
     async getProductList () {
-      console.log('全商品チイラン取得');
       // 商品リスト取得API実行
       const response = await axios.get(`/api/product_list?pageName=top`)
       // api通信失敗の場合
@@ -136,12 +135,11 @@ export default {
         this.$store.commit('error/setCode', response.status)
         return false
       }
-      console.log('response:', response);
       // api通信成功の場合、商品ストアへ取得した商品リストデータを渡す
       this.$store.dispatch("product/setProductList", response.data);
     },
     // スクロール量によるクラス付与
-    animationByScroll() {
+    animationByScroll(e) {
       const sections = $(".js-sectionTarget")
       const imgText = $(".js-sectionTarget__subImg")
       const scrollY = window.scrollY //スクロール量
@@ -150,7 +148,6 @@ export default {
 
       sections.each(function (_, section) { // 各section要素に適用
       const sectionOffsetTop = section.offsetTop //要素の縦方向の位置
-
         if (scrollY + windowHeight > sectionOffsetTop + INVIEW_HEIGHT) {
           $(section).addClass("is-active")
         }

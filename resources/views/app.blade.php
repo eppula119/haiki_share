@@ -12,13 +12,9 @@
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-  <!----- ヘッダー ----->
-  <!-- @include('layouts.header') -->
   <!----- メインコンテンツ ----->
   <main id="app" class="l-main">
-    <!-- @yield('content') -->
   </main>
-  <!----- フッター ----->
   @include('layouts.footer')
 </body>
 </html>

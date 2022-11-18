@@ -96,8 +96,6 @@ export default {
   methods: {
     // 絞り込み実施
     async doFilter() {
-      // 商品リスト絞り込みAPI実行
-      console.log("絞り込みのget通信開始");
       // 都道府県入力値を整形
       const prefecture = this.prefectureValue()
       

@@ -91,7 +91,6 @@ export default {
     // マイページ表示(購入商品取得)
     async getShowMypage() {
         // マイページ表示(出品商品、購入された商品取得)API実行
-        console.log("get通信開始");
         const userData = {userId: this.user.id, type: this.user.type}
 
         const response = await axios.get('/api/mypage', { params: userData });
@@ -101,8 +100,6 @@ export default {
           this.$store.commit("error/setCode", response.status);
           return false;
         }
-        console.log('response:', response);
-        console.log('response.data.sellProducts:', response.data.sellProducts);
         // api通信成功の場合、購入された商品、出品商品データを渡す
         this.sellProdcuts = response.data.sellProducts;
         this.boughtProducts = response.data.boughtProducts;

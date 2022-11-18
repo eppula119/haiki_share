@@ -7,8 +7,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use Illuminate\Support\Facades\Log; //ログ取得
-
 class BuySuccessMail extends Mailable
 {
     use Queueable, SerializesModels;
@@ -33,23 +31,17 @@ class BuySuccessMail extends Mailable
      */
     public function build()
     {
-        Log::debug('メール送信直前');
         // コールバックURLをルート名で取得
         $baseUrl = config('app.url');
         // 送信元のアドレス
         $from = config('mail.from.address');
         // ユーザー種別(売り手・買い手)
         $type = $this->type;
-        Log::debug('typeの中身');
-        Log::debug($type);
         // 購入関連の情報
         $data = $this->data;
 
         // 出品(売り手)ユーザーの場合
         if($type === 'shop') {
-            Log::debug('出品ユーザーにメール送信！');
-            Log::debug('$dataの中身');
-            Log::debug($data);
             $subject = '商品が購入されました'; // 件名
             $url = "{$baseUrl}/bought_product_list";
 
@@ -70,9 +62,6 @@ class BuySuccessMail extends Mailable
 
         // 購入(買い手)ユーザーの場合
         } else if($type === 'user') {
-            Log::debug('購入ユーザーにメール送信！');
-            Log::debug('$dataの中身');
-            Log::debug($data);
             $subject = '購入完了メール'; // 件名
             $url = "{$baseUrl}/buyer_mypage";
 
@@ -90,12 +79,5 @@ class BuySuccessMail extends Mailable
                     'address' => $data->shop->prefecture->name . $data->shop->city . ' ' . $data->shop->other_address
                 ]);
         }
-
-        Log::debug('typeがおかしい');
-        
-
-        
-
-        
     }
 }
