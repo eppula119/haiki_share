@@ -1,13 +1,29 @@
-<div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">パスワードリセット</div>
-
-                    <div class="card-body">
-                    <a href="{{$url}}">こちらのリンク</a>をクリックしてパスワードリセットしてください
-                    </div>
+<div>
+    <div>
+        <div>
+            <div>
+                <div>
+                    パスワードリセットの申請を受け付けました。
+                    以下のリンクからパスワードリセットの手続きを行って下さい。
                 </div>
+                <br>
+                <div>
+                    <a href="{{$url}}">パスワードリセット手続きを行う</a>
+                </div>
+                <br>
+               <div>
+                    ※本メールは送信専用です。<br>
+                    ご返信頂いても対応は致しかねますのでご了承くださいませ。<br>
+                    このメールに心当たりがない方は、お手数おかけしますが<br>
+                    本メールは破棄していただきますようお願い申し上げます。
+               </div><br>
+               <div>
+                =========================================<br>
+                コンビニ廃棄食品シェアサービス: haiki-share<br>
+                URL: <a href="https://haiki-share.net">haiki-share.net</a>
+                =========================================
+               </div>
             </div>
         </div>
-    </div>
+</div>
+</div>
