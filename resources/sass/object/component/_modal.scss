@@ -12,7 +12,6 @@
   }
 }
 .c-modal {
-  display: block;
   position: fixed;
   min-width: 400px;
   background: $white-bg;
@@ -31,6 +30,10 @@
   }
   @include mq() {
     min-width: 220px;
+    height: 80vh;
+    top: 50%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
   }
   &__content {
     .c-contentHead {
@@ -182,7 +185,7 @@
       padding: 0 30px;
       &--red {
         color: $error-color;
-        font-size: 2.4rem;
+        font-size: 1.6rem;
         font-weight: bold;
         line-height: 1.5;
       }
