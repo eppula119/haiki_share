@@ -42,6 +42,7 @@
     .p-authSelect {
       width: 25%;
       appearance: none;
+      background-color: $white-bg;
       @include mq() {
         width: 40%;
       }

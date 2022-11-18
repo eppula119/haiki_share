@@ -266,6 +266,11 @@
       @include mq() {
         flex-wrap: wrap;
       }
+      &.p-boughtProductWrap {
+        @include mq() {
+          flex-wrap: nowrap;
+        }
+      }
       &:first-of-type {
         margin-top: 30px;
       }
@@ -276,9 +281,9 @@
         width: 60px;
         height: 60px;
         border-radius: 8px;
+        margin-right: 15px;
       }
       &__detail {
-        margin-left: 15px;
         .p-productTitle {
           line-height: 1.5;
         }

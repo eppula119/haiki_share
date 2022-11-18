@@ -42,7 +42,7 @@
     <section class="p-userMainContainer__productWrap">
       <p class="p-subTitle">購入された商品一覧</p>
         <RouterLink class="p-productLink" :to="`/product_list/${product.product.id}`" v-for="(product, index) of boughtProducts" :key="index">
-          <div class="p-productWrap">
+          <div class="p-productWrap p-boughtProductWrap">
             <img :src="product.product.images.image_1 ? product.product.images.image_1 : '../images/no_img.jpeg'" class="p-productWrap__img">
             <div class="p-productWrap__detail">
               <p class="p-productTitle">{{ product.product.name }}</p>

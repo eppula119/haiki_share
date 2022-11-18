@@ -767,6 +767,7 @@ mixin
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
+  background-color: #FFF;
 }
 @media screen and (max-width: 767px) {
   .p-authContainer__form .p-authSelect {
@@ -1503,6 +1504,7 @@ mixin
 @media screen and (max-width: 767px) {
   .p-introduction__desc {
     text-align: left;
+    line-height: 1.2;
   }
 }
 
@@ -2021,6 +2023,11 @@ mixin
     flex-wrap: wrap;
   }
 }
+@media screen and (max-width: 767px) {
+  .p-userMainContainer__productWrap .p-productWrap.p-boughtProductWrap {
+    flex-wrap: nowrap;
+  }
+}
 .p-userMainContainer__productWrap .p-productWrap:first-of-type {
   margin-top: 30px;
 }
@@ -2031,9 +2038,7 @@ mixin
   width: 60px;
   height: 60px;
   border-radius: 8px;
-}
-.p-userMainContainer__productWrap .p-productWrap__detail {
-  margin-left: 15px;
+  margin-right: 15px;
 }
 .p-userMainContainer__productWrap .p-productWrap__detail .p-productTitle {
   line-height: 1.5;
