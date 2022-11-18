@@ -175,6 +175,8 @@ class UserController extends Controller
         }
         // ユーザー種別を渡す
         $user->type = 'user';
+        // メールアドレスもjson形式で渡す
+        $user->makeVisible(['email']);
         // レスポンスで返す配列
         $response = array(
             'message' => 'プロフィールが正常に変更完了しました。',
@@ -242,6 +244,8 @@ class UserController extends Controller
         }
         // 都道府県情報一緒に返す
         $shop["prefecture"] = $shop->prefecture;
+        // メールアドレスもjson形式で渡す
+        $shop->makeVisible(['email']);
         // ユーザー種別を渡す
         $shop->type = 'shop';
         // レスポンスで返す配列
