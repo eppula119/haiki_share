@@ -173,10 +173,10 @@ export default {
       let shareURL =
         "https://twitter.com/intent/tweet?text=" +
         encodeURIComponent(`${shopName + branchName}から\n`) +
-        encodeURIComponent(`『${productName}』が${price}で出品されています。\n\n`) +
+        encodeURIComponent(`『${productName}』が${price}円で出品されています。\n\n`) +
         `%20%23${encodeURIComponent("haiki_share\n")}` +
         "&url=" +
-        `http://localhost:3000/product_list/${this.$route.params.id}`;
+        `https://haiki-share.net//product_list/${this.$route.params.id}`;
       // 新規ウインドウでツイート画面を開く
       window.open(shareURL, '_blank')
     },
