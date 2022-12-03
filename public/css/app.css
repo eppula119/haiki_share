@@ -1147,7 +1147,7 @@ mixin
 }
 .p-productContainer__wrap .p-itemWrap__img {
   width: 100%;
-  height: 180px;
+  aspect-ratio: 4/3;
   border-radius: 10px 10px 0 0;
 }
 .p-productContainer__wrap .p-itemWrap__detailWrap {
@@ -1595,12 +1595,11 @@ mixin
 }
 .p-about__card .p-aboutImg {
   width: 80%;
-  height: 100px;
+  aspect-ratio: 4/3;
 }
 @media screen and (max-width: 767px) {
   .p-about__card .p-aboutImg {
     width: 100%;
-    height: 160px;
   }
 }
 .p-about__card .p-aboutHead {

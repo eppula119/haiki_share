@@ -178,10 +178,9 @@
     }
     .p-aboutImg {
       width: 80%;
-      height: 100px;
+      aspect-ratio: 4 / 3;
       @include mq() {
         width: 100%;
-        height: 160px;
       }
     }
     .p-aboutHead {
