@@ -1147,7 +1147,7 @@ mixin
 }
 .p-productContainer__wrap .p-itemWrap__img {
   width: 100%;
-  aspect-ratio: 4/3;
+  aspect-ratio: 5/3;
   border-radius: 10px 10px 0 0;
 }
 .p-productContainer__wrap .p-itemWrap__detailWrap {
