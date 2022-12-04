@@ -3,6 +3,13 @@
     <h1 class="p-userMainContainer__title">
       マイページ
     </h1>
+    <!------------------------ 出品画面遷移欄 ---------------------------->
+    <section class="p-userMainContainer__sellButtonWrap">
+      <RouterLink
+        class="p-sellLink c-button c-button--bgBlue"
+        to="/sell_product">出品する
+      </RouterLink>
+    </section>
     <!------------------------ プロフィール編集画面遷移欄 ---------------------------->
     <section class="p-userMainContainer__profileEditWrap">
       <RouterLink
@@ -58,13 +65,6 @@
         </RouterLink>
       </div>
     </section>
-    <!------------------------ 出品画面遷移欄 ---------------------------->
-    <div class="p-userMainContainer__floatingButtonWrap">
-      <RouterLink
-        class="p-sellLink c-button c-button--bgWhite"
-        to="/sell_product">出品
-      </RouterLink>
-    </div>
   </div>
 </template>
 
