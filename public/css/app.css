@@ -602,7 +602,8 @@ mixin
 @media screen and (max-width: 767px) {
   .c-modal__content .c-contentImgBlock__img {
     width: 100%;
-    height: 120px;
+    aspect-ratio: 5/3;
+    height: auto;
   }
 }
 .c-modal__content .c-contentImgBlock__title {
@@ -1792,13 +1793,9 @@ mixin
 }
 .p-userMainContainer__formWrap .p-form .p-uploadedImgContainer__block .p-uploadedImg {
   width: 100%;
-  height: 50px;
+  height: auto;
   border-radius: 3px;
-}
-@media screen and (max-width: 767px) {
-  .p-userMainContainer__formWrap .p-form .p-uploadedImgContainer__block .p-uploadedImg {
-    height: 80px;
-  }
+  aspect-ratio: 5/3;
 }
 .p-userMainContainer__formWrap .p-form .p-uploadPointBlock {
   height: 120px;
