@@ -303,11 +303,8 @@
     &__mainImg {
       display: block;
       width: 100%;
-      height: 180px;
+      aspect-ratio: 5 / 3;
       border-radius: 6px;
-      @include mq('tab') {
-        height: 250px;
-      }
     }
     &__subBlock {
       display: flex;
@@ -318,15 +315,12 @@
         opacity: 1;
         transition: 0.3s;
         width: calc(100% / 3 - 20px);
-        height: 60px;
         margin: calc(20px / 2) calc(20px / 2);
+        aspect-ratio: 5 / 3;
         border-radius: 6px;
         cursor: pointer;
         &:hover {
           opacity: 0.5;
-        }
-        @include mq('tab') {
-          height: 80px;
         }
       }
     }
