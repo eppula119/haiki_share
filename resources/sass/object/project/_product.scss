@@ -180,6 +180,7 @@
   display: flex;
   flex-wrap: wrap;
   padding: 120px;
+  box-sizing: border-box;
   @include mq('tab') {
     flex-direction: column-reverse;
   }

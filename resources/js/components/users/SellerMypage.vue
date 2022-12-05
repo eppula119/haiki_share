@@ -1,5 +1,5 @@
 <template>
-  <div class="p-userMainContainer">
+  <div class="p-userMainContainer" :class="{ 'u-height--max': heightMax}">
     <h1 class="p-userMainContainer__title">
       マイページ
     </h1>
@@ -78,7 +78,8 @@ export default {
   data() {
     return {
       sellProdcuts: null,
-      boughtProducts: null
+      boughtProducts: null,
+      heightMax: false,
     };
   },
   computed: {
@@ -103,7 +104,20 @@ export default {
         // api通信成功の場合、購入された商品、出品商品データを渡す
         this.sellProdcuts = response.data.sellProducts;
         this.boughtProducts = response.data.boughtProducts;
+        this.heightMax = false
+        // DOM更新後に処理
+        this.$nextTick(() => {
+          this.getInnerHeight()
+        });
     },
+    // 画面の高さを取得
+    getInnerHeight(e) {
+      // 画面の高さを取得
+      const windowHeight = window.innerHeight
+      // html要素の高さ取得
+      const htmlHeight = document.documentElement.offsetHeight;
+      htmlHeight < windowHeight ? this.heightMax = true : this.heightMax = false
+    }
   },
   watch: {
     // ルーティング監視

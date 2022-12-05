@@ -4,7 +4,7 @@
     <!------------------------ モーダル欄 ---------------------------->
     <Modal ref="modal" @update-page="getProduct" @change-loading-flg="changeLoadingFlg"></Modal>
     <!------------------------ 商品説明・商品画像欄 ---------------------------->
-    <div class="p-productMainContainer">
+    <div class="p-productMainContainer" :class="{ 'u-height--max': heightMax}">
       <!------------------------ 商品詳細説明欄 ---------------------------->
       <section class="p-productDetailContainer">
         <p class="p-productDetailContainer__title">{{ product.name }}</p>
@@ -114,7 +114,8 @@ export default {
         }
       },
       mainImg: '',// メイン画像パス
-      showLoadingFlg: false // ローディング表示フラグ
+      showLoadingFlg: false, // ローディング表示フラグ
+      heightMax: false, // 画面高さ100vhをしているするかのフラグ
     };
   },
   computed: {
@@ -161,6 +162,11 @@ export default {
       }
       // ローディング非表示
       this.showLoadingFlg = false
+      this.heightMax = false
+      // DOM更新後に処理
+      this.$nextTick(() => {
+        this.getInnerHeight()
+      });
     },
     // サブ画像を大きいサイズで見る
     selectImg(url) {
@@ -205,6 +211,14 @@ export default {
     // 商品編集画面へ移動
     moveEditProduct() {
       this.$router.push({ name: 'editProduct', params: { id: this.product.id} })
+    },
+    // 画面の高さを取得
+    getInnerHeight(e) {
+      // 画面の高さを取得
+      const windowHeight = window.innerHeight
+      // html要素の高さ取得
+      const htmlHeight = document.documentElement.offsetHeight;
+      htmlHeight < windowHeight ? this.heightMax = true : this.heightMax = false
     }
   },
   watch: {

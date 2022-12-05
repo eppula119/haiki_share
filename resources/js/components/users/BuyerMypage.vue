@@ -1,7 +1,7 @@
 <template>
   <div>
     <Loading v-if="showLoadingFlg" />
-    <div class="p-userMainContainer">
+    <div class="p-userMainContainer" :class="{ 'u-height--max': heightMax}">
       <!------------------------ モーダル欄 ---------------------------->
       <Modal
         ref="modal"
@@ -70,7 +70,8 @@ export default {
       products: [], // 購入した商品リスト
       current_page: 1, // 現在のページ
       last_page: "", // 最後のページ番号
-      showLoadingFlg: false // ローディング表示フラグ
+      showLoadingFlg: false, // ローディング表示フラグ
+      heightMax: false, // 画面高さ100vhをしているするかのフラグ
     };
   },
   computed: {
@@ -106,7 +107,11 @@ export default {
         this.last_page = response.data.last_page;
         // ローディング非表示
         this.showLoadingFlg = false
-      
+        this.heightMax = false
+        // DOM更新後に処理
+        this.$nextTick(() => {
+          this.getInnerHeight()
+        });
     },
     // ページ切り替え
     changePage(page) {
@@ -138,6 +143,14 @@ export default {
         content: message,
         timeout: 5000
       })
+    },
+    // 画面の高さを取得
+    getInnerHeight(e) {
+      // 画面の高さを取得
+      const windowHeight = window.innerHeight
+      // html要素の高さ取得
+      const htmlHeight = document.documentElement.offsetHeight;
+      htmlHeight < windowHeight ? this.heightMax = true : this.heightMax = false
     }
   },
   watch: {

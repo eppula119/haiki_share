@@ -2,6 +2,9 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 100px 0;
+  box-sizing: border-box;
+  // height: calc(100vh - 170px);
+  // height: calc(var(--vh, 1vh) * 100);
   @include mq() {
     padding: 100px 20px;
   }

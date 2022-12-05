@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ 'u-height--max': heightMax}">
     <Loading v-if="showLoadingFlg" />
     <!------------------------ 絞り込み欄 ---------------------------->
     <section class="c-filterWrap">
@@ -161,7 +161,8 @@ export default {
       pageName: '', // 現在ページ
       pcLayoutFlg: false, // pc画面フラグ
       hoverProduct: '', // マウスホバーしている商品
-      showLoadingFlg: false // ローディング表示フラグ
+      showLoadingFlg: false, // ローディング表示フラグ
+      heightMax: false, // 画面高さ100vhをしているするかのフラグ
     };
   },
   methods: {
@@ -214,6 +215,11 @@ export default {
       this.to = response.data.to;
       // ローディング非表示
       this.showLoadingFlg = false
+      this.heightMax = false
+      // DOM更新後に処理
+      this.$nextTick(() => {
+        this.getInnerHeight()
+      });
     },
     // 絞り込み商品リスト取得
     getFilterProducts () {
@@ -260,6 +266,14 @@ export default {
     // pcの画面幅か判定
     handleResize() {
       this.pcLayoutFlg = window.matchMedia(`(min-width: 1024px)`).matches
+    },
+    // 画面の高さを取得
+    getInnerHeight(e) {
+      // 画面の高さを取得
+      const windowHeight = window.innerHeight
+      // html要素の高さ取得
+      const htmlHeight = document.documentElement.offsetHeight;
+      htmlHeight < windowHeight ? this.heightMax = true : this.heightMax = false
     }
   },
   watch: {

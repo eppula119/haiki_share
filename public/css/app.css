@@ -1201,6 +1201,7 @@ mixin
   display: flex;
   flex-wrap: wrap;
   padding: 120px;
+  box-sizing: border-box;
 }
 @media screen and (max-width: 1023px) {
   .p-productMainContainer {
@@ -1722,6 +1723,7 @@ mixin
   max-width: 600px;
   margin: 0 auto;
   padding: 100px 0;
+  box-sizing: border-box;
 }
 @media screen and (max-width: 767px) {
   .p-userMainContainer {
@@ -2123,4 +2125,13 @@ mixin
 }
 .p-userMainContainer__paginationWrap {
   margin-top: 80px;
+}
+
+.u-height--max {
+  height: calc(100vh - 170px);
+}
+@media screen and (max-width: 767px) {
+  .u-height--max {
+    height: calc(100vh - 240px);
+  }
 }
