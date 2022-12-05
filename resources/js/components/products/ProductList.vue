@@ -18,9 +18,30 @@
       <div class="c-filterWrap__categoryWrap">
         <div class="c-filterRow">
           <span class="c-filterLead">絞り込み</span>
-          <button class="c-showFilterButton" @click="openModal('prefecture')" v-if="isPrefectureList">都道府県</button>
-          <button class="c-showFilterButton" @click="openModal('price')">価格</button>
-          <button class="c-showFilterButton" @click="openModal('bestBefore')">賞味期限</button>
+          <button class="c-showFilterButton" @click="openModal('prefecture')" v-if="isPrefectureList">
+            <template v-if="params.prefecture">
+              {{ params.prefecture.length === 0 ? '都道府県' : params.prefecture[0].toString() + '...'}}
+            </template>
+            <template v-else>
+              都道府県
+            </template>
+          </button>
+          <button class="c-showFilterButton" @click="openModal('price')">
+            <template v-if="params.min || params.max">
+              {{ params.min ? params.min + '円〜' : '' }}{{ params.max ? params.max + '円以下' : '' }}
+            </template>
+            <template v-else>
+              価格
+            </template>
+            </button>
+          <button class="c-showFilterButton" @click="openModal('bestBefore')">
+            <template v-if="params.bestBefore === undefined">
+              賞味期限
+            </template>
+            <template v-else>
+              {{ params.bestBefore ? '賞味期限内' : '賞味期限切れ' }}
+            </template>
+          </button>
         </div>
       </div>
     </section>
@@ -32,7 +53,7 @@
           {{ params.prefecture.length === 0 ? '全ての都道府県、' : params.prefecture.toString() + ','}}
         </template>
         {{ params.min ? params.min + '円~' : '' }}
-        {{ params.max ? params.max + '円~、' : '' }}
+        {{ params.max ? params.max + '円、' : '' }}
         <template v-if="params.bestBefore != null">
         {{ params.bestBefore ? '賞味期限内' : '賞味期限切れ' }}
         </template>

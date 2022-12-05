@@ -373,11 +373,10 @@ mixin
   font-size: 1.4rem;
 }
 .c-filterWrap__categoryWrap .c-filterRow .c-showFilterButton {
-  width: 160px;
   background-color: #d3d3d3;
   font-size: 1.2rem;
   margin-left: 15px;
-  padding: 8px 0;
+  padding: 8px 25px;
   border-radius: 20px;
   cursor: pointer;
   border: 1px solid transparent;
@@ -391,7 +390,6 @@ mixin
 @media screen and (max-width: 767px) {
   .c-filterWrap__categoryWrap .c-filterRow .c-showFilterButton {
     margin-left: 10px;
-    width: 120px;
   }
 }
 
