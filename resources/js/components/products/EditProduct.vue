@@ -167,32 +167,6 @@ export default {
       this.showLoadingFlg = true
       // ストアに保存した商品リストから、商品IDがidパラメーターと一致する商品を取得
       const product = this.productList.find((product) => product.id === this.$route.params.id)
-      // 一致する商品がストアに保存されている場合
-      // if(product) {
-      //   // 商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
-      //   if(product.shop.id !== this.user.id || product.buy_flg.buy) {
-      //     this.$router.back()
-      //   }
-      //   // 一致した商品をデータへ渡す
-      //   this.formatData(product)
-      // } else {
-      //   // 一致した商品がない場合、商品情報取得API実行
-      //   const response = await axios.get(`/api/sell_product/${this.$route.params.id}`)
-      //   // api通信失敗の場合
-      //   if (response.status !== OK) {
-      //     // エラーストアにステータスコードを渡す
-      //     this.$store.commit("error/setCode", response.status)
-      //     // ローディング表示
-      //     this.showLoadingFlg = false
-      //     return
-      //   }
-      //   // 商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
-      //   if(response.data.shop.id !== this.user.id || response.data.buy_flg.buy) {
-      //     this.$router.back()
-      //   }
-      //   // api通信成功の場合、商品データを渡す
-      //   this.formatData(response.data)
-      // }
 
       // 一致する商品がストアに保存されている場合かつ、商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
       if(product && (product.shop.id !== this.user.id || product.buy_flg.buy)) {
