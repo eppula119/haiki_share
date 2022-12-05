@@ -87,9 +87,9 @@ export default {
     // クッキーからトークンを取得しデータへ渡す
     setToken () {
       // クッキーからリセットトークンを取得
-      const token = Cookies.get("RESETTOKEN");
+      const token = Cookies.get("RESETTOKEN")
       // クッキーから売り手か買い手か種別を取得
-      const type = Cookies.get("TYPE");
+      const type = Cookies.get("TYPE")
       // リセットトークンがない、または種別がない場合はパスワードリマインダー画面へ移動させる
       if(token == null || type == null) {
         return this.$router.push({
@@ -102,12 +102,12 @@ export default {
       
       // フォームにリセットトークンをセット
       if(token) {
-        this.resetForm.token = token;
+        this.resetForm.token = token
         Cookies.remove("RESETTOKEN")
       }
       // フォームに買い手か売り手か種別をセット
       if(type) {
-        this.resetForm.type = type;
+        this.resetForm.type = type
         Cookies.remove("TYPE")
       }
     },

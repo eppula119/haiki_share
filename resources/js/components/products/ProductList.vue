@@ -136,11 +136,11 @@
 // 定義したステータスコードや共通関数をインポート
 import { OK, returnTop } from '../../util'
 // storeフォルダ内のファイルで定義した「state」を参照
-import { mapGetters } from "vuex";
+import { mapGetters } from "vuex"
 // モーダルコンポーネント読み込み
 import Modal from '../Modal/Modal.vue'
 // ページネーションコンポーネント読み込み
-import Pagination from "../Pagination";
+import Pagination from "../Pagination"
 // ローディングコンポーネント読み込み
 import Loading from '../Loading.vue'
 
@@ -184,7 +184,7 @@ export default {
       hoverProduct: '', // マウスホバーしている商品
       showLoadingFlg: false, // ローディング表示フラグ
       heightMax: false, // 画面高さ100vhをしているするかのフラグ
-    };
+    }
   },
   methods: {
     // 商品リスト取得
@@ -200,18 +200,18 @@ export default {
           // 購入された商品リスト取得API実行
           params.userId = this.user.id
           response = await axios.get(`/api/bought_product_list?page=${this.current_page}`, { params })
-          break;
+          break
         case 'sellProductList':
           this.pageName = '出品した商品、'
           // 購入された商品リスト取得API実行
           params.userId = this.user.id
           response = await axios.get(`/api/sell_product_list?page=${this.current_page}`, { params })
-          break;
+          break
         default:
           this.pageName = ''
           // 商品リスト取得API実行
           response = await axios.get(`/api/product_list?page=${this.current_page}`, { params })
-          break;
+          break
       }
       
       // api通信失敗の場合
@@ -220,31 +220,31 @@ export default {
         this.$store.commit('error/setCode', response.status)
         // ローディング非表示
         this.showLoadingFlg = false
-        return false
+        return
       }
       // api通信成功の場合、商品ストアへ取得した商品リストデータを渡す
-      this.$store.dispatch("product/setProductList", response.data.data);
+      this.$store.dispatch("product/setProductList", response.data.data)
       // 現在のページ番号をデータへ渡す
       this.current_page = response.data.current_page
       // 最後のページ番号をデータへ渡す
-      this.last_page = response.data.last_page;
+      this.last_page = response.data.last_page
       // 取得した全ての商品件数をデータへ渡す
-      this.total = response.data.total;
+      this.total = response.data.total
       // 表示させる最初の商品が、取得した全ての商品数の内、何件目かデータへ渡す
-      this.from = response.data.from;
+      this.from = response.data.from
       // 表示させる最後の商品が、取得した全ての商品数の内、何件目かデータへ渡す
-      this.to = response.data.to;
+      this.to = response.data.to
       // ローディング非表示
       this.showLoadingFlg = false
       this.heightMax = false
       // DOM更新後に処理
       this.$nextTick(() => {
         this.getInnerHeight()
-      });
+      })
     },
     // 絞り込み商品リスト取得
     getFilterProducts () {
-      this.current_page = 1;
+      this.current_page = 1
       this.getProductList()
     },
     // 選択可能な都道府県リスト取得
@@ -257,7 +257,7 @@ export default {
       if (response.status !== OK) {
         // エラーストアにステータスコードを渡す
         this.$store.commit('error/setCode', response.status)
-        return false
+        return
       }
       // 取得した都道府県リストをデータへ渡す
       this.prefectureList = response.data
@@ -269,9 +269,9 @@ export default {
     changePage(page) {
       // 遷移ページが最後のページ以下かつ、1以上の場合
       if (page > 0 && page <= this.last_page) {
-        this.current_page = page;
+        this.current_page = page
         // 商品リスト取得メソッド実行
-        this.getProductList();
+        this.getProductList()
         // 最上部へ移動
         returnTop()
       }
@@ -293,7 +293,7 @@ export default {
       // 画面の高さを取得
       const windowHeight = window.innerHeight
       // html要素の高さ取得
-      const htmlHeight = document.documentElement.offsetHeight;
+      const htmlHeight = document.documentElement.offsetHeight
       htmlHeight < windowHeight ? this.heightMax = true : this.heightMax = false
     }
   },
@@ -308,5 +308,5 @@ export default {
       immediate: true // 起動時にも実行
     }
   }
-};
+}
 </script>

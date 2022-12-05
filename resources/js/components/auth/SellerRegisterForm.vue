@@ -110,7 +110,7 @@
 // 定義したステータスコードをインポート
 import { OK } from '../../util'
 // ストアのステートをインポート
-import { mapState } from "vuex";
+import { mapState } from "vuex"
 // ローディングコンポーネント読み込み
 import Loading from '../Loading.vue'
 
@@ -173,7 +173,7 @@ export default {
       if (response.status !== OK) {
         // エラーストアにステータスコードを渡す
         this.$store.commit('error/setCode', response.status)
-        return false
+        return
       }
       // 取得した都道府県リストをデータへ渡す
       this.prefectureList = response.data

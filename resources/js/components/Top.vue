@@ -98,7 +98,7 @@
 // 定義したステータスコードをインポート
 import { OK } from '../util'
 // storeフォルダ内のファイルで定義した「state」を参照
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex"
 
 export default {
   created () {
@@ -107,11 +107,11 @@ export default {
   },
   mounted() {
     // 画面スクロールアクションを検知
-    window.addEventListener('scroll', this.animationByScroll, false);
+    window.addEventListener('scroll', this.animationByScroll, false)
   },
   destroyed() {
     // 別の画面へ遷移時に画面スクロールアクションを検知させない
-    window.removeEventListener('scroll', this.animationByScroll, false);
+    window.removeEventListener('scroll', this.animationByScroll, false)
   },
   computed: {
     // 商品ストアのproductListを参照
@@ -122,7 +122,7 @@ export default {
   data() {
     return {
       hoverProduct: '' // マウスホバーしている商品
-    };
+    }
   },
   methods: {
     // 商品リスト取得
@@ -133,10 +133,10 @@ export default {
       if (response.status !== OK) {
         // エラーストアにステータスコードを渡す
         this.$store.commit('error/setCode', response.status)
-        return false
+        return
       }
       // api通信成功の場合、商品ストアへ取得した商品リストデータを渡す
-      this.$store.dispatch("product/setProductList", response.data);
+      this.$store.dispatch("product/setProductList", response.data)
     },
     // スクロール量によるクラス付与
     animationByScroll(e) {
@@ -160,5 +160,5 @@ export default {
 
     }
   }
-};
+}
 </script>

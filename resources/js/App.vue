@@ -8,7 +8,7 @@
 
 <script>
 // ヘッダーコンポーネント読み込み
-import Header from "./components/Header.vue";
+import Header from "./components/Header.vue"
 // フラッシュメッセージコンポーネント読み込み
 import Message from './components/Message.vue'
 // 500エラーのステータスコード読み込み
@@ -42,5 +42,5 @@ export default {
       this.$store.commit('error/setCode', null)
     }
   }
-};
+}
 </script>

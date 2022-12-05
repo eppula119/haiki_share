@@ -37,7 +37,7 @@
 // 定義したステータスコードをインポート
 import { OK } from '../../util'
 // storeフォルダ内のファイルで定義した「getters」を参照
-import { mapGetters } from "vuex";
+import { mapGetters } from "vuex"
 
 export default {
   props: {
@@ -83,19 +83,19 @@ export default {
           this.$store.commit('error/setCode', response.status)
           // ローディング非表示
           this.$emit("change-loading-flg", false)
-          return false
+          return
         }
 
         // api通信成功の場合、購入した商品の最新データをストアの商品リストデータを渡す
-        this.$store.dispatch("product/updateProduct", response.data.product);
+        this.$store.dispatch("product/updateProduct", response.data.product)
 
         // ページ情報を更新
-        this.$emit("update-page", response.data.message);
+        this.$emit("update-page", response.data.message)
         
       // 買い手ユーザー以外の場合
       } else {
         // 商品購入は行わない
-        return false
+        return
       }
       
       
@@ -125,19 +125,19 @@ export default {
           this.$store.commit('error/setCode', response.status)
           // ローディング非表示
           this.$emit("change-loading-flg", false)
-          return false
+          return
         }
         // api通信成功の場合、購入キャンセルした商品の最新データをストアの商品リストデータを渡す
-        this.$store.dispatch("product/updateProduct", response.data.product);
+        this.$store.dispatch("product/updateProduct", response.data.product)
         // ページ情報を更新
-        this.$emit("update-page", response.data.message);
+        this.$emit("update-page", response.data.message)
         
       // 買い手ユーザー以外の場合
       } else {
         // ローディング非表示
         this.$emit("change-loading-flg", false)
         // 商品購入キャンセルは行わない
-        return false
+        return
       }
       
       

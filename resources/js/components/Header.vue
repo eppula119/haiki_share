@@ -43,7 +43,7 @@
 
 <script>
 // storeフォルダ内のファイルで定義した「getters」を参照
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex"
 // ローディングコンポーネント読み込み
 import Loading from './Loading.vue'
 
@@ -56,7 +56,7 @@ export default {
     return {
       toggleFlg: false, // SPメニュー（初期は閉じている状態）
       showLoadingFlg: false // ローディング表示フラグ
-    };
+    }
   },
   computed: {
     ...mapState({
@@ -96,5 +96,5 @@ export default {
       this.toggleFlg = !this.toggleFlg
     }
   }
-};
+}
 </script>

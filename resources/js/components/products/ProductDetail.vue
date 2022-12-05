@@ -77,7 +77,7 @@
 // 定義したステータスコードや共通関数をインポート
 import { OK, returnTop } from '../../util'
 // storeフォルダ内のファイルで定義した「getters」を参照
-import { mapGetters } from "vuex";
+import { mapGetters } from "vuex"
 // モーダルコンポーネント読み込み
 import Modal from '../Modal/Modal.vue'
 // ローディングコンポーネント読み込み
@@ -116,7 +116,7 @@ export default {
       mainImg: '',// メイン画像パス
       showLoadingFlg: false, // ローディング表示フラグ
       heightMax: false, // 画面高さ100vhをしているするかのフラグ
-    };
+    }
   },
   computed: {
     ...mapGetters({
@@ -132,28 +132,29 @@ export default {
       // ローディング表示
       this.showLoadingFlg = true
       // ストアに保存した商品リストから、商品IDがidパラメーターと一致する商品を取得
-      const product = this.productList.find((product) => product.id === this.$route.params.id);
-      // 一致する商品がストアに保存されている場合
-      if(product) {
-        // 一致した商品をデータへ渡す
-        this.product = product
-      } else {
+      const product = this.productList.find((product) => product.id === this.$route.params.id)
+      if(!product) {
         // 一致した商品がない場合、商品情報取得API実行
-        const response = await axios.get(`/api/product_list/${this.$route.params.id}`);
+        const response = await axios.get(`/api/product_list/${this.$route.params.id}`)
         // api通信失敗の場合
         if (response.status !== OK) {
           // エラーストアにステータスコードを渡す
-          this.$store.commit("error/setCode", response.status);
+          this.$store.commit("error/setCode", response.status)
           // ローディング非表示
           this.showLoadingFlg = false
-          return false;
+          return
         }
         // 商品が1つも取得できない場合は商品一覧ページへ遷移
         !response.data ? this.$router.push(`/product_list`) :
-        
+        // ローディング非表示
+        this.showLoadingFlg = false
         // api通信成功の場合、商品データを渡す
         this.product = response.data
+        return
       }
+      // 一致した商品をデータへ渡す
+      this.product = product
+      
       // フラッシュメッセージの表示が必要な場合は表示させる
       if(message) {
         // 最上部へ移動してメッセージ表示
@@ -166,7 +167,7 @@ export default {
       // DOM更新後に処理
       this.$nextTick(() => {
         this.getInnerHeight()
-      });
+      })
     },
     // サブ画像を大きいサイズで見る
     selectImg(url) {
@@ -181,7 +182,7 @@ export default {
         encodeURIComponent(`『${productName}』が${price}円で出品されています。\n\n`) +
         `%20%23${encodeURIComponent("haiki_share\n")}` +
         "&url=" +
-        `https://haiki-share.net/product_list/${this.$route.params.id}`;
+        `https://haiki-share.net/product_list/${this.$route.params.id}`
       // 新規ウインドウでツイート画面を開く
       window.open(shareURL, '_blank')
     },
@@ -217,7 +218,7 @@ export default {
       // 画面の高さを取得
       const windowHeight = window.innerHeight
       // html要素の高さ取得
-      const htmlHeight = document.documentElement.offsetHeight;
+      const htmlHeight = document.documentElement.offsetHeight
       htmlHeight < windowHeight ? this.heightMax = true : this.heightMax = false
     }
   },
@@ -232,5 +233,5 @@ export default {
       immediate: true // 起動時にも実行
     }
   }
-};
+}
 </script>

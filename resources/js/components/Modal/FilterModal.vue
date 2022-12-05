@@ -91,7 +91,7 @@ export default {
         }
       },
       updateDataFlg : true, // 更新データを再描画するための判定フラグ
-    };
+    }
   },
   methods: {
     // 絞り込み実施
@@ -106,7 +106,7 @@ export default {
         prefecture
       }
       // 商品ストアにパラメーターを渡す
-      this.$store.dispatch("product/updateParams", params);
+      this.$store.dispatch("product/updateParams", params)
       // モーダルを閉じる
       this.$emit("close-modal")
       // 絞り込みした商品リストを取得
@@ -117,12 +117,12 @@ export default {
       switch (this.filterType) {
         case 'price': // 価格絞り込みの場合
           this.price = { min: '', max: '' }
-          break;
+          break
         case 'bestBefore': // 賞味期限絞り込みの場合
           this.bestBefore = []
         case 'prefecture': // 都道県絞り込みの場合
-          this.createPrefectureData()　
-          break;
+          this.createPrefectureData()
+          break
         default:
       }
     },
@@ -187,7 +187,7 @@ export default {
       let prefectureValue = []
       Object.keys(this.prefecture.region).forEach( (key) => {
         prefectureValue = prefectureValue.concat(this.prefecture.region[key].isPrefectureSelected)
-      });
+      })
       return prefectureValue
     },
     // 都道府県選択値の受け取りデータ形式作成
@@ -216,5 +216,5 @@ export default {
       deep: true
     }
   }
-};
+}
 </script>

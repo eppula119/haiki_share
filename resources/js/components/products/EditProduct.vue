@@ -108,11 +108,11 @@
 
 <script>
 // ストアのステートをインポート
-import { mapGetters } from "vuex";
+import { mapGetters } from "vuex"
 // 定義したステータスコードをインポート
 import { CREATED, OK, UNPROCESSABLE_ENTITY } from '../../util'
 // カレンダー入力プラグインをインポート
-import VueDatePicker from 'vuejs-datepicker';
+import VueDatePicker from 'vuejs-datepicker'
 // カレンダープラグラインの言語用のプラグインをインポート
 import {ja} from 'vuejs-datepicker/dist/locale'
 // 時刻入力プラグインをインポート
@@ -158,7 +158,7 @@ export default {
       dragFlg: false, // 画像ドラッグエリア内へドラッグ中か判別
       ja:ja, // カレンダーの言語用のプラグインを日本語化
       showLoadingFlg: false // ローディング表示フラグ
-    };
+    }
   },
   methods: {
     // 変更する商品データを取得
@@ -168,34 +168,60 @@ export default {
       // ストアに保存した商品リストから、商品IDがidパラメーターと一致する商品を取得
       const product = this.productList.find((product) => product.id === this.$route.params.id)
       // 一致する商品がストアに保存されている場合
+      // if(product) {
+      //   // 商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
+      //   if(product.shop.id !== this.user.id || product.buy_flg.buy) {
+      //     this.$router.back()
+      //   }
+      //   // 一致した商品をデータへ渡す
+      //   this.formatData(product)
+      // } else {
+      //   // 一致した商品がない場合、商品情報取得API実行
+      //   const response = await axios.get(`/api/sell_product/${this.$route.params.id}`)
+      //   // api通信失敗の場合
+      //   if (response.status !== OK) {
+      //     // エラーストアにステータスコードを渡す
+      //     this.$store.commit("error/setCode", response.status)
+      //     // ローディング表示
+      //     this.showLoadingFlg = false
+      //     return
+      //   }
+      //   // 商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
+      //   if(response.data.shop.id !== this.user.id || response.data.buy_flg.buy) {
+      //     this.$router.back()
+      //   }
+      //   // api通信成功の場合、商品データを渡す
+      //   this.formatData(response.data)
+      // }
+
+      // 一致する商品がストアに保存されている場合かつ、商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
+      if(product && (product.shop.id !== this.user.id || product.buy_flg.buy)) {
+        this.$router.back()
+        return
+      }
+      // 一致する商品がストアに保存されている場合
       if(product) {
-        // 商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
-        if(product.shop.id !== this.user.id || product.buy_flg.buy) {
-          // 前のページへ戻る
-          this.$router.back()
-        }
         // 一致した商品をデータへ渡す
         this.formatData(product)
-      } else {
-        // 一致した商品がない場合、商品情報取得API実行
-        const response = await axios.get(`/api/sell_product/${this.$route.params.id}`);
-        // api通信失敗の場合
-        if (response.status !== OK) {
-          // エラーストアにステータスコードを渡す
-          this.$store.commit("error/setCode", response.status);
-          // ローディング表示
-          this.showLoadingFlg = false
-          return false;
-        }
-        // 商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
-        if(response.data.shop.id !== this.user.id || response.data.buy_flg.buy) {
-          // 前のページへ戻る
-          this.$router.back()
-        }
-        // api通信成功の場合、商品データを渡す
-        this.formatData(response.data)
+        this.showLoadingFlg = false
+        return
       }
-      // ローディング非表示
+      // 一致した商品がない場合、商品情報取得API実行
+      const response = await axios.get(`/api/sell_product/${this.$route.params.id}`)
+      // api通信失敗の場合
+      if (response.status !== OK) {
+        // エラーストアにステータスコードを渡す
+        this.$store.commit("error/setCode", response.status)
+        // ローディング表示
+        this.showLoadingFlg = false
+        return
+      }
+      // 商品の出品者IDがログインユーザーIDと相違がある場合、または購入済み商品の場合
+      if(response.data.shop.id !== this.user.id || response.data.buy_flg.buy) {
+        this.$router.back()
+      }
+      // api通信成功の場合、商品データを渡す
+      this.formatData(response.data)
       this.showLoadingFlg = false
     },
     // 取得した商品情報をを整形してデータへ渡す
@@ -210,7 +236,7 @@ export default {
       this.sellForm.best_time = data.best_time.replace(/[時]/g, ':').replace(/[分]/g, '')
       // 商品画像の枚数分ループ
       Object.keys(data.images).forEach( (key, i) => {
-        const imgNumber = i + 1;
+        const imgNumber = i + 1
         // キー名が「image_1」「image_2」...と順番に値を追加
         key === `image_${imgNumber}` ? this.sellForm.images.push({ url: data.images[key], uploadFile: data.images[key] }) : false
       })
@@ -218,26 +244,26 @@ export default {
     },
     // 画像をアップロードエリアにドラッグ
     dragImg() {
-        this.dragFlg = true;
+        this.dragFlg = true
     },
     // ドラッグ&ドロップエリアから外れる
     dragLeaveImg() {
-      this.dragFlg = false;
+      this.dragFlg = false
     },
     // 画像をドロップ
     dropImg(event) {
       // ファイルが画像ではなかったら処理中断
       if (!event.dataTransfer.files[0].type.match('image.*')) {
         this.dragFlg = false
-        return false
+        return
       }
       // 5枚アップロード済みの場合は処理中断
       if (this.sellForm.images.length >= 5) {
         this.dragFlg = false
-        return false
+        return
       }
       
-      let imgObj = { url: '', uploadFile: '' };
+      let imgObj = { url: '', uploadFile: '' }
       imgObj.url = URL.createObjectURL(event.dataTransfer.files[0])
       imgObj.uploadFile = event.dataTransfer.files[0]
       this.sellForm.images.push(imgObj)
@@ -255,19 +281,19 @@ export default {
       }
       // 5枚アップロード済みの場合は処理中断
       if (this.sellForm.images.length >= 5) {
-        return false
+        return
       }
 
       // FileReaderクラスのインスタンスを取得
       const reader = new FileReader()
-      let self = this;
-      let imgObj = {url: '', uploadFile: ''};
+      let self = this
+      let imgObj = {url: '', uploadFile: ''}
 
       // ファイルを読み込み終わったタイミングで実行する処理
       reader.onload = e => {
-        imgObj.url = e.target.result;
-        imgObj.uploadFile = event.target.files[0];
-        self.sellForm.images.push(imgObj);
+        imgObj.url = e.target.result
+        imgObj.uploadFile = event.target.files[0]
+        self.sellForm.images.push(imgObj)
       }
 
       // ファイル読み込み。読み込まれたファイルはデータURL形式で受け取れる
@@ -286,18 +312,18 @@ export default {
       formData.append('best_time', this.sellForm.best_time) // 賞味期限(時間)を追加
       // アップロードした商品画像の枚数分ループ
       for (let i = 0; i < this.sellForm.images.length; i++) {
-        const imgNumber = i + 1;
-        formData.append('image_' + imgNumber, this.sellForm.images[i].uploadFile);
+        const imgNumber = i + 1
+        formData.append('image_' + imgNumber, this.sellForm.images[i].uploadFile)
       }
 
       let config = {
         headers: {
           'content-type': 'multipart/form-data',
         },
-      };
+      }
 
       // PUT で上書く
-      config.headers['X-HTTP-Method-Override'] = 'PUT';
+      config.headers['X-HTTP-Method-Override'] = 'PUT'
 
       // 商品編集API実行
       const response = await axios.post(`/api/product/${this.$route.params.id}`, formData, config)
@@ -327,7 +353,7 @@ export default {
         this.errors = customErros
         // ローディング表示
         this.showLoadingFlg = false
-        return false
+        return
       }
 
       // api通信失敗の場合
@@ -336,7 +362,7 @@ export default {
         this.$store.commit('error/setCode', response.status)
         // ローディング表示
         this.showLoadingFlg = false
-        return false
+        return
       }
       // 編集実行後、レスポンスメッセージ表示
       this.showMessage(response.data.message)
@@ -368,7 +394,7 @@ export default {
         this.$store.commit('error/setCode', response.status)
         // ローディング表示
         this.showLoadingFlg = true
-        return false
+        return
       }
       // 削除成功メッセージ表示
       this.showMessage(response.data)
@@ -378,23 +404,23 @@ export default {
     // 今日の日付を任意の表記にフォーマット化
     dayToFormat(date, format) {
       // フォーマット文字列内のキーワードを日付に置換する
-      format = format.replace(/YYYY/g, date.getFullYear());
-      format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
-      format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2));
-      format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
-      format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+      format = format.replace(/YYYY/g, date.getFullYear())
+      format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2))
+      format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2))
+      format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2))
+      format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2))
 
       return format
     },
     // Base64をArrayBufferに変換
     base64ToArrayBuffer(data) {
-      const binaryStr = atob(data); // Base64のデータをデコード
-      const binaryLen = binaryStr.length;
-      const bytes = new Uint8Array(binaryLen);
+      const binaryStr = atob(data) // Base64のデータをデコード
+      const binaryLen = binaryStr.length
+      const bytes = new Uint8Array(binaryLen)
       for (let i = 0; i < binaryLen; i++) {
-          bytes[i] = binaryStr.charCodeAt(i);
+          bytes[i] = binaryStr.charCodeAt(i)
       }
-      return bytes;
+      return bytes
     },
     // フラッシュメッセージを表示
     showMessage(message) {
@@ -405,5 +431,5 @@ export default {
       })
     }
   },
-};
+}
 </script>

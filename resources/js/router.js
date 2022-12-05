@@ -321,11 +321,11 @@ const routes = [
 // 画面遷移時のスクロール振る舞い定義
 const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
-    return savedPosition; // 戻るや進むの操作時はページ遷移前のスクロール位置を維持
+    return savedPosition // 戻るや進むの操作時はページ遷移前のスクロール位置を維持
   } else {
     return { x: 0, y: 0 } // 画面遷移時は画面最上部へ移動
   }
-};
+}
 
 // VueRouterインスタンス作成
 const router = new VueRouter({

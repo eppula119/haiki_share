@@ -109,7 +109,7 @@
 // 定義したステータスコードをインポート
 import { CREATED, UNPROCESSABLE_ENTITY } from '../../util'
 // カレンダー入力プラグインをインポート
-import VueDatePicker from 'vuejs-datepicker';
+import VueDatePicker from 'vuejs-datepicker'
 // カレンダープラグラインの言語用のプラグインをインポート
 import {ja} from 'vuejs-datepicker/dist/locale'
 // 時刻入力プラグインをインポート
@@ -145,31 +145,31 @@ export default {
       dragFlg: false, // 画像ドラッグエリア内へドラッグ中か判別
       ja:ja, // カレンダーの言語用のプラグインを日本語化
       showLoadingFlg: false // ローディング表示フラグ
-    };
+    }
   },
   methods: {
     // 画像をアップロードエリアにドラッグ
     dragImg() {
-        this.dragFlg = true;
+        this.dragFlg = true
     },
     // ドラッグ&ドロップエリアから外れる
     dragLeaveImg() {
-      this.dragFlg = false;
+      this.dragFlg = false
     },
     // 画像をドロップ
     dropImg(event) {
       // ファイルが画像ではなかったら処理中断
       if (!event.dataTransfer.files[0].type.match('image.*')) {
         this.dragFlg = false
-        return false
+        return
       }
       // 5枚アップロード済みの場合は処理中断
       if (this.sellForm.images.length >= 5) {
         this.dragFlg = false
-        return false
+        return
       }
       
-      let imgObj = { url: '', uploadFile: '' };
+      let imgObj = { url: '', uploadFile: '' }
       imgObj.url = URL.createObjectURL(event.dataTransfer.files[0])
       imgObj.uploadFile = event.dataTransfer.files[0]
       this.sellForm.images.push(imgObj)
@@ -187,19 +187,19 @@ export default {
       }
       // 5枚アップロード済みの場合は処理中断
       if (this.sellForm.images.length >= 5) {
-        return false
+        return
       }
 
       // FileReaderクラスのインスタンスを取得
       const reader = new FileReader()
-      let self = this;
-      let imgObj = {url: '', uploadFile: ''};
+      let self = this
+      let imgObj = {url: '', uploadFile: ''}
 
       // ファイルを読み込み終わったタイミングで実行する処理
       reader.onload = e => {
-        imgObj.url = e.target.result;
-        imgObj.uploadFile = event.target.files[0];
-        self.sellForm.images.push(imgObj);
+        imgObj.url = e.target.result
+        imgObj.uploadFile = event.target.files[0]
+        self.sellForm.images.push(imgObj)
       }
 
       // ファイル読み込み。読み込まれたファイルはデータURL形式で受け取れる
@@ -219,8 +219,8 @@ export default {
       formData.append('best_time', this.sellForm.best_time) // 賞味期限(時間)を追加
       // アップロードした商品画像の枚数分ループ
       for (let i = 0; i < this.sellForm.images.length; i++) {
-        const imgNumber = i + 1;
-        formData.append('image_' + imgNumber, this.sellForm.images[i].uploadFile);
+        const imgNumber = i + 1
+        formData.append('image_' + imgNumber, this.sellForm.images[i].uploadFile)
       }
 
       let config = {
@@ -257,7 +257,7 @@ export default {
         this.errors = customErros
         // ローディング非表示
         this.showLoadingFlg = false
-        return false
+        return
       }
       // 入力値の初期化
       this.reset()
@@ -267,7 +267,7 @@ export default {
         this.$store.commit('error/setCode', response.status)
         // ローディング非表示
         this.showLoadingFlg = false
-        return false
+        return
       }
       // 出品実行後、レスポンスメッセージ表示
       this.showMessage(response.data.message)
@@ -288,9 +288,9 @@ export default {
     // 今日の日付を任意の表記にフォーマット化
     dayToFormat(date, format) {
       // フォーマット文字列内のキーワードを日付に置換する
-      format = format.replace(/YYYY/g, date.getFullYear());
-      format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
-      format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2));
+      format = format.replace(/YYYY/g, date.getFullYear())
+      format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2))
+      format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2))
       return format
     },
     // フラッシュメッセージを表示

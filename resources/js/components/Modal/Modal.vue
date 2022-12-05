@@ -57,7 +57,7 @@ export default {
       type: '', // 主モーダル種別
       childType: '', // 子モーダル種別
       data: '' // 受け取ってきたデータ
-    };
+    }
   },
   methods: {
     // モーダルを開く
@@ -103,5 +103,5 @@ export default {
       this.$emit("change-loading-flg", boolean)
     }
   }
-};
+}
 </script>

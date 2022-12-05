@@ -97,11 +97,11 @@ export default {
         // 受け取った種別をデータに渡す
         this.isType = this.type
         // クッキーにも渡す(再読み込み時、データ初期化されてしまう為)
-        Cookies.set('TYPE', this.type);
+        Cookies.set('TYPE', this.type)
       // ルーティング時に種別を受け取れなかった場合(再読み込み時など)
       } else {
         // クッキーからTYPEを取得
-        const type = Cookies.get('TYPE');
+        const type = Cookies.get('TYPE')
         this.isType = type
       }
     },

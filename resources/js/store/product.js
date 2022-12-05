@@ -12,7 +12,7 @@ const getters = {
 const mutations = {
   // stateの商品リストを更新
   setProductList(state, productList) {
-    state.productList = productList;
+    state.productList = productList
   },
   // stateの商品リストに新しく取得した商品を追加
   updateProduct(state, product) {
@@ -31,7 +31,7 @@ const mutations = {
   },
   // stateの絞り込みパラメーターを更新
   updateParams(state, params) {
-    state.params = params;
+    state.params = params
   },
 }
 

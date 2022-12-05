@@ -52,11 +52,11 @@ const actions = {
       case 'user':
         // 買い手ユーザー
         url = '/api/register'
-        break;
+        break
       case 'shop':
         // 売り手ユーザー
         url = '/api/shop/register'
-        break;
+        break
       default:
     }
     // ユーザー登録API実行
@@ -67,7 +67,7 @@ const actions = {
       // ユーザー情報を更新し、stateのapiステータスをtrueに更新
       context.commit('setApiStatus', true)
       context.commit('setUser', response.data)
-      return false
+      return
     }
     context.commit('setApiStatus', false)
     // ステータスコードが422(バリデーションエラー)の場合
@@ -88,11 +88,11 @@ const actions = {
       case 'user':
         // 買い手ユーザー
         url = '/api/login'
-        break;
+        break
       case 'shop':
         // 売り手ユーザー
         url = '/api/shop/login'
-        break;
+        break
       default:
     }
     // ログインAPI実行
@@ -102,7 +102,7 @@ const actions = {
       // ユーザー情報を更新し、stateのapiステータスをtrueに更新
       context.commit('setApiStatus', true)
       context.commit('setUser', response.data)
-      return false
+      return
     }
     // apiステータスをfalseに更新
     context.commit('setApiStatus', false)
@@ -124,11 +124,11 @@ const actions = {
       case 'user':
         // 買い手ユーザー
         url = '/api/logout'
-        break;
+        break
       case 'shop':
         // 売り手ユーザー
         url = '/api/shop/logout'
-        break;
+        break
       default:
     }
     // ログアウトAPI実行
@@ -138,7 +138,7 @@ const actions = {
       // ユーザー情報をnullに更新し、stateのapiステータスをtrueに更新
       context.commit('setApiStatus', true)
       context.commit('setUser', null)
-      return false
+      return
     }
     // api通信成功しなかった場合、apiステータスをfalseに更新
     context.commit('setApiStatus', false)
@@ -157,7 +157,7 @@ const actions = {
       // ユーザー情報をnullに更新し、stateのapiステータスをtrueに更新
       context.commit('setApiStatus', true)
       context.commit('setUser', user)
-      return false
+      return
     }
     // api通信成功しなかった場合、apiステータスをfalseに更新
     context.commit('setApiStatus', false)
@@ -173,11 +173,11 @@ const actions = {
       case 'user':
         // 買い手ユーザー
         url = '/api/forgot'
-        break;
+        break
       case 'shop':
         // 売り手ユーザー
         url = '/api/shop/forgot'
-        break;
+        break
       default:
     }
     
@@ -187,7 +187,7 @@ const actions = {
     if (response.status === CREATED) {
       // ユーザー情報を更新し、stateのapiステータスをtrueに更新
       context.commit('setApiStatus', true)
-      return false
+      return
     }
     // apiステータスをfalseに更新
     context.commit('setApiStatus', false)
@@ -209,11 +209,11 @@ const actions = {
       case 'user':
         // 買い手ユーザー
         url = '/api/reset'
-        break;
+        break
       case 'shop':
         // 売り手ユーザー
         url = '/api/shop/reset'
-        break;
+        break
       default:
     }
 
@@ -228,7 +228,7 @@ const actions = {
       // ユーザー情報を更新し、stateのapiステータスをtrueに更新
       context.commit('setApiStatus', true)
       context.commit('setUser', response.data)
-      return false
+      return
     }
     // apiステータスをfalseに更新
     context.commit('setApiStatus', false)

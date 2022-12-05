@@ -63,7 +63,7 @@ export default {
       range: 3, // 中間の連続してページ番号を表示させる個数(例： 1,2,...,5,6,7,8,9,...,13,14 などの5~9の部分)
       front_dot: false, // ページネーションの中間より左側のドット「...」部分
       end_dot: false, // ページネーションの中間より右側のドット「...」部分
-    };
+    }
   },
   computed: {
     // ページネーションの1ページと2ページのページ番号は表示させる
@@ -71,83 +71,83 @@ export default {
       // ページ数がrange + 4以下の場合
       if (!this.sizeCheck) {
         // 先頭側のドット表記を表示しない
-        this.front_dot = false;
+        this.front_dot = false
         // 最後尾側のドット表記を表示しない
-        this.end_dot = false;
-        return this.calRange(1, this.lastPage);
+        this.end_dot = false
+        return this.calRange(1, this.lastPage)
       }
       // ページ数がrange + 4以上の場合、先頭側は「1」と「2」ページを表示させる
-      return this.calRange(1, 2);
+      return this.calRange(1, 2)
     },
     // ページネーションの表示させる連続したページ番号の中間部分
     middlePageRange() {
       // 中間部分の表示させる最初のページ番号
-      let start = "";
+      let start = ""
       // 中間部分の表示させる最後のページ番号
-      let end = "";
+      let end = ""
       // ページ数がrange + 4以下の場合は中間部分は表示させない
-      if (!this.sizeCheck) return [];
+      if (!this.sizeCheck) return []
       // 現在のページがrangeより小さい場合
       if (this.currentPage <= this.range) {
         // 中間部分は「3」「4」「5」ページを表示させる
-        start = 3;
-        end = this.range + 2;
+        start = 3
+        end = this.range + 2
         // 先頭側のドット表記を表示しない
-        this.front_dot = false;
+        this.front_dot = false
         // 最後尾側のドット表記を表示させる
-        this.end_dot = true;
+        this.end_dot = true
       // 現在のページがrangeより大きく、「最後のページ - range」より大きい場合
       } else if (this.currentPage > this.lastPage - this.range) {
         // 中間部分は「最後のページ - 2」のページのみを表示させる
-        start = this.lastPage - this.range - 1;
-        end = this.lastPage - 2;
+        start = this.lastPage - this.range - 1
+        end = this.lastPage - 2
         // 先頭側のドット表記を表示させる
-        this.front_dot = true;
+        this.front_dot = true
         // 最後尾側のドット表記を表示しない
-        this.end_dot = false;
+        this.end_dot = false
       // 現在のページがrangeより大きく、「最後のページ - range」より小さい場合
       } else {
         // 中間部分は「現在のページ - 1」「現在のページ」「現在のページ + 1」のページを表示させる
-        start = this.currentPage - Math.floor(this.range / 2);
-        end = this.currentPage + Math.floor(this.range / 2);
+        start = this.currentPage - Math.floor(this.range / 2)
+        end = this.currentPage + Math.floor(this.range / 2)
         // 先頭側のドット表記を表示させる
-        this.front_dot = true;
+        this.front_dot = true
         // 最後尾側のドット表記を表示させる
-        this.end_dot = true;
+        this.end_dot = true
       }
-      return this.calRange(start, end);
+      return this.calRange(start, end)
     },
     // ページネーションの最後のページと最後から2番目のページ番号は表示させる
     endPageRange() {
-      if (!this.sizeCheck) return [];
-      return this.calRange(this.lastPage - 1, this.lastPage);
+      if (!this.sizeCheck) return []
+      return this.calRange(this.lastPage - 1, this.lastPage)
     },
     // データ数が少なく、ページ数がrange + 4で収まる場合の処理
     sizeCheck() {
       // ページ数がrange + 4で収まる場合(「4」は先頭2つ、最後2つのページを足した数)
       if (this.lastPage <= this.range + 4) {
-        return false;
+        return
       }
-      return true;
+      return
     },
   },
   methods: {
     // ページネーションの表示させるページ番号の個数を作成
     calRange(start, end) {
-      const range = [];
+      const range = []
       for (let i = start; i <= end; i++) {
-        range.push(i);
+        range.push(i)
       }
-      return range;
+      return range
     },
     // ページ切り替え
     changePage(page) {
-      this.$emit("changePage", page);
+      this.$emit("changePage", page)
     },
     // 現在のページがどうか判別
     isCurrent(page) {
-      return page === this.currentPage;
+      return page === this.currentPage
     },
   }
-};
+}
 </script>
